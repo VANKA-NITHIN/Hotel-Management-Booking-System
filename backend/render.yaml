@@ -1,0 +1,57 @@
+services:
+  # MySQL Private Service
+  - type: pserv
+    name: luxurystay-db
+    env: image
+    image:
+      url: mysql:8.0
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    envVars:
+      - key: MYSQL_DATABASE
+        value: luxurystay
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+      - key: MYSQL_USER
+        value: luxurystay_user
+      - key: MYSQL_PASSWORD
+        generateValue: true
+
+  # Spring Boot Backend
+  - type: web
+    name: luxurystay-backend
+    env: docker
+    plan: starter
+    # If render.yaml is inside 'backend' folder, rootDir is '.'
+    # If deployed from repo root, it handles correctly.
+    rootDir: . 
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      # Connection to the private MySQL service
+      - key: DB_URL
+        value: jdbc:mysql://luxurystay-db:3306/luxurystay?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - key: DB_USERNAME
+        fromService:
+          type: pserv
+          name: luxurystay-db
+          envVarKey: MYSQL_USER
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: luxurystay-db
+          envVarKey: MYSQL_PASSWORD
+      
+      # Secrets to be provided in the Render Dashboard
+      - key: JWT_SECRET
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
