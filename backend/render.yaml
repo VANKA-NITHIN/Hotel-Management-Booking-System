@@ -24,8 +24,9 @@ services:
     name: luxurystay-backend
     env: docker
     plan: starter
-    # If deployed from repo root, this tells Render to use the backend folder.
-    rootDir: backend
+    # Use explicit docker paths instead of rootDir for clarity
+    dockerContext: backend
+    dockerfilePath: backend/Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
