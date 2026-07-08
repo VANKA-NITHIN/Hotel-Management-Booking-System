@@ -2,7 +2,7 @@ services:
   # MySQL Private Service
   - type: pserv
     name: luxurystay-db
-    env: image
+    runtime: image
     image:
       url: mysql:8.0
     disk:
@@ -22,11 +22,9 @@ services:
   # Spring Boot Backend
   - type: web
     name: luxurystay-backend
-    env: docker
+    runtime: docker
     plan: starter
-    # Use explicit docker paths instead of rootDir for clarity
-    dockerContext: backend
-    dockerfilePath: backend/Dockerfile
+    rootDir: backend
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
