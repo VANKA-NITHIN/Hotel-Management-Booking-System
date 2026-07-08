@@ -24,7 +24,6 @@ services:
     name: luxurystay-backend
     runtime: docker
     plan: starter
-    rootDir: backend
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod

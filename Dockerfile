@@ -4,11 +4,11 @@ WORKDIR /app
 
 # Copy pom.xml and download dependencies
 # This caches the dependencies layer unless pom.xml changes
-COPY pom.xml .
+COPY backend/pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copy source code and build
-COPY src ./src
+COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
