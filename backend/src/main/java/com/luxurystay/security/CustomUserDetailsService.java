@@ -50,7 +50,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                user.getPassword() != null ? user.getPassword() : "",
+                "", // No password since Clerk handles auth
                 user.isEnabled(),
                 true,
                 true,
@@ -81,7 +81,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .firstName("LuxuryStay")
                 .lastName("Guest")
                 .email(email)
-                .password("") // No password - Clerk handles auth
                 .role(Role.ROLE_CUSTOMER)
                 .enabled(true)
                 .emailVerified(true)

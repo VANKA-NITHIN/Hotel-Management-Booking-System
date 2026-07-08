@@ -3,6 +3,7 @@ package com.luxurystay.repository;
 import com.luxurystay.entity.Hotel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,12 +15,15 @@ import java.util.List;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
+    @EntityGraph(attributePaths = {"images"})
     @Query("SELECT h FROM Hotel h WHERE h.active = true")
     List<Hotel> findAllActive();
 
+    @EntityGraph(attributePaths = {"images"})
     @Query("SELECT h FROM Hotel h WHERE h.active = true AND h.city = :city")
     List<Hotel> findByCity(@Param("city") String city);
 
+    @EntityGraph(attributePaths = {"images"})
     @Query("SELECT h FROM Hotel h WHERE h.active = true AND " +
            "(:city IS NULL OR h.city = :city) AND " +
            "(:minPrice IS NULL OR h.startingPrice >= :minPrice) AND " +
@@ -32,6 +36,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             @Param("minRating") BigDecimal minRating,
             Pageable pageable);
 
+    @EntityGraph(attributePaths = {"images"})
     @Query("SELECT h FROM Hotel h WHERE h.active = true ORDER BY h.rating DESC")
     List<Hotel> findTopRated(Pageable pageable);
 

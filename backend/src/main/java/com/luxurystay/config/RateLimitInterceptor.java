@@ -1,5 +1,6 @@
 package com.luxurystay.config;
 
+import org.springframework.lang.NonNull;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.github.bucket4j.Bandwidth;
@@ -29,7 +30,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     private static final int AUTHENTICATED_LIMIT = 120;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         String clientKey = getClientKey(request);
         boolean hasAuth = request.getHeader("Authorization") != null;
         int limit = hasAuth ? AUTHENTICATED_LIMIT : ANONYMOUS_LIMIT;
@@ -76,7 +77,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     }
 
     private Bucket createBucket(int requestsPerMinute) {
-        Bandwidth limit = Bandwidth.classic(requestsPerMinute, Refill.greedy(requestsPerMinute, Duration.ofMinutes(1)));
+        Bandwidth limit = Bandwidth.builder().capacity(requestsPerMinute).refillGreedy(requestsPerMinute, Duration.ofMinutes(1)).build();
         return Bucket.builder().addLimit(limit).build();
     }
 

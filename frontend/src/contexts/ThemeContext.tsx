@@ -1,13 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import type { ThemeContextType } from '@/types';
 
 type Theme = 'light' | 'dark' | 'system';
-
-interface ThemeContextType {
-  theme: Theme;
-  resolvedTheme: 'light' | 'dark';
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
-}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -33,8 +27,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setResolvedTheme(resolved);
 
     const root = document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add(resolved);
+    root.setAttribute('data-theme', resolved);
 
     if (resolved === 'dark') {
       root.style.colorScheme = 'dark';
@@ -49,8 +42,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (theme === 'system') {
         const resolved = getSystemTheme();
         setResolvedTheme(resolved);
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(resolved);
+        document.documentElement.setAttribute('data-theme', resolved);
       }
     };
     mediaQuery.addEventListener('change', handler);

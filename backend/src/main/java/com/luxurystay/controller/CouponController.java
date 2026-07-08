@@ -1,6 +1,5 @@
 package com.luxurystay.controller;
 
-import com.luxurystay.dto.ApiResponse;
 import com.luxurystay.dto.CouponDTO;
 import com.luxurystay.service.CouponService;
 import lombok.RequiredArgsConstructor;

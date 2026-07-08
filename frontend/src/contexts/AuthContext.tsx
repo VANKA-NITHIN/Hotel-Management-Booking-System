@@ -5,16 +5,9 @@
  */
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
-import { setAuthTokenGetter } from '../api/client';
-import api from '../api/client';
-import type { User } from '../types';
-
-interface AuthContextType {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  getToken: () => Promise<string | null>;
-}
+import { setAuthTokenGetter } from '@/api/client';
+import api from '@/api/client';
+import type { User, AuthContextType } from '@/types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 

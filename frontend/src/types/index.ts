@@ -10,6 +10,10 @@ export interface User {
   emailVerified: boolean;
   loyaltyPoints: number;
   createdAt?: string;
+  emailBookings?: boolean;
+  emailPromotions?: boolean;
+  pushBookings?: boolean;
+  pushPromotions?: boolean;
 }
 
 export interface AuthResponse {
@@ -121,6 +125,8 @@ export interface Review {
   rating: number;
   comment: string;
   reviewImage?: string;
+  guestName?: string;
+  createdAt?: string;
 }
 
 export interface PagedResponse<T> {
@@ -154,13 +160,37 @@ export interface ChartDataPoint {
 }
 
 export interface Notification {
-  id: number;
-  title: string;
+  id: string | number;
+  title?: string;
   message: string;
-  type: string;
+  type: 'BOOKING_NEW' | 'BOOKING_CONFIRMED' | 'BOOKING_CANCELLED' | 'PAYMENT_SUCCESS' | 'PAYMENT_FAILED' | 'ROOM_UPDATE' | 'SYSTEM_ALERT' | string;
   read: boolean;
   link?: string;
-  createdAt: string;
+  referenceId?: string;
+  timestamp?: string;
+  createdAt?: string;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  getToken: () => Promise<string | null>;
+}
+
+export interface ThemeContextType {
+  theme: 'light' | 'dark' | 'system';
+  resolvedTheme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  toggleTheme: () => void;
+}
+
+export interface NotificationContextType {
+  notifications: Notification[];
+  unreadCount: number;
+  markAsRead: (id: string | number) => void;
+  markAllAsRead: () => void;
+  clearAll: () => void;
 }
 
 export interface Coupon {

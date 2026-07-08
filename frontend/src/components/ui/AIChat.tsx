@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../api/client';
 import toast from 'react-hot-toast';
 
@@ -24,6 +24,7 @@ You have access to the following tools:
 When a user asks to find a hotel, ALWAYS use the \`search_hotels\` tool to get real data. Never make up hotel names. 
 After getting the results, present them nicely to the user (mentioning Name, City, and Starting Price).
 When a user asks to book a specific hotel, use the \`start_booking\` tool with the correct \`hotelId\`. 
+When a user asks about their own bookings or trips, use the \`check_my_bookings\` tool.
 Keep your responses concise, elegant, and professional. Use formatting like bullet points when listing hotels.`;
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
@@ -47,6 +48,7 @@ export default function AIChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -116,6 +118,17 @@ export default function AIChat() {
                   required: ["hotelId"]
                 }
               }
+            },
+            {
+              type: "function",
+              function: {
+                name: "check_my_bookings",
+                description: "Checks the currently logged-in user's upcoming bookings.",
+                parameters: {
+                  type: "object",
+                  properties: {}
+                }
+              }
             }
           ],
           tool_choice: "auto"
@@ -166,9 +179,15 @@ export default function AIChat() {
               // Execute navigation
               setTimeout(() => {
                 setIsOpen(false);
-                navigate(`/booking/${args.hotelId}`);
+                navigate(`/booking?hotelId=${args.hotelId}`);
               }, 1500);
               toolResult = JSON.stringify({ success: true, message: `Navigating user to checkout for hotel ID ${args.hotelId}...` });
+            }
+            else if (toolCall.function.name === 'check_my_bookings') {
+              // Mocked response for demo purposes (would normally hit /api/bookings/me)
+              toolResult = JSON.stringify([
+                { id: 101, hotelName: "Grand Plaza", checkIn: "2026-08-15", checkOut: "2026-08-20", status: "CONFIRMED" }
+              ]);
             }
           } catch (err: any) {
              toolResult = JSON.stringify({ error: err.message });
@@ -209,9 +228,14 @@ export default function AIChat() {
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
+    let contextualContent = inputValue.trim();
+    if (messages.length === 2) {
+        contextualContent = `[System Note: User is currently on page path: ${location.pathname}] ${inputValue.trim()}`;
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputValue.trim(),
+      content: contextualContent,
       role: 'user',
     };
 

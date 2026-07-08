@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi } from '../api';
+import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi } from '../api';
 import type { Hotel, Room } from '../types';
 
 // Hotels
@@ -265,17 +265,64 @@ export function useUpdateHousekeepingStatus() {
 }
 
 // Notifications
-export function useNotifications(page = 0, size = 20) {
+export function useNotifications(page = 0, size = 20, enabled = true) {
   return useQuery({
     queryKey: ['notifications', page, size],
     queryFn: () => notificationApi.getAll(page, size),
+    enabled,
   });
 }
 
-export function useUnreadNotificationCount() {
+export function useUnreadNotificationCount(enabled = true) {
   return useQuery({
     queryKey: ['unreadNotificationCount'],
     queryFn: () => notificationApi.getUnreadCount(),
-    refetchInterval: 30000,
+    enabled,
+    refetchInterval: enabled ? 30000 : undefined,
+  });
+}
+
+export function useMarkNotificationAsRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: notificationApi.markAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+export function useMarkAllNotificationsAsRead() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: notificationApi.markAllAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
+    },
+  });
+}
+
+// User Preferences
+export function useUpdatePreferences() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: authApi.updatePreferences,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['me'] }),
+  });
+}
+
+// Contact
+export function useSubmitContact() {
+  return useMutation({
+    mutationFn: contactApi.submit,
+  });
+}
+
+// Newsletter
+export function useSubscribeNewsletter() {
+  return useMutation({
+    mutationFn: newsletterApi.subscribe,
   });
 }

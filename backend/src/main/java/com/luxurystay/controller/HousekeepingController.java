@@ -1,7 +1,6 @@
 package com.luxurystay.controller;
 
 import com.luxurystay.dto.ApiResponse;
-import com.luxurystay.dto.HousekeepingDTO;
 import com.luxurystay.service.HousekeepingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

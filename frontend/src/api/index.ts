@@ -19,6 +19,8 @@ export const authApi = {
   getMe: () => api.get<User>('/auth/me'),
   updateProfile: (data: { firstName: string; lastName: string; phone?: string }) =>
     api.put<User>('/auth/profile', data),
+  updatePreferences: (data: { emailBookings: boolean; emailPromotions: boolean; pushBookings: boolean; pushPromotions: boolean }) =>
+    api.put<User>('/auth/preferences', data),
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     api.post('/auth/change-password', data),
 };
@@ -162,5 +164,17 @@ export const razorpayApi = {
 export const aiApi = {
   chat: (message: string, history?: Array<{ role: string; content: string }>) =>
     api.post<{ response: string; timestamp: string }>('/ai/chat', { message, history }),
+};
+
+// Contact API
+export const contactApi = {
+  submit: (data: { firstName: string; lastName: string; email: string; subject: string; message: string }) =>
+    api.post('/contact', data),
+};
+
+// Newsletter API
+export const newsletterApi = {
+  subscribe: (email: string) =>
+    api.post('/newsletter/subscribe', { email }),
 };
 

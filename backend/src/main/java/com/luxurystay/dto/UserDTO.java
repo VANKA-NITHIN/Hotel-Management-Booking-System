@@ -23,5 +23,12 @@ public class UserDTO {
     private boolean enabled;
     private boolean emailVerified;
     private int loyaltyPoints;
+    
+    // Notification Preferences
+    private boolean emailBookings;
+    private boolean emailPromotions;
+    private boolean pushBookings;
+    private boolean pushPromotions;
+
     private LocalDateTime createdAt;
 }

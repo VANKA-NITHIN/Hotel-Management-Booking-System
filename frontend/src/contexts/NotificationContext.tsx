@@ -1,25 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
-
-export interface Notification {
-  id: string;
-  type: 'BOOKING_NEW' | 'BOOKING_CONFIRMED' | 'BOOKING_CANCELLED' | 'PAYMENT_SUCCESS' | 'PAYMENT_FAILED' | 'ROOM_UPDATE' | 'SYSTEM_ALERT';
-  message: string;
-  read: boolean;
-  timestamp: string;
-  referenceId?: string;
-}
-
-interface NotificationContextType {
-  notifications: Notification[];
-  unreadCount: number;
-  markAsRead: (id: string) => void;
-  markAllAsRead: () => void;
-  clearAll: () => void;
-}
+import type { Notification, NotificationContextType } from '@/types';
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
@@ -77,7 +61,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const markAsRead = (id: string) => {
+  const markAsRead = (id: string | number) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
   };
 

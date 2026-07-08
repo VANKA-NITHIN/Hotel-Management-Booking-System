@@ -49,7 +49,7 @@ class InvoiceServiceIntegrationTest {
                 .lastName("Doe")
                 .email("john.doe@test.com")
                 .phone("+1234567890")
-                .password("testpassword")
+                
                 .enabled(true)
                 .build());
 

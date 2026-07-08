@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Calendar, Users, MapPin, ArrowLeft, CheckCircle, Shield, CreditCard, Lock, Info, Star, Check, ArrowRight } from 'lucide-react';
+import { Users, MapPin, ArrowLeft, CheckCircle, Shield, CreditCard, Lock, Info, Star, Check, ArrowRight } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
 import { useHotel, useCreateBooking } from '../hooks/useApi';
 import { bookingSchema, type BookingFormData } from '../validation/schemas';
@@ -12,8 +12,10 @@ import toast from 'react-hot-toast';
 import { razorpayApi } from '../api';
 import { loadRazorpay } from '../utils/razorpay';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { useEffect } from 'react';
 import { usePersistentState } from '../hooks/usePersistentState';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { DatePicker } from '../components/ui/DatePicker';
 
 export default function BookingPage() {
   usePageTitle('Secure Checkout');
@@ -32,7 +34,7 @@ export default function BookingPage() {
   const savedForm = sessionStorage.getItem(`booking_form_${hotelId}`);
   const initialForm = savedForm ? JSON.parse(savedForm) : null;
 
-  const { register, watch, formState: { errors }, trigger, getValues, reset } = useForm<BookingFormData>({
+  const { register, watch, formState: { errors }, trigger, getValues, setValue } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: initialForm || {
       guests: Number(searchParams.get('guests')) || 2,
@@ -96,7 +98,6 @@ export default function BookingPage() {
     }
 
     try {
-      // 1. Create order on backend
       const orderResponse = await razorpayApi.createOrder({
         amount: total,
         currency: 'USD',
@@ -104,14 +105,12 @@ export default function BookingPage() {
 
       const orderData = orderResponse.data;
 
-      // 2. Load Razorpay script
       const res = await loadRazorpay();
       if (!res) {
         toast.error('Razorpay SDK failed to load');
         return;
       }
 
-      // 3. Initialize Razorpay checkout
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_YOUR_KEY',
         amount: orderData.amount,
@@ -121,14 +120,12 @@ export default function BookingPage() {
         order_id: orderData.orderId,
         handler: async function (response: any) {
           try {
-            // Verify payment
             await razorpayApi.verifyPayment({
               orderId: response.razorpay_order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
             });
 
-            // Create booking record
             await createBooking.mutateAsync({
               hotelId,
               checkInDate: data.checkIn,
@@ -140,7 +137,6 @@ export default function BookingPage() {
 
             toast.success('Booking confirmed successfully!');
             setStep(4);
-            // Clear storage upon successful booking
             sessionStorage.removeItem(`booking_form_${hotelId}`);
             sessionStorage.removeItem(`booking_step_${hotelId}`);
             sessionStorage.removeItem(`booking_discount_${hotelId}`);
@@ -154,7 +150,7 @@ export default function BookingPage() {
           contact: data.phone,
         },
         theme: {
-          color: '#0f172a',
+          color: '#111827', // Matching dark theme
         },
       };
 
@@ -169,23 +165,23 @@ export default function BookingPage() {
 
   if (step === 4) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20 px-4">
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-2xl p-8 max-w-md w-full text-center border border-gray-100 shadow-elevated">
-          <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-success" />
+      <div className="min-h-screen bg-bg-surface-hover flex flex-col items-center justify-center py-20 px-4">
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-bg-surface rounded-3xl p-8 sm:p-12 max-w-lg w-full text-center border border-border-base shadow-elevated">
+          <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-8">
+            <CheckCircle className="w-12 h-12 text-success" />
           </div>
-          <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
-          <p className="text-gray-500 mb-8">
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base mb-3">Booking Confirmed!</h1>
+          <p className="text-text-muted mb-8 text-lg">
             Thank you for choosing LuxuryStay. Your booking reference has been sent to your email.
           </p>
-          <div className="bg-gray-50 rounded-xl p-4 text-left mb-8 space-y-2 border border-gray-100">
-            <p className="text-sm"><span className="text-gray-500">Hotel:</span> <span className="font-medium text-gray-900">{hotel?.name}</span></p>
-            <p className="text-sm"><span className="text-gray-500">Dates:</span> <span className="font-medium text-gray-900">{watchCheckIn} to {watchCheckOut}</span></p>
-            <p className="text-sm"><span className="text-gray-500">Guests:</span> <span className="font-medium text-gray-900">{watch('guests')} Adults</span></p>
+          <div className="bg-bg-surface-hover rounded-2xl p-6 text-left mb-10 space-y-3 border border-border-base">
+            <p className="text-sm"><span className="text-text-muted inline-block w-20">Hotel:</span> <span className="font-bold text-text-base">{hotel?.name}</span></p>
+            <p className="text-sm"><span className="text-text-muted inline-block w-20">Dates:</span> <span className="font-bold text-text-base">{watchCheckIn} to {watchCheckOut}</span></p>
+            <p className="text-sm"><span className="text-text-muted inline-block w-20">Guests:</span> <span className="font-bold text-text-base">{watch('guests')} Adults</span></p>
           </div>
-          <div className="flex flex-col gap-3">
-            <button onClick={() => navigate('/dashboard')} className="btn-primary w-full">View My Bookings</button>
-            <button onClick={() => navigate('/')} className="btn-ghost w-full">Return Home</button>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button size="lg" onClick={() => navigate('/dashboard')} className="flex-1">View My Bookings</Button>
+            <Button size="lg" variant="outline" onClick={() => navigate('/')} className="flex-1">Return Home</Button>
           </div>
         </motion.div>
       </div>
@@ -193,22 +189,22 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-16">
+    <div className="min-h-screen bg-bg-surface-hover pt-[72px] pb-24">
       <div className="container-section">
         {/* Step Indicator */}
-        <div className="max-w-3xl mx-auto mb-10 mt-6">
+        <div className="max-w-2xl mx-auto mb-12 mt-8">
           <div className="flex items-center justify-between relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full -z-10"></div>
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-secondary rounded-full -z-10 transition-all duration-500" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
             
             {[1, 2, 3].map((num) => (
-              <div key={num} className="flex flex-col items-center gap-2">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-300 ${
-                  step > num ? 'bg-secondary text-white' : step === num ? 'bg-primary text-white ring-4 ring-primary/20' : 'bg-gray-200 text-gray-500'
+              <div key={num} className="flex flex-col items-center gap-3">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-base transition-all duration-500 ${
+                  step > num ? 'bg-primary text-white shadow-md' : step === num ? 'bg-primary text-white ring-4 ring-primary/20 shadow-md scale-110' : 'bg-bg-surface text-text-muted border-2 border-border-strong'
                 }`}>
-                  {step > num ? <Check className="w-5 h-5" /> : num}
+                  {step > num ? <Check className="w-6 h-6" /> : num}
                 </div>
-                <span className={`text-xs font-medium ${step >= num ? 'text-gray-900' : 'text-gray-400'}`}>
+                <span className={`text-xs font-bold uppercase tracking-wider ${step >= num ? 'text-text-base' : 'text-text-muted'}`}>
                   {num === 1 ? 'Dates' : num === 2 ? 'Details' : 'Payment'}
                 </span>
               </div>
@@ -216,134 +212,162 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 xl:gap-12">
           {/* Main Form Area */}
           <div className="flex-1">
             <AnimatePresence mode="wait">
               {step === 1 && (
-                <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
-                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
-                    <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-lg hover:bg-gray-50 text-gray-500"><ArrowLeft className="w-5 h-5" /></button>
-                    <h2 className="text-xl font-bold text-gray-900">Your Stay Details</h2>
+                <motion.div key="step1" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-bg-surface rounded-2xl p-6 sm:p-10 border border-border-base shadow-sm">
+                  <div className="flex items-center gap-4 mb-8 pb-8 border-b border-border-base">
+                    <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-bg-surface-hover text-text-muted hover:text-text-base transition-colors"><ArrowLeft className="w-6 h-6" /></button>
+                    <h2 className="text-2xl font-serif font-bold text-text-base">Your Stay Details</h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Check-in Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input type="date" {...register('checkIn')} className={`input-field pl-10 ${errors.checkIn ? 'input-error' : ''}`} min={new Date().toISOString().split('T')[0]} />
-                      </div>
-                      {errors.checkIn && <p className="text-danger text-xs mt-1">{errors.checkIn.message}</p>}
+                      <DatePicker
+                        label="Check-in Date"
+                        minDate={new Date().toISOString().split('T')[0]}
+                        value={watchCheckIn}
+                        onChange={(e) => setValue('checkIn', e.target.value, { shouldValidate: true })}
+                        error={errors.checkIn?.message}
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Check-out Date</label>
-                      <div className="relative">
-                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <input type="date" {...register('checkOut')} className={`input-field pl-10 ${errors.checkOut ? 'input-error' : ''}`} min={watchCheckIn || new Date().toISOString().split('T')[0]} />
-                      </div>
-                      {errors.checkOut && <p className="text-danger text-xs mt-1">{errors.checkOut.message}</p>}
+                      <DatePicker
+                        label="Check-out Date"
+                        minDate={watchCheckIn || new Date().toISOString().split('T')[0]}
+                        value={watchCheckOut}
+                        onChange={(e) => setValue('checkOut', e.target.value, { shouldValidate: true })}
+                        error={errors.checkOut?.message}
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Adults</label>
+                      <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Adults</label>
                       <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <select {...register('guests', { valueAsNumber: true })} className="input-field pl-10">
+                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                        <select {...register('guests', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg pl-10 pr-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
                           {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">Children</label>
+                      <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Children</label>
                       <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                        <select {...register('children', { valueAsNumber: true })} className="input-field pl-10">
+                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                        <select {...register('children', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg pl-10 pr-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
                           {[0,1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-end">
-                    <button onClick={handleNext} className="btn-primary">
-                      Next Step <ArrowRight className="w-4 h-4" />
-                    </button>
+                  <div className="mt-10 flex justify-end">
+                    <Button size="lg" onClick={handleNext} icon={<ArrowRight className="w-4 h-4" />} iconPosition="right">
+                      Next Step
+                    </Button>
                   </div>
                 </motion.div>
               )}
 
               {step === 2 && (
-                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
-                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
-                    <button onClick={() => setStep(1)} className="p-2 -ml-2 rounded-lg hover:bg-gray-50 text-gray-500"><ArrowLeft className="w-5 h-5" /></button>
-                    <h2 className="text-xl font-bold text-gray-900">Guest Information</h2>
+                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-bg-surface rounded-2xl p-6 sm:p-10 border border-border-base shadow-sm">
+                  <div className="flex items-center gap-4 mb-8 pb-8 border-b border-border-base">
+                    <button onClick={() => setStep(1)} className="p-2 -ml-2 rounded-full hover:bg-bg-surface-hover text-text-muted hover:text-text-base transition-colors"><ArrowLeft className="w-6 h-6" /></button>
+                    <h2 className="text-2xl font-serif font-bold text-text-base">Guest Information</h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">First Name</label>
-                      <input type="text" {...register('firstName')} className={`input-field ${errors.firstName ? 'input-error' : ''}`} placeholder="John" />
-                      {errors.firstName && <p className="text-danger text-xs mt-1">{errors.firstName.message}</p>}
+                      <Input
+                        label="First Name"
+                        placeholder="John"
+                        {...register('firstName')}
+                        error={errors.firstName?.message}
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Last Name</label>
-                      <input type="text" {...register('lastName')} className={`input-field ${errors.lastName ? 'input-error' : ''}`} placeholder="Doe" />
-                      {errors.lastName && <p className="text-danger text-xs mt-1">{errors.lastName.message}</p>}
+                      <Input
+                        label="Last Name"
+                        placeholder="Doe"
+                        {...register('lastName')}
+                        error={errors.lastName?.message}
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Email Address</label>
-                      <input type="email" {...register('email')} className={`input-field ${errors.email ? 'input-error' : ''}`} placeholder="john@example.com" />
-                      {errors.email && <p className="text-danger text-xs mt-1">{errors.email.message}</p>}
+                      <Input
+                        label="Email Address"
+                        type="email"
+                        placeholder="john@example.com"
+                        {...register('email')}
+                        error={errors.email?.message}
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Phone Number</label>
-                      <input type="tel" {...register('phone')} className={`input-field ${errors.phone ? 'input-error' : ''}`} placeholder="+1 (555) 000-0000" />
-                      {errors.phone && <p className="text-danger text-xs mt-1">{errors.phone.message}</p>}
+                      <Input
+                        label="Phone Number"
+                        type="tel"
+                        placeholder="+1 (555) 000-0000"
+                        {...register('phone')}
+                        error={errors.phone?.message}
+                      />
                     </div>
                     <div className="md:col-span-2">
-                      <label className="text-sm font-medium text-gray-700 mb-1.5 block">Special Requests (Optional)</label>
-                      <textarea {...register('specialRequests')} rows={3} className="input-field resize-none" placeholder="Allergies, late arrival, extra pillows..."></textarea>
+                      <label className="text-sm font-medium text-text-base mb-2 block">Special Requests (Optional)</label>
+                      <textarea 
+                        {...register('specialRequests')} 
+                        rows={4} 
+                        className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg p-4 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors resize-none" 
+                        placeholder="Allergies, late arrival, extra pillows..."
+                      />
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-between">
-                    <button onClick={() => setStep(1)} className="btn-outline">Back</button>
-                    <button onClick={handleNext} className="btn-primary">Proceed to Payment <ArrowRight className="w-4 h-4" /></button>
+                  <div className="mt-10 flex items-center justify-between">
+                    <Button variant="outline" size="lg" onClick={() => setStep(1)}>Back</Button>
+                    <Button size="lg" onClick={handleNext} icon={<ArrowRight className="w-4 h-4" />} iconPosition="right">
+                      Proceed to Payment
+                    </Button>
                   </div>
                 </motion.div>
               )}
 
               {step === 3 && (
-                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
-                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
-                    <button onClick={() => setStep(2)} className="p-2 -ml-2 rounded-lg hover:bg-gray-50 text-gray-500"><ArrowLeft className="w-5 h-5" /></button>
-                    <h2 className="text-xl font-bold text-gray-900">Payment</h2>
+                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-bg-surface rounded-2xl p-6 sm:p-10 border border-border-base shadow-sm">
+                  <div className="flex items-center gap-4 mb-8 pb-8 border-b border-border-base">
+                    <button onClick={() => setStep(2)} className="p-2 -ml-2 rounded-full hover:bg-bg-surface-hover text-text-muted hover:text-text-base transition-colors"><ArrowLeft className="w-6 h-6" /></button>
+                    <h2 className="text-2xl font-serif font-bold text-text-base">Payment</h2>
                   </div>
 
-                  <div className="bg-success-light/30 border border-success-light rounded-xl p-4 mb-6 flex gap-3">
-                    <Shield className="w-5 h-5 text-success shrink-0" />
+                  <div className="bg-success/10 border border-success/20 rounded-xl p-5 mb-8 flex gap-4">
+                    <Shield className="w-6 h-6 text-success shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-success-dark">Secure Payment</p>
-                      <p className="text-xs text-success-dark/70">All card information is fully encrypted, secure, and protected.</p>
+                      <p className="font-bold text-success">Secure Payment</p>
+                      <p className="text-sm text-success font-medium mt-1">All card information is fully encrypted, secure, and protected.</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <div className="border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-secondary transition-colors relative overflow-hidden">
-                      <div className="absolute top-0 right-0 p-4"><div className="w-4 h-4 rounded-full border-4 border-secondary"></div></div>
+                    <div className="border-2 border-primary bg-primary/5 rounded-xl p-5 cursor-pointer relative overflow-hidden transition-all shadow-sm">
+                      <div className="absolute top-5 right-5"><div className="w-5 h-5 rounded-full border-[5px] border-primary bg-white"></div></div>
                       <div className="flex items-center gap-3 mb-2">
-                        <CreditCard className="w-5 h-5 text-gray-600" />
-                        <span className="font-medium text-gray-900">Pay with Razorpay</span>
+                        <CreditCard className="w-6 h-6 text-primary" />
+                        <span className="font-bold text-text-base text-lg">Pay with Razorpay</span>
                       </div>
-                      <p className="text-sm text-gray-500 ml-8">Credit Card, Debit Card, Netbanking, UPI</p>
+                      <p className="text-sm text-text-muted font-medium ml-9">Credit Card, Debit Card, Netbanking, UPI</p>
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-between">
-                    <button onClick={() => setStep(2)} className="btn-outline">Back</button>
-                    <button onClick={handlePayment} className="btn-primary bg-green-600 hover:bg-green-700 border-none">
-                      <Lock className="w-4 h-4 mr-1" /> Pay ${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                    </button>
+                  <div className="mt-10 flex items-center justify-between">
+                    <Button variant="outline" size="lg" onClick={() => setStep(2)}>Back</Button>
+                    <Button 
+                      size="lg" 
+                      onClick={handlePayment} 
+                      className="bg-[#22c55e] hover:bg-[#16a34a] text-white border-none shadow-lg shadow-green-500/20"
+                      icon={<Lock className="w-4 h-4" />}
+                    >
+                      Pay ${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    </Button>
                   </div>
                 </motion.div>
               )}
@@ -351,52 +375,52 @@ export default function BookingPage() {
           </div>
 
           {/* Sticky Order Summary Sidebar */}
-          <div className="lg:w-[380px] shrink-0">
-            <div className="bg-white rounded-2xl border border-gray-100 p-6 sticky top-24 shadow-sm">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 pb-4 border-b border-gray-100">Order Summary</h3>
+          <div className="lg:w-[400px] shrink-0">
+            <div className="bg-bg-surface rounded-2xl border border-border-base p-6 lg:p-8 sticky top-24 shadow-sm">
+              <h3 className="text-xl font-serif font-bold text-text-base mb-6 pb-6 border-b border-border-base">Order Summary</h3>
               
-              <div className="flex gap-4 mb-6">
-                <img src={hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop'} alt="" className="w-20 h-20 rounded-lg object-cover" />
+              <div className="flex gap-4 mb-8">
+                <img src={hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop'} alt="" className="w-24 h-24 rounded-xl object-cover" />
                 <div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <Star className="w-3 h-3 text-secondary fill-secondary" />
-                    <span className="text-xs font-bold">{hotel?.rating?.toFixed(1) || '4.5'}</span>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Star className="w-3.5 h-3.5 text-secondary fill-secondary" />
+                    <span className="text-xs font-bold text-text-base">{hotel?.rating?.toFixed(1) || '4.5'}</span>
                   </div>
-                  <h4 className="font-semibold text-gray-900 line-clamp-2 leading-tight">{hotel?.name}</h4>
-                  <p className="text-xs text-gray-500 mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> {hotel?.city}</p>
+                  <h4 className="font-bold text-text-base line-clamp-2 leading-snug">{hotel?.name}</h4>
+                  <p className="text-sm text-text-muted mt-1.5 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {hotel?.city}</p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-2">
+              <div className="bg-bg-surface-hover rounded-xl p-5 mb-8 space-y-3 border border-border-base">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Check-in</span>
-                  <span className="font-medium text-gray-900">{watchCheckIn || '—'}</span>
+                  <span className="text-text-muted font-medium">Check-in</span>
+                  <span className="font-bold text-text-base">{watchCheckIn || '—'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Check-out</span>
-                  <span className="font-medium text-gray-900">{watchCheckOut || '—'}</span>
+                  <span className="text-text-muted font-medium">Check-out</span>
+                  <span className="font-bold text-text-base">{watchCheckOut || '—'}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Guests</span>
-                  <span className="font-medium text-gray-900">{watch('guests')} Adults{watch('children') > 0 ? `, ${watch('children')} Children` : ''}</span>
+                  <span className="text-text-muted font-medium">Guests</span>
+                  <span className="font-bold text-text-base">{watch('guests')} Adults{watch('children') > 0 ? `, ${watch('children')} Children` : ''}</span>
                 </div>
               </div>
 
-              <div className="space-y-3 text-sm mb-6">
-                <div className="flex justify-between text-gray-600">
+              <div className="space-y-4 text-sm mb-8">
+                <div className="flex justify-between text-text-base">
                   <span>${pricePerNight} × {nights} nights</span>
-                  <span>${subtotal.toLocaleString()}</span>
+                  <span className="font-medium">${subtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span className="flex items-center gap-1">Taxes (10%) <Info className="w-3 h-3 text-gray-400" /></span>
-                  <span>${tax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <div className="flex justify-between text-text-base">
+                  <span className="flex items-center gap-1.5">Taxes (10%) <Info className="w-3.5 h-3.5 text-text-muted" /></span>
+                  <span className="font-medium">${tax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span className="flex items-center gap-1">Service Fee (5%) <Info className="w-3 h-3 text-gray-400" /></span>
-                  <span>${serviceCharge.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <div className="flex justify-between text-text-base">
+                  <span className="flex items-center gap-1.5">Service Fee (5%) <Info className="w-3.5 h-3.5 text-text-muted" /></span>
+                  <span className="font-medium">${serviceCharge.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
                 {couponDiscount > 0 && (
-                  <div className="flex justify-between text-success font-medium">
+                  <div className="flex justify-between text-success font-bold bg-success/10 p-2 -mx-2 rounded-lg">
                     <span>Discount</span>
                     <span>-${couponDiscount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
@@ -404,21 +428,25 @@ export default function BookingPage() {
               </div>
 
               {step < 3 && (
-                <div className="mb-6 pt-6 border-t border-gray-100">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Have a coupon?</p>
+                <div className="mb-8 pt-8 border-t border-border-base">
+                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Have a coupon?</p>
                   <div className="flex gap-2">
-                    <input type="text" {...register('couponCode')} placeholder="e.g. LUXURY20" className="input-field text-sm uppercase flex-1 py-2" />
-                    <button type="button" onClick={handleApplyCoupon} className="btn-secondary py-2 px-4 text-sm shrink-0">Apply</button>
+                    <Input 
+                      placeholder="e.g. LUXURY20" 
+                      {...register('couponCode')}
+                      className="uppercase"
+                    />
+                    <Button variant="secondary" onClick={handleApplyCoupon} className="shrink-0">Apply</Button>
                   </div>
                 </div>
               )}
 
-              <div className="pt-4 border-t border-gray-100 flex items-end justify-between">
+              <div className="pt-6 border-t border-border-strong flex items-end justify-between">
                 <div>
-                  <span className="text-sm font-medium text-gray-500 block">Total Amount</span>
-                  <span className="text-xs text-gray-400">Includes all taxes and fees</span>
+                  <span className="text-base font-bold text-text-base block">Total Amount</span>
+                  <span className="text-xs font-medium text-text-muted mt-1 block">Includes all taxes and fees</span>
                 </div>
-                <span className="text-2xl font-bold text-gray-900">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span className="text-3xl font-bold text-text-base">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
               </div>
             </div>
           </div>

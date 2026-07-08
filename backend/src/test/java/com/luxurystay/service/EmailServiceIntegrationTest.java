@@ -60,7 +60,7 @@ class EmailServiceIntegrationTest {
                 .lastName("Smith")
                 .email("jane.smith@test.com")
                 .phone("+1987654321")
-                .password("testpassword")
+                
                 .enabled(true)
                 .build());
 

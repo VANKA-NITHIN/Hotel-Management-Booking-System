@@ -19,10 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    Optional<User> findByVerificationToken(String token);
-
-    Optional<User> findByPasswordResetToken(String token);
-
     @Query("SELECT u FROM User u WHERE u.enabled = true AND u.accountLocked = false")
     List<User> findAllActiveUsers();
 

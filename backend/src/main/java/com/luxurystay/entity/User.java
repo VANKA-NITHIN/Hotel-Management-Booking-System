@@ -32,9 +32,6 @@ public class User {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
     @Column(length = 20)
     private String phone;
 
@@ -45,29 +42,45 @@ public class User {
     private Role role;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean enabled = true;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean emailVerified = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean accountLocked = false;
 
+    @Builder.Default
     private int failedLoginAttempts = 0;
 
     private LocalDateTime lockedUntil;
-
-    private String verificationToken;
-
-    private String passwordResetToken;
-
-    private LocalDateTime passwordResetExpiry;
 
     private String oauthProvider;
 
     private String oauthProviderId;
 
+    @Builder.Default
     private int loyaltyPoints = 0;
+
+    // Notification Preferences
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean emailBookings = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean emailPromotions = false;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean pushBookings = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean pushPromotions = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

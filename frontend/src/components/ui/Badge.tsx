@@ -16,7 +16,7 @@ const variantMap: Record<string, string> = {
 
 export function Badge({ variant = 'neutral', children, className = '', dot }: BadgeProps) {
   return (
-    <span className={`${variantMap[variant]} ${className}`}>
+    <span className={`badge ${variantMap[variant]} ${className}`}>
       {dot && <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" />}
       {children}
     </span>

@@ -24,9 +24,8 @@ services:
     name: luxurystay-backend
     env: docker
     plan: starter
-    # If render.yaml is inside 'backend' folder, rootDir is '.'
-    # If deployed from repo root, it handles correctly.
-    rootDir: . 
+    # If deployed from repo root, this tells Render to use the backend folder.
+    rootDir: backend
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod

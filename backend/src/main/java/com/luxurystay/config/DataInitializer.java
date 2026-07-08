@@ -25,8 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final AmenityRepository amenityRepository;
-    private final PasswordEncoder passwordEncoder;
-
+    
     @Override
     public void run(String... args) {
         initRoles();
@@ -55,7 +54,6 @@ public class DataInitializer implements CommandLineRunner {
                     .firstName("Admin")
                     .lastName("User")
                     .email("admin@luxurystay.com")
-                    .password(passwordEncoder.encode("Admin@12345"))
                     .role(Role.ROLE_ADMIN)
                     .enabled(true)
                     .emailVerified(true)

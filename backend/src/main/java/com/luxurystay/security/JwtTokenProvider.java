@@ -41,8 +41,6 @@ public class JwtTokenProvider {
     @Value("${clerk.jwks-url:https://engaging-fish-44.clerk.accounts.dev/.well-known/jwks.json}")
     private String clerkJwksUrl;
 
-    private SecretKey legacyKey;
-
     // Cache JWKS keys
     private final Map<String, RSAPublicKey> clerkKeys = new ConcurrentHashMap<>();
     private long lastJwksFetch = 0;
@@ -50,17 +48,6 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        // Initialize legacy HMAC key for backward compatibility
-        if (jwtSecret != null && !jwtSecret.isEmpty()) {
-            byte[] secretBytes = jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-            if (secretBytes.length < 32) {
-                byte[] padded = new byte[32];
-                java.util.Arrays.fill(padded, (byte) 0);
-                System.arraycopy(secretBytes, 0, padded, 0, Math.min(secretBytes.length, 32));
-                secretBytes = padded;
-            }
-            this.legacyKey = Keys.hmacShaKeyFor(secretBytes);
-        }
 
         // Pre-fetch Clerk JWKS
         try {
@@ -71,79 +58,27 @@ public class JwtTokenProvider {
         }
     }
 
-    /**
-     * Generate a legacy HMAC token (for internal use)
-     */
-    public String generateToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return generateToken(userDetails.getUsername());
-    }
 
-    public String generateToken(String email) {
-        if (legacyKey == null) {
-            throw new IllegalStateException("Legacy JWT key not configured");
-        }
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpiration);
-
-        return Jwts.builder()
-                .subject(email)
-                .issuer(issuer)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(legacyKey)
-                .compact();
-    }
-
-    public String generateRefreshToken(String email) {
-        if (legacyKey == null) {
-            throw new IllegalStateException("Legacy JWT key not configured");
-        }
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + refreshExpiration);
-
-        return Jwts.builder()
-                .subject(email)
-                .issuer(issuer)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .claim("type", "refresh")
-                .signWith(legacyKey)
-                .compact();
-    }
 
     /**
-     * Extract email from token - supports both Clerk JWT and legacy tokens
+     * Extract email from Clerk token
      */
     public String getEmailFromToken(String token) {
-        // Try Clerk token first
         if (isClerkToken(token)) {
             return extractEmailFromClerkToken(token);
         }
-        // Fall back to legacy HMAC
-        Claims claims = Jwts.parser()
-                .verifyWith(legacyKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-        return claims.getSubject();
+        return null;
     }
 
     /**
-     * Validate token - supports both Clerk JWT and legacy tokens
+     * Validate token - supports Clerk JWT only
      */
     public boolean validateToken(String token) {
         try {
             if (isClerkToken(token)) {
                 return validateClerkToken(token);
             }
-            // Legacy HMAC validation
-            if (legacyKey == null) return false;
-            Jwts.parser()
-                .verifyWith(legacyKey)
-                .build()
-                .parseSignedClaims(token);
-            return true;
+            return false;
         } catch (Exception e) {
             log.error("Token validation failed: {}", e.getMessage());
             return false;

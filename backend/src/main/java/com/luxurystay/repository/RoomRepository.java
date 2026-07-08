@@ -5,6 +5,7 @@ import com.luxurystay.enums.RoomStatus;
 import com.luxurystay.enums.RoomType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,8 +18,10 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
+    @EntityGraph(attributePaths = {"images", "amenities"})
     List<Room> findByHotelIdAndActiveTrue(Long hotelId);
 
+    @EntityGraph(attributePaths = {"images", "amenities"})
     @Query("SELECT r FROM Room r WHERE r.hotel.id = :hotelId AND r.active = true AND " +
            "r.status = 'AVAILABLE' AND " +
            "r NOT IN (SELECT br.room FROM BookingRoom br JOIN br.booking b " +
@@ -29,6 +32,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("checkIn") LocalDate checkIn,
             @Param("checkOut") LocalDate checkOut);
 
+    @EntityGraph(attributePaths = {"images", "amenities"})
     @Query("SELECT r FROM Room r WHERE r.hotel.id = :hotelId AND r.active = true AND " +
            "(:roomType IS NULL OR r.roomType = :roomType) AND " +
            "(:minPrice IS NULL OR r.pricePerNight >= :minPrice) AND " +
@@ -42,6 +46,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("maxGuests") Integer maxGuests,
             Pageable pageable);
 
+    @EntityGraph(attributePaths = {"images", "amenities"})
     @Query("SELECT r FROM Room r WHERE r.active = true AND r.status = 'AVAILABLE'")
     List<Room> findAllAvailable();
 
@@ -57,6 +62,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT COUNT(r) FROM Room r WHERE r.hotel.id = :hotelId AND r.status = :status")
     long countByStatusAndHotelId(@Param("hotelId") Long hotelId, @Param("status") RoomStatus status);
 
+    @EntityGraph(attributePaths = {"images", "amenities"})
     @Query("SELECT r FROM Room r WHERE r.hotel.id = :hotelId AND r.roomType = :roomType AND r.active = true")
     List<Room> findByHotelIdAndRoomType(@Param("hotelId") Long hotelId, @Param("roomType") RoomType roomType);
 }

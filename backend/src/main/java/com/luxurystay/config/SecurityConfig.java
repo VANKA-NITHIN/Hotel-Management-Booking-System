@@ -1,5 +1,6 @@
 package com.luxurystay.config;
 
+import org.springframework.lang.NonNull;
 import com.luxurystay.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

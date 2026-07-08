@@ -1,7 +1,6 @@
 package com.luxurystay.controller;
 
 import com.luxurystay.dto.*;
-import com.luxurystay.entity.User;
 import com.luxurystay.service.AdminService;
 import com.luxurystay.service.AuthService;
 import com.luxurystay.service.BookingService;
@@ -9,7 +8,6 @@ import com.luxurystay.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class AdminController {
     private final AdminService adminService;
     private final HotelService hotelService;
     private final BookingService bookingService;
-    private final AuthService authService;
+    
 
     @GetMapping("/dashboard")
     public ResponseEntity<DashboardStatsDTO> getDashboard(

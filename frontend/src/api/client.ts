@@ -37,6 +37,8 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+import toast from 'react-hot-toast';
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
@@ -59,6 +61,27 @@ api.interceptors.response.use(
         }
       }
     }
+
+    // Global Error Handling
+    if (error.response) {
+      const { status, data } = error.response;
+      
+      // Do not toast for 401s as they are handled by auth state changes typically
+      // Do not toast 404s globally if they might be intentional (e.g. checking if something exists)
+      if (status === 500) {
+        toast.error('Server error. Please try again later.');
+      } else if (status === 403) {
+        toast.error('You do not have permission to perform this action.');
+      } else if (status >= 400 && status < 500 && status !== 401 && status !== 404) {
+        // Show specific error message from backend if available
+        const message = data?.message || 'An error occurred. Please try again.';
+        toast.error(message);
+      }
+    } else if (error.request) {
+      // Network errors
+      toast.error('Network error. Please check your connection.');
+    }
+
     return Promise.reject(error);
   }
 );

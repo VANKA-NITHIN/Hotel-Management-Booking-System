@@ -1,5 +1,6 @@
 package com.luxurystay.config;
 
+import org.springframework.lang.NonNull;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ public class CloudinaryConfig {
     private String apiSecret;
 
     @Bean
+    @SuppressWarnings("unchecked")
     public Cloudinary cloudinary() {
         Map<String, String> config = ObjectUtils.asMap(
                 "cloud_name", cloudName,

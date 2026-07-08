@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MessageCircle, FileText, Shield, ChevronRight, Calendar, CreditCard, User } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/Button';
 
 const categories = [
   { id: 'booking', name: 'Booking & Reservations', icon: Calendar, articles: 12 },
@@ -23,54 +24,62 @@ const popularArticles = [
 export default function HelpCenterPage() {
   usePageTitle('Help Center');
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       {/* Search Header */}
-      <div className="bg-primary pt-16 pb-24 px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">How can we help you today?</h1>
-        <div className="max-w-2xl mx-auto relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search for articles, questions, or topics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 border-none shadow-lg outline-none focus:ring-2 focus:ring-secondary text-base"
-          />
+      <div className="bg-primary pt-20 pb-28 px-4 text-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-5xl font-serif font-bold text-white mb-8">
+            How can we help you today?
+          </motion.h1>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="relative">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted" />
+            <input
+              type="text"
+              placeholder="Search for articles, questions, or topics..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-14 pr-6 py-4 rounded-2xl bg-bg-surface border-none shadow-xl outline-none focus:ring-2 focus:ring-primary text-lg font-medium text-text-base transition-all"
+            />
+          </motion.div>
         </div>
       </div>
 
-      <div className="container-section -mt-12 pb-16">
+      <div className="container-section -mt-16 pb-20 relative z-20">
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-secondary transition-colors cursor-pointer group"
+              className="bg-bg-surface rounded-3xl p-8 shadow-sm border border-border-base hover:border-primary/50 hover:shadow-md transition-all cursor-pointer group"
             >
-              <cat.icon className="w-8 h-8 text-secondary mb-4" />
-              <h3 className="font-bold text-gray-900 mb-1">{cat.name}</h3>
-              <p className="text-sm text-gray-500">{cat.articles} articles</p>
+              <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <cat.icon className="w-7 h-7 text-secondary" />
+              </div>
+              <h3 className="text-lg font-bold text-text-base mb-2 group-hover:text-primary transition-colors">{cat.name}</h3>
+              <p className="text-sm font-medium text-text-muted uppercase tracking-wider">{cat.articles} articles</p>
             </motion.div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Popular Articles */}
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Popular Topics</h2>
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
+            <h2 className="text-2xl font-serif font-bold text-text-base mb-6">Popular Topics</h2>
+            <div className="bg-bg-surface rounded-3xl border border-border-base overflow-hidden shadow-sm">
               {popularArticles.map((article, i) => (
-                <div key={i} className="group border-b border-gray-100 last:border-0 p-4 hover:bg-gray-50 cursor-pointer flex items-center justify-between transition-colors">
-                  <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-gray-400 group-hover:text-secondary" />
-                    <span className="font-medium text-gray-700 group-hover:text-gray-900">{article}</span>
+                <div key={i} className="group border-b border-border-base last:border-0 p-5 lg:p-6 hover:bg-bg-surface-hover cursor-pointer flex items-center justify-between transition-colors">
+                  <div className="flex items-center gap-4">
+                    <FileText className="w-6 h-6 text-text-muted group-hover:text-secondary transition-colors" />
+                    <span className="font-bold text-text-base group-hover:text-primary transition-colors">{article}</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                  <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-primary transition-colors" />
                 </div>
               ))}
             </div>
@@ -78,18 +87,21 @@ export default function HelpCenterPage() {
 
           {/* Contact Support */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 sticky top-24">
-              <h3 className="font-bold text-gray-900 mb-4">Still need help?</h3>
-              <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+            <div className="bg-bg-surface rounded-3xl p-8 shadow-sm border border-border-base sticky top-[100px]">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                <MessageCircle className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-serif font-bold text-text-base mb-3">Still need help?</h3>
+              <p className="text-text-muted font-medium mb-8 leading-relaxed">
                 Can't find the answer you're looking for? Our customer support team is ready to assist you.
               </p>
-              <div className="space-y-3">
-                <Link to="/contact" className="btn-primary w-full justify-center">
+              <div className="space-y-4">
+                <Button className="w-full justify-center" size="lg" onClick={() => navigate('/contact')}>
                   Contact Support
-                </Link>
-                <button className="btn-outline w-full justify-center">
-                  <MessageCircle className="w-4 h-4 mr-2" /> Live Chat
-                </button>
+                </Button>
+                <Button variant="outline" className="w-full justify-center" size="lg" icon={<MessageCircle className="w-5 h-5" />}>
+                  Live Chat
+                </Button>
               </div>
             </div>
           </div>
