@@ -27,7 +27,7 @@ When a user asks to book a specific hotel, use the \`start_booking\` tool with t
 When a user asks about their own bookings or trips, use the \`check_my_bookings\` tool.
 Keep your responses concise, elegant, and professional. Use formatting like bullet points when listing hotels.`;
 
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 export default function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,24 +66,22 @@ export default function AIChat() {
 
   // The main chat logic with tool execution loop
   const handleAgenticChat = async (chatHistory: Message[]) => {
-    if (!OPENROUTER_API_KEY) {
-      toast.error('OpenRouter API key is missing from .env');
+    if (!GEMINI_API_KEY) {
+      toast.error('Gemini API key is missing from .env');
       setIsLoading(false);
       return;
     }
 
     try {
       // 1. Send the conversation to the AI
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Authorization': `Bearer ${GEMINI_API_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': window.location.href,
-          'X-Title': 'LuxuryStay Agent',
         },
         body: JSON.stringify({
-          model: 'openrouter/free', // Fallback to best available free model
+          model: 'gemini-2.0-flash', // Use the robust Gemini 2.0 Flash model
           messages: chatHistory.map(m => {
             const cleanMsg: any = { role: m.role, content: m.content || "" };
             if (m.name) cleanMsg.name = m.name;
