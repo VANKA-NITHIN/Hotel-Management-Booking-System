@@ -1,12 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, useUser, UserProfile } from '@clerk/clerk-react';
-import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search, FileText } from 'lucide-react';
+import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search, FileText, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useMyBookings } from '../hooks/useApi';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { InvoiceModal } from '../components/ui/InvoiceModal';
+import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
 import { useState } from 'react';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const { formatPrice } = useCurrency();
   const [activeTab, setActiveTab] = usePersistentState('dashboard_active_tab', 'overview');
   const [invoiceBooking, setInvoiceBooking] = useState<any | null>(null);
+  const [conciergeHotel, setConciergeHotel] = useState<string | null>(null);
   const { isLoaded, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { data: profileRes } = useQuery({
@@ -204,6 +206,14 @@ export default function DashboardPage() {
                             <Button
                               variant="outline"
                               size="sm"
+                              icon={<Sparkles className="w-4 h-4 text-amber-500" />}
+                              onClick={() => setConciergeHotel(booking.hotelName || 'LuxuryStay Property')}
+                            >
+                              Concierge
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
                               icon={<FileText className="w-4 h-4 text-primary" />}
                               onClick={() => setInvoiceBooking({
                                 bookingId: booking.bookingReference || booking.id,
@@ -285,6 +295,12 @@ export default function DashboardPage() {
           booking={invoiceBooking}
         />
       )}
+
+      <ConciergeRequestModal
+        isOpen={!!conciergeHotel}
+        onClose={() => setConciergeHotel(null)}
+        hotelName={conciergeHotel || undefined}
+      />
     </div>
   );
 }

@@ -33,6 +33,9 @@ export { ShareModal } from './ShareModal';
 export { ReviewFormModal } from './ReviewFormModal';
 export { RoomComparisonModal } from './RoomComparisonModal';
 export { PromoCodeModal } from './PromoCodeModal';
+export { ConciergeRequestModal } from './ConciergeRequestModal';
+export { WeatherWidget } from './WeatherWidget';
+
 
 
 

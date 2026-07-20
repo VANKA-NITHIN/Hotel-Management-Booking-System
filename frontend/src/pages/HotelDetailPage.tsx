@@ -18,6 +18,8 @@ import { PriceCalendar } from '../components/ui/PriceCalendar';
 import { ShareModal } from '../components/ui/ShareModal';
 import { ReviewFormModal } from '../components/ui/ReviewFormModal';
 import { RoomComparisonModal } from '../components/ui/RoomComparisonModal';
+import { WeatherWidget } from '../components/ui/WeatherWidget';
+import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -65,6 +67,7 @@ export default function HotelDetailPage() {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -545,6 +548,7 @@ export default function HotelDetailPage() {
                 ))}
               </div>
               <LocationMap hotel={hotel!} pois={pois} />
+              <WeatherWidget city={hotel.city} />
             </motion.div>
           )}
           </div>
@@ -615,6 +619,17 @@ export default function HotelDetailPage() {
               <p className="text-xs font-medium text-text-muted text-center mt-4 flex items-center justify-center gap-1.5">
                 <Shield className="w-3.5 h-3.5" /> You won't be charged yet
               </p>
+
+              <div className="mt-6 pt-6 border-t border-border-base text-center">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  fullWidth
+                  onClick={() => setIsConciergeOpen(true)}
+                >
+                  Request Concierge Services
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -673,6 +688,12 @@ export default function HotelDetailPage() {
           }}
         />
       )}
+
+      <ConciergeRequestModal
+        isOpen={isConciergeOpen}
+        onClose={() => setIsConciergeOpen(false)}
+        hotelName={hotel?.name}
+      />
     </div>
   );
 }
