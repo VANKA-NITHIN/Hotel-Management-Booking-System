@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
-import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist } from '../hooks/useApi';
+import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
 import { HotelDetailSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -52,6 +52,29 @@ export default function HotelDetailPage() {
   const rooms = (roomsData?.data?.content || []) as Room[];
   const reviews = (reviewsData?.data || []) as Review[];
   const isWishlisted = wishlistHotels.some((h: Hotel) => h.id === hotelId);
+
+  const createReview = useCreateReview();
+  const likeReview = useLikeReview();
+  
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+
+  const submitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isSignedIn) {
+      toast.error('Please sign in to write a review');
+      return;
+    }
+    if (reviewComment.trim().length < 10) {
+      toast.error('Review comment must be at least 10 characters');
+      return;
+    }
+    createReview.mutate(
+      { hotelId, rating: reviewRating, comment: reviewComment },
+      { onSuccess: () => { setShowReviewForm(false); setReviewComment(''); setReviewRating(5); } }
+    );
+  };
 
   useEffect(() => {
     if (hotelId) {
@@ -315,7 +338,62 @@ export default function HotelDetailPage() {
                 <AIReviewSummary reviews={reviews} hotelName={hotel.name} />
 
                 <div className="space-y-6 mt-8">
-                  <h3 className="text-xl font-serif font-bold text-text-base">All Verified Reviews</h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-serif font-bold text-text-base">All Verified Reviews</h3>
+                    <Button variant="outline" onClick={() => {
+                      if (!isSignedIn) {
+                        toast.error('Please sign in to write a review');
+                        return;
+                      }
+                      setShowReviewForm(!showReviewForm);
+                    }}>
+                      {showReviewForm ? 'Cancel' : 'Write a Review'}
+                    </Button>
+                  </div>
+                  
+                  <AnimatePresence>
+                    {showReviewForm && (
+                      <motion.form 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        onSubmit={submitReview} 
+                        className="bg-bg-surface-hover p-6 rounded-2xl border border-border-base shadow-sm overflow-hidden"
+                      >
+                        <h4 className="font-bold mb-4 text-text-base">Share your experience</h4>
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-text-muted mb-2">Rating</label>
+                          <div className="flex gap-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                type="button"
+                                key={star}
+                                onClick={() => setReviewRating(star)}
+                                className="focus:outline-none"
+                              >
+                                <Star className={`w-8 h-8 ${star <= reviewRating ? 'fill-secondary text-secondary' : 'text-border-strong'}`} />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium text-text-muted mb-2">Comment</label>
+                          <textarea 
+                            className="w-full bg-bg-surface border border-border-base rounded-xl p-4 min-h-[120px] text-text-base focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                            placeholder="Tell us about your stay (min 10 characters)..."
+                            value={reviewComment}
+                            onChange={(e) => setReviewComment(e.target.value)}
+                            required
+                            minLength={10}
+                          />
+                        </div>
+                        <Button type="submit" disabled={createReview.isPending}>
+                          {createReview.isPending ? 'Submitting...' : 'Submit Review'}
+                        </Button>
+                      </motion.form>
+                    )}
+                  </AnimatePresence>
+
                   {reviews.length > 0 ? reviews.map((review) => (
                     <ReviewCard
                       key={review.id}
@@ -324,6 +402,14 @@ export default function HotelDetailPage() {
                       rating={review.rating}
                       date={new Date(review.createdAt || Date.now()).toLocaleDateString()}
                       content={review.comment}
+                      likes={0}
+                      onLike={() => {
+                        if (!isSignedIn) {
+                          toast.error('Please sign in to like a review');
+                          return;
+                        }
+                        likeReview.mutate(review.id!);
+                      }}
                     />
                   )) : (
                     <EmptyState title="No reviews yet" description="Be the first to share your experience!" />

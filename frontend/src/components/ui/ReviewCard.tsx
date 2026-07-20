@@ -13,6 +13,7 @@ export interface ReviewProps {
   content: string;
   likes?: number;
   roomType?: string;
+  onLike?: () => void;
 }
 
 export function ReviewCard({
@@ -22,6 +23,7 @@ export function ReviewCard({
   content,
   likes = 0,
   roomType,
+  onLike,
 }: ReviewProps) {
   return (
     <div className="p-5 sm:p-6 bg-bg-surface rounded-xl border border-border-base transition-all hover:border-border-strong">
@@ -79,7 +81,10 @@ export function ReviewCard({
           <span />
         )}
         
-        <button className="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-text-base transition-colors group">
+        <button 
+          onClick={onLike}
+          className="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-text-base transition-colors group"
+        >
           <ThumbsUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
           <span>Helpful {likes > 0 && `(${likes})`}</span>
         </button>

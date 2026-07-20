@@ -162,6 +162,12 @@ export function useCreateReview() {
   });
 }
 
+export function useLikeReview() {
+  return useMutation({
+    mutationFn: reviewApi.like,
+  });
+}
+
 // Wishlist
 export function useWishlist(enabled = true) {
   return useQuery({
