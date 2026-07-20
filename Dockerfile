@@ -17,6 +17,7 @@ WORKDIR /app
 
 # Copy the built jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
+COPY backend/WaitDB.java .
 
 # Expose the port the app runs on
 EXPOSE 8080
@@ -29,5 +30,5 @@ RUN addgroup -S spring && adduser -S spring -G spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
-# Run the application (with optional wait for DB initialization)
-ENTRYPOINT ["sh", "-c", "if [ -n \"$WAIT_FOR_DB_SECONDS\" ]; then echo \"Waiting $WAIT_FOR_DB_SECONDS seconds for DB to initialize...\"; sleep $WAIT_FOR_DB_SECONDS; fi; exec java -jar app.jar"]
+# Run the application (with robust Java-based wait for DB initialization)
+ENTRYPOINT ["sh", "-c", "if [ -n \"$WAIT_FOR_DB_HOST\" ]; then java WaitDB.java $WAIT_FOR_DB_HOST $WAIT_FOR_DB_PORT; fi; exec java -jar app.jar"]
