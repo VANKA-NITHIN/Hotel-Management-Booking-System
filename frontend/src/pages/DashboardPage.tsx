@@ -9,6 +9,9 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { OptimizedImage } from '../components/ui/Image';
+import { LoyaltyCard } from '../components/ui/LoyaltyCard';
+import { authApi } from '../api';
+import { useQuery } from '@tanstack/react-query';
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -22,7 +25,13 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = usePersistentState('dashboard_active_tab', 'overview');
   const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
+  const { user: clerkUser } = useUser();
+  const { data: profileRes } = useQuery({
+    queryKey: ['profile'],
+    queryFn: authApi.getMe,
+    enabled: isSignedIn,
+  });
+  const user: any = profileRes?.data || clerkUser;
   const { data: bookingsData, isLoading } = useMyBookings();
   const bookings = bookingsData?.data?.content || [];
 
@@ -48,11 +57,11 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-serif font-bold text-text-base mb-1">
               Welcome back, {user?.firstName || 'Guest'}
             </h1>
-            <p className="text-text-muted mb-4 font-medium">{user?.primaryEmailAddress?.emailAddress}</p>
+            <p className="text-text-muted mb-4 font-medium">{user?.primaryEmailAddress?.emailAddress || user?.email}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <div className="bg-secondary/10 px-5 py-2.5 rounded-xl border border-secondary/20">
                 <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">Loyalty Points</p>
-                <p className="text-2xl font-bold text-secondary-dark">2,450</p>
+                <p className="text-2xl font-bold text-secondary-dark">{user?.loyaltyPoints?.toLocaleString() || 0}</p>
               </div>
               <div className="bg-bg-surface-hover px-5 py-2.5 rounded-xl border border-border-base">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-0.5">Total Trips</p>
@@ -93,6 +102,12 @@ export default function DashboardPage() {
             <AnimatePresence mode="wait">
               {activeTab === 'overview' && (
                 <motion.div key="overview" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                  
+                  {/* Loyalty Program Summary */}
+                  <div className="mb-10">
+                    <LoyaltyCard points={user?.loyaltyPoints || 0} />
+                  </div>
+
                   <h2 className="text-2xl font-serif font-bold text-text-base mb-6">Upcoming Trips</h2>
                   
                   {isLoading ? (
