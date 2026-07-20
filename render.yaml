@@ -25,6 +25,8 @@ services:
     runtime: docker
     plan: starter
     envVars:
+      - key: WAIT_FOR_DB_SECONDS
+        value: "30"
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       # Connection to the private MySQL service

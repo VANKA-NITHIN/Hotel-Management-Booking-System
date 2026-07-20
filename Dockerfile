@@ -29,5 +29,5 @@ RUN addgroup -S spring && adduser -S spring -G spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application (with optional wait for DB initialization)
+ENTRYPOINT ["sh", "-c", "if [ -n \"$WAIT_FOR_DB_SECONDS\" ]; then echo \"Waiting $WAIT_FOR_DB_SECONDS seconds for DB to initialize...\"; sleep $WAIT_FOR_DB_SECONDS; fi; exec java -jar app.jar"]
