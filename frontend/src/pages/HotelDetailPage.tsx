@@ -474,9 +474,9 @@ export default function HotelDetailPage() {
             )}
           </div>
 
-          {/* Right Sidebar — Booking Widget */}
-          <div className="hidden lg:block lg:col-span-1">
-            <div className="bg-bg-surface rounded-2xl border border-border-base p-6 sticky top-[100px] shadow-elevated">
+          {/* Right Sidebar - Booking Widget */}
+          <div id="booking-widget" className="lg:block lg:col-span-1">
+            <div className="bg-bg-surface rounded-2xl border border-border-base p-6 lg:sticky lg:top-[100px] shadow-elevated">
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-3xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
                 <span className="text-sm font-medium text-text-muted uppercase tracking-wider">/ night</span>
@@ -556,8 +556,13 @@ export default function HotelDetailPage() {
         </div>
         <Button
           size="md"
-          onClick={() => navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}
-          disabled={!checkIn || !checkOut}
+          onClick={() => {
+            if (checkIn && checkOut) {
+              navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
+            } else {
+              document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
         >
           {checkIn && checkOut ? 'Reserve' : 'Select Dates'}
         </Button>
