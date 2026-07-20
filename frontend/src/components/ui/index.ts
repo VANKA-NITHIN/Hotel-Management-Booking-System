@@ -26,3 +26,5 @@ export { default as AIChat } from './AIChat';
 export { default as ThemeToggle } from './ThemeToggle';
 export { default as HotelCard } from './HotelCard';
 export { default as SearchBar } from './SearchBar';
+export { PriceCalendar } from './PriceCalendar';
+

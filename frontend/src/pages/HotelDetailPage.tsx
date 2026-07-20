@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
 import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
 import { LocationMap } from '../components/ui/LocationMap';
-import { fetchNearbyPOIs, POICategory, POI } from '../api/overpass';
+import { fetchNearbyPOIs, type POICategory, type POI } from '../api/overpass';
 import { HotelDetailSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -14,6 +14,7 @@ import { Button } from '../components/ui/Button';
 import { DatePicker } from '../components/ui/DatePicker';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { AIReviewSummary } from '../components/ui/AIReviewSummary';
+import { PriceCalendar } from '../components/ui/PriceCalendar';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -99,6 +100,14 @@ export default function HotelDetailPage() {
       }
     }
   }, [hotelId]);
+
+  useEffect(() => {
+    if (activeTab === 'location' && hotel && hotel.latitude && hotel.longitude) {
+      fetchNearbyPOIs(hotel.latitude, hotel.longitude, selectedCategory)
+        .then(data => setPois(data))
+        .catch(err => console.error('Failed to fetch POIs', err));
+    }
+  }, [activeTab, hotel?.id, selectedCategory]);
 
   const nights = checkIn && checkOut
     ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000))
@@ -277,6 +286,17 @@ export default function HotelDetailPage() {
                   <h3 className="text-xl font-serif font-bold text-text-base mb-4">About this property</h3>
                   <p className="text-base text-text-muted leading-relaxed">{hotel.description || 'Experience world-class luxury and impeccable service at this stunning property. Featuring spacious rooms, exceptional dining, and state-of-the-art amenities designed for the discerning traveler.'}</p>
                 </div>
+
+                <PriceCalendar
+                  basePrice={hotel.startingPrice || 199}
+                  selectedCheckIn={checkIn}
+                  selectedCheckOut={checkOut}
+                  onSelectDates={(inDate, outDate) => {
+                    setCheckIn(inDate);
+                    setCheckOut(outDate);
+                  }}
+                />
+
                 <div className="bg-bg-surface rounded-2xl p-6 sm:p-8 border border-border-base shadow-sm">
                   <h3 className="text-xl font-serif font-bold text-text-base mb-6">Premium Amenities</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -520,7 +540,6 @@ export default function HotelDetailPage() {
               <LocationMap hotel={hotel!} pois={pois} />
             </motion.div>
           )}
-            )}
           </div>
 
           {/* Right Sidebar - Booking Widget */}
