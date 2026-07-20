@@ -5,6 +5,8 @@ import { Star, Heart } from 'lucide-react';
 import type { Hotel } from '../../types';
 import { useToggleWishlist, useWishlist } from '../../hooks/useApi';
 import { OptimizedImage } from './Image';
+import { useAuth } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
 
 interface HotelCardProps {
   hotel: Hotel;
@@ -14,7 +16,8 @@ interface HotelCardProps {
 
 const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelCardProps) {
   const toggleWishlist = useToggleWishlist();
-  const { data: wishlistResponse } = useWishlist();
+  const { isSignedIn } = useAuth();
+  const { data: wishlistResponse } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistResponse?.data || [];
   const isWishlisted = wishlistHotels.some((h: Hotel) => h.id === hotel.id);
 
@@ -35,7 +38,15 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             className="w-full h-52 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
           <button
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist.mutate(hotel.id); }}
+            onClick={(e) => { 
+              e.preventDefault(); 
+              e.stopPropagation(); 
+              if (!isSignedIn) {
+                toast.error('Please sign in to add to your wishlist');
+                return;
+              }
+              toggleWishlist.mutate(hotel.id); 
+            }}
             className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           >
@@ -109,7 +120,15 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
           </span>
         )}
         <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist.mutate(hotel.id); }}
+          onClick={(e) => { 
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            if (!isSignedIn) {
+              toast.error('Please sign in to add to your wishlist');
+              return;
+            }
+            toggleWishlist.mutate(hotel.id); 
+          }}
           className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >

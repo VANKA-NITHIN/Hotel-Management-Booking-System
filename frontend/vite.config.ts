@@ -23,6 +23,6 @@ export default defineConfig({
     'import.meta.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(process.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_ZW5nYWdpbmctZmlzaC00NC5jbGVyay5hY2NvdW50cy5kZXYk'),
     'import.meta.env.VITE_API_BASE_URL': JSON.stringify(process.env.VITE_API_BASE_URL || 'https://hotel-management-booking-system-6sgu.onrender.com/api'),
     'import.meta.env.VITE_RAZORPAY_KEY': JSON.stringify(process.env.VITE_RAZORPAY_KEY || 'rzp_test_T7sZuIYyX4QpJO'),
-    'import.meta.env.VITE_OPENROUTER_API_KEY': JSON.stringify(process.env.VITE_OPENROUTER_API_KEY || ''),
+    'import.meta.env.VITE_OPENROUTER_API_KEY': JSON.stringify(process.env.VITE_OPENROUTER_API_KEY || 'sk-or-v1-dummy'),
   },
 })

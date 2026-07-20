@@ -163,10 +163,11 @@ export function useCreateReview() {
 }
 
 // Wishlist
-export function useWishlist() {
+export function useWishlist(enabled = true) {
   return useQuery({
     queryKey: ['wishlist'],
     queryFn: () => wishlistApi.get(),
+    enabled,
   });
 }
 

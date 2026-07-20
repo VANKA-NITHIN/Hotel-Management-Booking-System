@@ -13,6 +13,8 @@ import { DatePicker } from '../components/ui/DatePicker';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { AIReviewSummary } from '../components/ui/AIReviewSummary';
 import { OptimizedImage } from '../components/ui/Image';
+import { useAuth } from '@clerk/clerk-react';
+import toast from 'react-hot-toast';
 
 const amenityIcons: Record<string, typeof Wifi> = {
   'Free Wi-Fi': Wifi, 'Parking': Car, 'Restaurant': UtensilsCrossed,
@@ -35,7 +37,8 @@ export default function HotelDetailPage() {
   const { data: roomsData } = useRooms(hotelId);
   const { data: reviewsData } = useHotelReviews(hotelId);
   const toggleWishlist = useToggleWishlist();
-  const { data: wishlistData } = useWishlist();
+  const { isSignedIn } = useAuth();
+  const { data: wishlistData } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistData?.data || [];
 
   const [activeTab, setActiveTab] = useState('overview');
@@ -167,13 +170,31 @@ export default function HotelDetailPage() {
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button
-                    onClick={() => toggleWishlist.mutate(hotel.id)}
+                    onClick={() => {
+                      if (!isSignedIn) {
+                        toast.error('Please sign in to add to your wishlist');
+                        return;
+                      }
+                      toggleWishlist.mutate(hotel.id);
+                    }}
                     className="w-12 h-12 rounded-full bg-bg-surface border border-border-base flex items-center justify-center hover:bg-bg-surface-hover hover:border-border-strong transition-all shadow-sm"
                     aria-label="Toggle wishlist"
                   >
                     <Heart className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
                   </button>
                   <button 
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: hotel.name,
+                          text: `Check out ${hotel.name} on LuxuryStay!`,
+                          url: window.location.href,
+                        }).catch(console.error);
+                      } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        toast.success('Link copied to clipboard!');
+                      }
+                    }}
                     className="w-12 h-12 rounded-full bg-bg-surface border border-border-base flex items-center justify-center hover:bg-bg-surface-hover hover:border-border-strong transition-all shadow-sm"
                     aria-label="Share"
                   >

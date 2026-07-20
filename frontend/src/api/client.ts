@@ -71,7 +71,9 @@ api.interceptors.response.use(
       if (status === 500) {
         toast.error('Server error. Please try again later.');
       } else if (status === 403) {
-        toast.error('You do not have permission to perform this action.');
+        if (originalRequest.method !== 'get') {
+          toast.error('You do not have permission to perform this action.');
+        }
       } else if (status >= 400 && status < 500 && status !== 401 && status !== 404) {
         // Show specific error message from backend if available
         const message = data?.message || 'An error occurred. Please try again.';

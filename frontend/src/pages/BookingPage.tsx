@@ -100,7 +100,7 @@ export default function BookingPage() {
 
     try {
       const orderResponse = await razorpayApi.createOrder({
-        amount: total,
+        amount: Math.round(total * 100),
         currency: 'USD',
       });
 
