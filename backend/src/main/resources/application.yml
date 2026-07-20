@@ -162,15 +162,16 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/luxurystay?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:luxurystay_prod
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
 
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
 
 logging:
   level:
