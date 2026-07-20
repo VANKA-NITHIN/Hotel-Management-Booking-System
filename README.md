@@ -23,20 +23,25 @@ A production-ready, enterprise-grade Hotel Management & Online Booking Platform 
 - Seasonal/Weekend/Holiday pricing
 - Room status and cleaning status tracking
 
-### Booking System
-- Real-time availability checking
-- Check-in/Check-out date selection
-- Guest count and children tracking
-- Coupon code support with discount calculation
-- Booking confirmation and email notifications
-- Booking history, cancellation, and modification
+### AI & Guest Experience
+- **AI Travel Assistant**: Interactive chat interface utilizing Gemini 2.0 to recommend hotels, analyze reviews, and plan itineraries.
+- **AI Voice Search**: Integrated Web Speech API (`webkitSpeechRecognition`) for natural language voice searching (e.g. "Find hotels in New York").
+- **AI Review Summarization**: Automatically summarizes hundreds of guest reviews into concise pros/cons using AI.
+- **Progressive Web App (PWA)**: Fully installable mobile and desktop application with offline caching.
+- **Smart Filters**: Dynamic client-side filtering for premium amenities (Spa, Gym, Pool).
+- **Interactive Maps**: Real-time Leaflet/OpenStreetMap integration with interactive hotel markers.
+
+### Advanced Booking & Pricing
+- **Dynamic Pricing Engine**: Automated weekend surcharges (+20% on Fridays/Saturdays) and seasonal rates.
+- **Multi-Room Booking**: Select and book multiple different room types (e.g., a Suite and a Standard room) in a single transaction.
+- **Loyalty & Rewards**: Earn 1 point per $10 spent. Visual loyalty tiers (Silver, Gold, Platinum, Diamond) with animated progress bars.
+- Real-time availability checking with checkout date validation.
+- Coupon code support with discount calculation.
 
 ### Payment Integration
-- Stripe payment integration
-- Razorpay payment integration
-- Payment webhooks
-- Refund processing
-- Invoice generation
+- **Clerk Authentication**: Secure, enterprise-grade authentication with RBAC.
+- **Stripe & Razorpay**: Secure checkout and payment processing.
+- Transparent price breakdown including dynamic surcharges.
 
 ### Dashboards
 - **Customer Dashboard**: Profile, bookings, wishlist, notifications, reviews, settings
