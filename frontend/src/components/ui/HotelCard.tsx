@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Star, Heart } from 'lucide-react';
 import type { Hotel } from '../../types';
 import { useToggleWishlist, useWishlist } from '../../hooks/useApi';
+import { useCurrency } from '../../contexts/CurrencyContext';
 import { OptimizedImage } from './Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -17,6 +18,7 @@ interface HotelCardProps {
 const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelCardProps) {
   const toggleWishlist = useToggleWishlist();
   const { isSignedIn } = useAuth();
+  const { formatPrice } = useCurrency();
   const { data: wishlistResponse } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistResponse?.data || [];
   const isWishlisted = wishlistHotels.some((h: Hotel) => h.id === hotel.id);
@@ -83,7 +85,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             <div>
               <span className="text-xs text-text-muted">From</span>
               <div className="flex items-baseline gap-0.5">
-                <span className="text-xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
+                <span className="text-xl font-bold text-text-base">{formatPrice(hotel.startingPrice || 199)}</span>
                 <span className="text-xs text-text-muted">/night</span>
               </div>
             </div>
@@ -155,7 +157,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
           <div>
             <span className="text-[11px] text-text-muted block">From</span>
             <span className="text-base font-bold text-text-base">
-              ${hotel.startingPrice || 199}
+              {formatPrice(hotel.startingPrice || 199)}
               <span className="text-xs text-text-muted font-normal ml-0.5">/night</span>
             </span>
           </div>

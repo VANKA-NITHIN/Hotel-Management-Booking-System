@@ -5,6 +5,7 @@ import { Menu, Bell, Heart, LayoutDashboard, Search, ChevronDown, Building, MapP
 import { SignInButton, SignUpButton, UserButton, useAuth } from '@clerk/clerk-react';
 import { useUnreadNotificationCount, useNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead } from '../../hooks/useApi';
 import ThemeToggle from '../ui/ThemeToggle';
+import { CurrencySelector } from '../ui/CurrencySelector';
 import { Drawer } from '../ui/Drawer';
 import { NotificationPanel, type NotificationItem } from '../ui/NotificationPanel';
 
@@ -170,6 +171,7 @@ export default function Navbar() {
               <div className="w-px h-5 bg-border-base mx-1" />
 
               <ThemeToggle />
+              <CurrencySelector />
 
               {isSignedIn ? (
                 <>

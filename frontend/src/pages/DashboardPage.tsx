@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, useUser, UserProfile } from '@clerk/clerk-react';
-import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search } from 'lucide-react';
+import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useMyBookings } from '../hooks/useApi';
 import { usePersistentState } from '../hooks/usePersistentState';
+import { useCurrency } from '../contexts/CurrencyContext';
+import { InvoiceModal } from '../components/ui/InvoiceModal';
+import { useState } from 'react';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -23,7 +26,9 @@ const tabs = [
 export default function DashboardPage() {
   usePageTitle('My Dashboard');
   const navigate = useNavigate();
+  const { formatPrice } = useCurrency();
   const [activeTab, setActiveTab] = usePersistentState('dashboard_active_tab', 'overview');
+  const [invoiceBooking, setInvoiceBooking] = useState<any | null>(null);
   const { isLoaded, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { data: profileRes } = useQuery({
@@ -180,7 +185,7 @@ export default function DashboardPage() {
                   {bookings.length > 0 ? (
                     <div className="space-y-4">
                       {bookings.map((booking: any) => (
-                        <div key={booking.id} className="bg-bg-surface rounded-2xl p-6 border border-border-base shadow-sm flex items-center justify-between hover:border-border-strong transition-colors group">
+                        <div key={booking.id} className="bg-bg-surface rounded-2xl p-6 border border-border-base shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-border-strong transition-colors group">
                           <div>
                             <div className="flex items-center gap-3 mb-2">
                               <span className="font-bold text-text-base">Ref: #{booking.bookingReference}</span>
@@ -192,9 +197,30 @@ export default function DashboardPage() {
                               <User className="w-3.5 h-3.5" /> {booking.guestCount} guests
                             </p>
                           </div>
-                          <div className="text-right">
-                             <p className="font-bold text-xl text-text-base">${booking.totalAmount.toLocaleString()}</p>
-                             <button className="text-sm font-bold text-secondary hover:text-secondary-dark mt-1 opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+                          <div className="flex items-center gap-4 self-end sm:self-auto">
+                            <div className="text-right">
+                              <p className="font-bold text-xl text-text-base">{formatPrice(booking.totalAmount)}</p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              icon={<FileText className="w-4 h-4 text-primary" />}
+                              onClick={() => setInvoiceBooking({
+                                bookingId: booking.bookingReference || booking.id,
+                                hotelName: booking.hotelName || 'LuxuryStay Property',
+                                roomName: booking.roomType || 'Deluxe Suite',
+                                checkIn: booking.checkInDate,
+                                checkOut: booking.checkOutDate,
+                                guests: booking.guestCount || 2,
+                                guestName: user?.fullName || user?.firstName || 'Valued Guest',
+                                guestEmail: user?.primaryEmailAddress?.emailAddress || user?.email || 'guest@luxurystay.com',
+                                totalAmount: booking.totalAmount,
+                                status: booking.status,
+                                createdAt: booking.createdAt,
+                              })}
+                            >
+                              Invoice
+                            </Button>
                           </div>
                         </div>
                       ))}
@@ -251,6 +277,14 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {invoiceBooking && (
+        <InvoiceModal
+          isOpen={!!invoiceBooking}
+          onClose={() => setInvoiceBooking(null)}
+          booking={invoiceBooking}
+        />
+      )}
     </div>
   );
 }

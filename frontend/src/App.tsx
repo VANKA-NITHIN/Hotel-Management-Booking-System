@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { ClerkProvider, useAuth as useClerkAuth, SignIn, SignUp } from '@clerk/clerk-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { CurrencyProvider } from './contexts/CurrencyContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -160,51 +161,54 @@ export default function App() {
   return (
     <ClerkProvider publishableKey={clerkPubKey}>
       <ThemeProvider>
-      <AuthProvider>
-        <NotificationProvider>
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <ErrorBoundary>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                {/* Clerk auth routes */}
-                <Route path="/sign-in/*" element={<ClerkLoginPage />} />
-                <Route path="/sign-up/*" element={<ClerkRegisterPage />} />
-                <Route path="/login" element={<ClerkLoginPage />} />
-                <Route path="/register" element={<ClerkRegisterPage />} />
+        <CurrencyProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
+                  <ErrorBoundary>
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
+                        {/* ... */}
+                        {/* Clerk auth routes */}
+                        <Route path="/sign-in/*" element={<ClerkLoginPage />} />
+                        <Route path="/sign-up/*" element={<ClerkRegisterPage />} />
+                        <Route path="/login" element={<ClerkLoginPage />} />
+                        <Route path="/register" element={<ClerkRegisterPage />} />
 
-                {/* Public routes */}
-                <Route path="/" element={<AppLayout><LandingPage /></AppLayout>} />
-                <Route path="/hotels" element={<AppLayout><HotelsPage /></AppLayout>} />
-                <Route path="/hotels/:id" element={<AppLayout><HotelDetailPage /></AppLayout>} />
-                <Route path="/about" element={<AppLayout><AboutPage /></AppLayout>} />
-                <Route path="/contact" element={<AppLayout><ContactPage /></AppLayout>} />
-                <Route path="/terms" element={<AppLayout><TermsPage /></AppLayout>} />
-                <Route path="/privacy" element={<AppLayout><PrivacyPolicyPage /></AppLayout>} />
-                <Route path="/help" element={<AppLayout><HelpCenterPage /></AppLayout>} />
+                        {/* Public routes */}
+                        <Route path="/" element={<AppLayout><LandingPage /></AppLayout>} />
+                        <Route path="/hotels" element={<AppLayout><HotelsPage /></AppLayout>} />
+                        <Route path="/hotels/:id" element={<AppLayout><HotelDetailPage /></AppLayout>} />
+                        <Route path="/about" element={<AppLayout><AboutPage /></AppLayout>} />
+                        <Route path="/contact" element={<AppLayout><ContactPage /></AppLayout>} />
+                        <Route path="/terms" element={<AppLayout><TermsPage /></AppLayout>} />
+                        <Route path="/privacy" element={<AppLayout><PrivacyPolicyPage /></AppLayout>} />
+                        <Route path="/help" element={<AppLayout><HelpCenterPage /></AppLayout>} />
 
-                {/* Protected routes */}
-                <Route path="/booking" element={<ProtectedRoute><AppLayout><BookingPage /></AppLayout></ProtectedRoute>} />
-                <Route path="/dashboard" element={<ProtectedRoute><AppLayout><DashboardPage /></AppLayout></ProtectedRoute>} />
-                <Route path="/wishlist" element={<ProtectedRoute><AppLayout><WishlistPage /></AppLayout></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><AppLayout><ProfilePage /></AppLayout></ProtectedRoute>} />
-                <Route path="/settings" element={<ProtectedRoute><AppLayout><SettingsPage /></AppLayout></ProtectedRoute>} />
+                        {/* Protected routes */}
+                        <Route path="/booking" element={<ProtectedRoute><AppLayout><BookingPage /></AppLayout></ProtectedRoute>} />
+                        <Route path="/dashboard" element={<ProtectedRoute><AppLayout><DashboardPage /></AppLayout></ProtectedRoute>} />
+                        <Route path="/wishlist" element={<ProtectedRoute><AppLayout><WishlistPage /></AppLayout></ProtectedRoute>} />
+                        <Route path="/profile" element={<ProtectedRoute><AppLayout><ProfilePage /></AppLayout></ProtectedRoute>} />
+                        <Route path="/settings" element={<ProtectedRoute><AppLayout><SettingsPage /></AppLayout></ProtectedRoute>} />
 
-                {/* Role-Based Dashboards */}
-                <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-                <Route path="/owner" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
-                <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
+                        {/* Role-Based Dashboards */}
+                        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+                        <Route path="/owner" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
+                        <Route path="/staff" element={<StaffRoute><StaffDashboard /></StaffRoute>} />
 
-                {/* 404 */}
-                <Route path="*" element={<AppLayout><NotFoundPage /></AppLayout>} />
-              </Routes>
-            </Suspense>
-            </ErrorBoundary>
-            <Toaster position="top-right" toastOptions={{ duration: 3000, style: { borderRadius: '12px', padding: '16px', fontSize: '14px' } }} />
-          </BrowserRouter>
-        </QueryClientProvider>
-        </NotificationProvider>
-      </AuthProvider>
+                        {/* 404 */}
+                        <Route path="*" element={<AppLayout><NotFoundPage /></AppLayout>} />
+                      </Routes>
+                    </Suspense>
+                  </ErrorBoundary>
+                  <Toaster position="top-right" toastOptions={{ duration: 3000, style: { borderRadius: '12px', padding: '16px', fontSize: '14px' } }} />
+                </BrowserRouter>
+              </QueryClientProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </CurrencyProvider>
       </ThemeProvider>
     </ClerkProvider>
   );
