@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
+import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check, Compass } from 'lucide-react';
 import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
 import { LocationMap } from '../components/ui/LocationMap';
 import { fetchNearbyPOIs, type POICategory, type POI } from '../api/overpass';
@@ -20,6 +20,7 @@ import { ReviewFormModal } from '../components/ui/ReviewFormModal';
 import { RoomComparisonModal } from '../components/ui/RoomComparisonModal';
 import { WeatherWidget } from '../components/ui/WeatherWidget';
 import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
+import { VirtualTourModal } from '../components/ui/VirtualTourModal';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -68,6 +69,7 @@ export default function HotelDetailPage() {
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
+  const [isTourOpen, setIsTourOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -239,8 +241,17 @@ export default function HotelDetailPage() {
                     onClick={() => setIsShareOpen(true)}
                     className="w-12 h-12 rounded-full bg-bg-surface border border-border-base flex items-center justify-center hover:bg-bg-surface-hover hover:border-border-strong transition-all shadow-sm"
                     aria-label="Share"
+                    title="Share property"
                   >
                     <Share2 className="w-5 h-5 text-text-muted" />
+                  </button>
+                  <button 
+                    onClick={() => setIsTourOpen(true)}
+                    className="px-4 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center gap-2 hover:bg-primary/20 transition-all shadow-sm text-xs font-bold text-primary"
+                    title="Experience 360° Virtual Tour"
+                  >
+                    <Compass className="w-4 h-4 text-primary" />
+                    <span>360° Tour</span>
                   </button>
                 </div>
               </div>
@@ -692,6 +703,12 @@ export default function HotelDetailPage() {
       <ConciergeRequestModal
         isOpen={isConciergeOpen}
         onClose={() => setIsConciergeOpen(false)}
+        hotelName={hotel?.name}
+      />
+
+      <VirtualTourModal
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
         hotelName={hotel?.name}
       />
     </div>

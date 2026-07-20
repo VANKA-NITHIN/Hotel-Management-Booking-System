@@ -35,6 +35,9 @@ export { RoomComparisonModal } from './RoomComparisonModal';
 export { PromoCodeModal } from './PromoCodeModal';
 export { ConciergeRequestModal } from './ConciergeRequestModal';
 export { WeatherWidget } from './WeatherWidget';
+export { VirtualTourModal } from './VirtualTourModal';
+export { LoyaltyTierModal } from './LoyaltyTierModal';
+
 
 
 

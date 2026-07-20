@@ -8,6 +8,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import { useCurrency } from '../contexts/CurrencyContext';
 import { InvoiceModal } from '../components/ui/InvoiceModal';
 import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
+import { LoyaltyTierModal } from '../components/ui/LoyaltyTierModal';
 import { useState } from 'react';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
@@ -31,6 +32,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = usePersistentState('dashboard_active_tab', 'overview');
   const [invoiceBooking, setInvoiceBooking] = useState<any | null>(null);
   const [conciergeHotel, setConciergeHotel] = useState<string | null>(null);
+  const [isLoyaltyOpen, setIsLoyaltyOpen] = useState(false);
   const { isLoaded, isSignedIn } = useAuth();
   const { user: clerkUser } = useUser();
   const { data: profileRes } = useQuery({
@@ -66,9 +68,15 @@ export default function DashboardPage() {
             </h1>
             <p className="text-text-muted mb-4 font-medium">{user?.primaryEmailAddress?.emailAddress || user?.email}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
-              <div className="bg-secondary/10 px-5 py-2.5 rounded-xl border border-secondary/20">
-                <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">Loyalty Points</p>
-                <p className="text-2xl font-bold text-secondary-dark">{user?.loyaltyPoints?.toLocaleString() || 0}</p>
+              <div 
+                onClick={() => setIsLoyaltyOpen(true)}
+                className="bg-secondary/10 px-5 py-2.5 rounded-xl border border-secondary/20 cursor-pointer hover:bg-secondary/20 transition-all group"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">Loyalty Points</p>
+                  <span className="text-[10px] font-bold text-secondary underline group-hover:opacity-100 opacity-80">View Tiers</span>
+                </div>
+                <p className="text-2xl font-bold text-secondary-dark">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
               </div>
               <div className="bg-bg-surface-hover px-5 py-2.5 rounded-xl border border-border-base">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-0.5">Total Trips</p>
@@ -300,6 +308,12 @@ export default function DashboardPage() {
         isOpen={!!conciergeHotel}
         onClose={() => setConciergeHotel(null)}
         hotelName={conciergeHotel || undefined}
+      />
+
+      <LoyaltyTierModal
+        isOpen={isLoyaltyOpen}
+        onClose={() => setIsLoyaltyOpen(false)}
+        currentPoints={user?.loyaltyPoints || 1250}
       />
     </div>
   );
