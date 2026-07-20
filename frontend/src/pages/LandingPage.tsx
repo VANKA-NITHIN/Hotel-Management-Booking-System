@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Award, Users, Building2, Bed, ArrowRight, ArrowUp, MapPin } from 'lucide-react';
+import { Award, Users, Building2, Bed, ArrowRight, ArrowUp, MapPin, Mic } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import HotelCard from '../components/ui/HotelCard';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -61,6 +62,47 @@ export default function LandingPage() {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('2 Guests');
+  const [isListening, setIsListening] = useState(false);
+
+  const startVoiceSearch = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast.error('Voice search is not supported in this browser.');
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.success('Listening...', { icon: '🎙️', duration: 2000 });
+    };
+
+    recognition.onresult = (event: any) => {
+      const speechResult = event.results[0][0].transcript;
+      setSearchCity(speechResult);
+      // Wait a moment then auto-submit the search
+      setTimeout(() => {
+        navigate(`/hotels?city=${encodeURIComponent(speechResult)}`);
+      }, 800);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      toast.error('Could not hear you properly. Please try again.');
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 600);
@@ -123,15 +165,23 @@ export default function LandingPage() {
             className="mt-10 max-w-5xl bg-white dark:bg-neutral-900 p-2 sm:p-3 rounded-2xl shadow-modal backdrop-blur-md"
           >
             <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
-              <div className="flex-1 relative">
+              <div className="flex-1 relative flex items-center">
                 <Input
                   fullWidth
                   icon={<MapPin className="w-5 h-5 text-neutral-400" />}
                   placeholder="Where are you going?"
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
-                  className="bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14 text-base"
+                  className="bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14 text-base pr-12"
                 />
+                <button 
+                  type="button"
+                  onClick={startVoiceSearch}
+                  className={`absolute right-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-neutral-400 hover:text-primary hover:bg-primary/10'}`}
+                  aria-label="Voice Search"
+                >
+                  <Mic className="w-5 h-5" />
+                </button>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <DatePicker 

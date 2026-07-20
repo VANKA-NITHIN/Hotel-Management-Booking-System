@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon } from 'lucide-react';
+import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useSearchHotels } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
 import { HotelMap } from '../components/ui/HotelMap';
@@ -49,8 +50,50 @@ export default function HotelsPage() {
     return selectedAmenities.every(amenity => hotel.amenities?.some(a => a.name === amenity));
   });
 
+  const [isListening, setIsListening] = useState(false);
+
   const totalPages = data?.data?.totalPages || 0;
   const totalElements = hotels.length;
+
+  const startVoiceSearch = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast.error('Voice search is not supported in this browser.');
+      return;
+    }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.success('Listening...', { icon: '🎙️', duration: 2000 });
+    };
+
+    recognition.onresult = (event: any) => {
+      const speechResult = event.results[0][0].transcript;
+      setSearch(speechResult);
+      // Trigger search automatically after a short delay so state updates
+      setTimeout(() => {
+        setPage(0);
+      }, 100);
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      toast.error('Could not hear you properly. Please try again.');
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,15 +156,23 @@ export default function HotelsPage() {
 
           {/* Search + Filter Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <form onSubmit={handleSearch} className="flex-1">
+            <form onSubmit={handleSearch} className="flex-1 relative flex items-center">
               <Input
                 fullWidth
                 icon={<Search className="w-4 h-4" />}
-                placeholder="Search by city, hotel name..."
+                placeholder="Search by city, hotel name... Try voice search!"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-bg-surface-hover border-transparent hover:border-border-base"
+                className="bg-bg-surface-hover border-transparent hover:border-border-base pr-12"
               />
+              <button 
+                type="button"
+                onClick={startVoiceSearch}
+                className={`absolute right-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-text-muted hover:text-primary hover:bg-primary/10'}`}
+                aria-label="Voice Search"
+              >
+                <Mic className="w-4 h-4" />
+              </button>
             </form>
 
             <div className="flex items-center gap-2">

@@ -2,9 +2,35 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(), 
+    tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      manifest: {
+        name: 'LuxuryStay - Enterprise Hotel Booking',
+        short_name: 'LuxuryStay',
+        description: 'Premium enterprise hotel booking platform',
+        theme_color: '#ffffff',
+        icons: [
+          {
+            src: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=512&h=512&fit=crop',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=512&h=512&fit=crop',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
+      }
+    })
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
