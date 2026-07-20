@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDTO syncUser(UserDTO userDTO) {
-        Optional<User> existingUser = userRepository.findById(userDTO.getId());
+        Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
         
         if (existingUser.isPresent()) {
             User user = existingUser.get();
@@ -63,8 +63,8 @@ public class AuthServiceImpl implements AuthService {
             return userMapper.toDTO(userRepository.save(user));
         } else {
             // Create a new user synced from Clerk
+            // We ignore userDTO.getId() because the DB uses auto-increment
             User user = User.builder()
-                    .id(userDTO.getId())
                     .firstName(userDTO.getFirstName())
                     .lastName(userDTO.getLastName())
                     .email(userDTO.getEmail())

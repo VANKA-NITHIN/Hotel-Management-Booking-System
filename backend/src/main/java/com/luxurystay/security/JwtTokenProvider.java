@@ -78,6 +78,7 @@ public class JwtTokenProvider {
             if (isClerkToken(token)) {
                 return validateClerkToken(token);
             }
+            log.error("Token is not a valid Clerk JWT");
             return false;
         } catch (Exception e) {
             log.error("Token validation failed: {}", e.getMessage());
@@ -95,8 +96,13 @@ public class JwtTokenProvider {
         // Clerk tokens start with eyJ and contain "kid" in header
         try {
             String header = new String(java.util.Base64.getUrlDecoder().decode(parts[0]));
-            return header.contains("\"kid\"") && header.contains("\"alg\"") && !header.contains("HS256");
+            boolean isValid = header.contains("\"kid\"") && header.contains("\"alg\"") && !header.contains("HS256");
+            if (!isValid) {
+                log.error("Clerk token header validation failed. Header: {}", header);
+            }
+            return isValid;
         } catch (Exception e) {
+            log.error("Failed to decode token header: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -128,7 +134,9 @@ public class JwtTokenProvider {
             JWSVerifier verifier = new RSASSAVerifier(publicKey);
             boolean verified = jwsObject.verify(verifier);
 
-            if (verified) {
+            if (!verified) {
+                log.error("Clerk token signature verification failed using public key for kid: {}", keyId);
+            } else {
                 // Check expiration
                 Object expObj = jwsObject.getPayload().toJSONObject().get("exp");
                 if (expObj != null) {
