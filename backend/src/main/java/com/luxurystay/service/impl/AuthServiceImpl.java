@@ -38,8 +38,8 @@ public class AuthServiceImpl implements AuthService {
         
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            user.setFirstName(userDTO.getFirstName());
-            user.setLastName(userDTO.getLastName());
+            user.setFirstName(getValidName(userDTO.getFirstName(), "Guest"));
+            user.setLastName(getValidName(userDTO.getLastName(), "User"));
             user.setEmail(userDTO.getEmail());
             user.setPhone(userDTO.getPhone());
             user.setProfileImage(userDTO.getProfileImage());
@@ -65,8 +65,8 @@ public class AuthServiceImpl implements AuthService {
             // Create a new user synced from Clerk
             // We ignore userDTO.getId() because the DB uses auto-increment
             User user = User.builder()
-                    .firstName(userDTO.getFirstName())
-                    .lastName(userDTO.getLastName())
+                    .firstName(getValidName(userDTO.getFirstName(), "Guest"))
+                    .lastName(getValidName(userDTO.getLastName(), "User"))
                     .email(userDTO.getEmail())
                     .phone(userDTO.getPhone())
                     .profileImage(userDTO.getProfileImage())
@@ -197,5 +197,9 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
         return userMapper.toDTO(user);
+    }
+
+    private String getValidName(String name, String fallback) {
+        return (name == null || name.trim().isEmpty()) ? fallback : name;
     }
 }
