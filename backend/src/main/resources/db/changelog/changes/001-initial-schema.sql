@@ -259,7 +259,7 @@ CREATE TABLE wishlists (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_user_hotel (user_id, hotel_id)
+    CONSTRAINT uk_user_hotel UNIQUE (user_id, hotel_id)
 );
 
 -- Coupons table
@@ -327,7 +327,7 @@ CREATE TABLE employees (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
     FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE,
-    UNIQUE KEY uk_employee_user (user_id)
+    CONSTRAINT uk_employee_user UNIQUE (user_id)
 );
 
 -- Attendance table

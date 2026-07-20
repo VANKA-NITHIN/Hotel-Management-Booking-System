@@ -162,7 +162,7 @@ spring:
       on-profile: prod
 
   datasource:
-    url: jdbc:h2:mem:luxurystay_prod
+    url: jdbc:h2:mem:luxurystay_prod;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     username: sa
     password: password
     driver-class-name: org.h2.Driver
