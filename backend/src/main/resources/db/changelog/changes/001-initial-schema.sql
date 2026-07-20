@@ -302,13 +302,13 @@ CREATE TABLE notifications (
     title VARCHAR(200) NOT NULL,
     message TEXT NOT NULL,
     type VARCHAR(50) NOT NULL,
-    `read` BOOLEAN NOT NULL DEFAULT FALSE,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
     link VARCHAR(500),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_notifications_user_read ON notifications(user_id, `read`);
+CREATE INDEX idx_notifications_user_read ON notifications(user_id, is_read);
 
 -- Employees table
 CREATE TABLE employees (
@@ -418,8 +418,8 @@ CREATE INDEX idx_activity_logs_created ON activity_logs(created_at);
 -- Settings table
 CREATE TABLE settings (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `key` VARCHAR(100) NOT NULL UNIQUE,
-    value TEXT,
+    setting_key VARCHAR(100) NOT NULL UNIQUE,
+    setting_value TEXT,
     description VARCHAR(200),
     type VARCHAR(50) DEFAULT 'STRING',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
