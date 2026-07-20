@@ -12,6 +12,7 @@ import { Button } from '../components/ui/Button';
 import { DatePicker } from '../components/ui/DatePicker';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { AIReviewSummary } from '../components/ui/AIReviewSummary';
+import { OptimizedImage } from '../components/ui/Image';
 
 const amenityIcons: Record<string, typeof Wifi> = {
   'Free Wi-Fi': Wifi, 'Parking': Car, 'Restaurant': UtensilsCrossed,
@@ -96,7 +97,7 @@ export default function HotelDetailPage() {
               onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
               className="md:col-span-2 md:row-span-2 relative overflow-hidden group cursor-pointer"
             >
-              <img src={displayImages[0]} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" />
+              <OptimizedImage src={displayImages[0]} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" priority={true} />
             </button>
             {displayImages.slice(1, 5).map((img, i) => (
               <button
@@ -104,7 +105,7 @@ export default function HotelDetailPage() {
                 onClick={() => { setLightboxIndex(i + 1); setLightboxOpen(true); }}
                 className="hidden md:block relative overflow-hidden group cursor-pointer"
               >
-                <img src={img} alt={`${hotel.name} ${i + 2}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out" loading="lazy" />
+                <OptimizedImage src={img} alt={`${hotel.name} ${i + 2}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" />
                 {i === 3 && (
                   <div className="absolute inset-0 bg-neutral-900/40 flex items-center justify-center group-hover:bg-neutral-900/50 transition-colors">
                     <span className="text-white font-medium text-lg">+{Math.max(0, displayImages.length - 5)} more</span>
@@ -242,7 +243,7 @@ export default function HotelDetailPage() {
                 {rooms.length > 0 ? rooms.map((room) => (
                   <div key={room.id} className="bg-bg-surface rounded-2xl border border-border-base p-5 flex flex-col sm:flex-row gap-6 shadow-sm hover:border-border-strong transition-colors">
                     <div className="sm:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-bg-surface-hover relative group">
-                      <img
+                      <OptimizedImage
                         src={room.images?.[0] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=300&fit=crop'}
                         alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />

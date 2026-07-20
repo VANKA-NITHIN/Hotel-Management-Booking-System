@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { OptimizedImage } from './Image';
+
 interface AvatarProps {
   src?: string;
   initials: string;
@@ -14,12 +17,16 @@ const sizeClasses = {
 };
 
 export function Avatar({ src, initials, size = 'md', className = '', alt }: AvatarProps) {
-  if (src) {
+  const [imageError, setImageError] = useState(false);
+
+  if (src && !imageError) {
     return (
-      <img
+      <OptimizedImage
         src={src}
         alt={alt || initials}
         className={`${sizeClasses[size]} rounded-full object-cover ${className}`}
+        containerClassName={`${sizeClasses[size]} rounded-full shrink-0 ${className}`}
+        onError={() => setImageError(true)}
       />
     );
   }

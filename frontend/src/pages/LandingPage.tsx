@@ -13,6 +13,7 @@ import { Input } from '../components/ui/Input';
 import { DatePicker } from '../components/ui/DatePicker';
 import { Accordion } from '../components/ui/Accordion';
 import { ReviewCard } from '../components/ui/ReviewCard';
+import { OptimizedImage } from '../components/ui/Image';
 
 const stats = [
   { value: '500+', label: 'Luxury Hotels', icon: Building2 },
@@ -81,10 +82,11 @@ export default function LandingPage() {
       {/* ═══════ HERO ═══════ */}
       <section className="relative h-[85vh] min-h-[650px] max-h-[900px] overflow-hidden flex flex-col justify-end pb-12 sm:pb-20">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <img
+          <OptimizedImage
             src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920&h=1080&fit=crop&q=80"
             alt="Luxury hotel"
             className="w-full h-[120%] object-cover"
+            priority={true}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/20 to-neutral-900/80" />
         </motion.div>
@@ -243,13 +245,12 @@ export default function LandingPage() {
                   to={`/hotels?city=${dest.name}`}
                   className={`relative block overflow-hidden rounded-2xl group ${i === 0 ? 'md:row-span-2 h-64 md:h-full' : 'h-48 md:h-[220px]'}`}
                 >
-                  <img
+                  <OptimizedImage
                     src={dest.image}
                     alt={dest.name}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                    loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/80 via-neutral-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-b from-bg-base/60 via-bg-base/30 to-bg-base/90 pointer-events-none" />
                   <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
                     <h3 className="text-white font-serif font-bold text-xl lg:text-2xl">{dest.name}</h3>
                     <p className="text-white/80 text-sm mt-1">{dest.hotels} Premium Properties</p>

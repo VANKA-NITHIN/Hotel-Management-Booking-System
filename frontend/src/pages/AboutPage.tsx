@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Globe, Shield, Heart } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { OptimizedImage } from '../components/ui/Image';
 
 const stats = [
   { label: 'Global Destinations', value: '50+' },
@@ -35,10 +36,11 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="relative h-[400px] lg:h-[500px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img
+          <OptimizedImage
             src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920&h=800&fit=crop"
             alt="Luxury Hotel"
             className="w-full h-full object-cover"
+            priority={true}
           />
           <div className="absolute inset-0 bg-black/50" />
         </div>
@@ -78,11 +80,11 @@ export default function AboutPage() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative">
-                <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&h=1000&fit=crop" alt="Hotel Interior" className="w-full h-full object-cover" />
+                <OptimizedImage src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&h=1000&fit=crop" alt="Hotel Interior" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 border border-white/20 rounded-3xl"></div>
               </div>
               <div className="absolute -bottom-10 -left-10 w-56 h-56 rounded-3xl overflow-hidden border-8 border-bg-surface shadow-xl hidden md:block">
-                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=400&fit=crop" alt="Detail" className="w-full h-full object-cover" />
+                <OptimizedImage src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=400&fit=crop" alt="Detail" className="w-full h-full object-cover" />
               </div>
             </motion.div>
           </div>

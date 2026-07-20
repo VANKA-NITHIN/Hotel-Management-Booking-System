@@ -16,6 +16,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { DatePicker } from '../components/ui/DatePicker';
+import { OptimizedImage } from '../components/ui/Image';
 
 export default function BookingPage() {
   usePageTitle('Secure Checkout');
@@ -380,7 +381,7 @@ export default function BookingPage() {
               <h3 className="text-xl font-serif font-bold text-text-base mb-6 pb-6 border-b border-border-base">Order Summary</h3>
               
               <div className="flex gap-4 mb-8">
-                <img src={hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop'} alt="" className="w-24 h-24 rounded-xl object-cover" />
+                <OptimizedImage src={hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop'} alt="" className="w-24 h-24 rounded-xl object-cover" containerClassName="w-24 h-24 rounded-xl shrink-0" />
                 <div>
                   <div className="flex items-center gap-1.5 mb-2">
                     <Star className="w-3.5 h-3.5 text-secondary fill-secondary" />

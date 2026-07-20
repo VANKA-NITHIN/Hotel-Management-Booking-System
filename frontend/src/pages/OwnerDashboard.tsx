@@ -15,6 +15,7 @@ import {
 } from '../hooks/useApi';
 import toast from 'react-hot-toast';
 import { AIInsightsWidget } from '../components/ui/AIInsightsWidget';
+import { OptimizedImage } from '../components/ui/Image';
 
 const roomSchema = z.object({
   name: z.string().min(3),
@@ -186,7 +187,7 @@ export default function OwnerDashboard() {
                     <tr key={hotel.id} className="hover:bg-bg-surface-hover transition-colors">
                       <td className="px-6 py-5 whitespace-nowrap">
                         <div className="flex items-center gap-4">
-                          <img src={hotel.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=100&h=100&fit=crop'} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                          <OptimizedImage src={hotel.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=100&h=100&fit=crop'} alt="" className="w-12 h-12 rounded-xl object-cover" containerClassName="w-12 h-12 rounded-xl shrink-0" />
                           <div>
                             <div className="font-bold text-text-base">{hotel.name}</div>
                             <div className="text-sm font-medium text-text-muted mt-0.5">ID: #{hotel.id}</div>

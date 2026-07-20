@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SignIn } from '@clerk/clerk-react';
+import { OptimizedImage } from '../components/ui/Image';
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-bg-surface">
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <img
-          src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=1600&fit=crop"
+        <OptimizedImage
+          src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&h=1600&fit=crop"
           alt="Luxury Hotel"
           className="w-full h-full object-cover"
+          priority={true}
         />
         <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">

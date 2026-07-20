@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Modal } from '../components/ui/Modal';
+import { OptimizedImage } from '../components/ui/Image';
 
 const roomTypeData = [
   { name: 'Luxury Suite', value: 35, color: '#c9a84c' },
@@ -290,7 +291,7 @@ export default function AdminDashboard() {
                       <tr key={hotel.id} className="hover:bg-bg-surface-hover transition-colors">
                         <td className="py-4 px-2">
                           <div className="flex items-center gap-4">
-                            <img src={hotel.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=100&h=100&fit=crop'} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                            <OptimizedImage src={hotel.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=100&h=100&fit=crop'} alt="" className="w-12 h-12 rounded-xl object-cover" containerClassName="w-12 h-12 rounded-xl shrink-0" />
                             <div className="font-bold text-text-base">{hotel.name}</div>
                           </div>
                         </td>

@@ -8,6 +8,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { OptimizedImage } from '../components/ui/Image';
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -36,7 +37,7 @@ export default function DashboardPage() {
         <div className="bg-bg-surface rounded-2xl p-6 md:p-8 mb-8 border border-border-base shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 rounded-2xl bg-bg-surface-hover overflow-hidden shrink-0 shadow-inner">
             {user?.imageUrl ? (
-              <img src={user.imageUrl} alt="Profile" className="w-full h-full object-cover" />
+              <OptimizedImage src={user.imageUrl} alt="Profile" className="w-full h-full object-cover" priority={true} />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-3xl font-serif font-bold text-text-muted">
                 {user?.firstName?.[0] || 'U'}
@@ -105,7 +106,7 @@ export default function DashboardPage() {
                       {upcomingBookings.map((booking: any) => (
                         <div key={booking.id} className="bg-bg-surface rounded-2xl p-6 border border-border-base shadow-sm flex flex-col md:flex-row gap-6 hover:border-border-strong transition-colors group">
                           <div className="w-full md:w-56 h-36 rounded-xl bg-bg-surface-hover overflow-hidden shrink-0 relative">
-                             <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                             <OptimizedImage src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
                           <div className="flex-1 flex flex-col justify-center">
                             <div className="flex items-start justify-between mb-3">

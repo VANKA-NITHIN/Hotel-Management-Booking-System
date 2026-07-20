@@ -10,6 +10,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AIChat from './components/ui/AIChat';
 import ErrorBoundary from './components/ui/ErrorBoundary';
+import { OptimizedImage } from './components/ui/Image';
 
 // Lazy-loaded pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -107,7 +108,7 @@ function ClerkLoginPage() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=1600&fit=crop" alt="Luxury Hotel" className="w-full h-full object-cover" />
+        <OptimizedImage src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=1600&fit=crop" alt="Luxury Hotel" className="w-full h-full object-cover" priority={true} />
         <div className="absolute inset-0 bg-linear-to-r from-primary/80 to-primary/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">
@@ -133,7 +134,7 @@ function ClerkRegisterPage() {
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&h=1600&fit=crop" alt="Luxury Resort" className="w-full h-full object-cover" />
+        <OptimizedImage src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&h=1600&fit=crop" alt="Luxury Resort" className="w-full h-full object-cover" priority={true} />
         <div className="absolute inset-0 bg-linear-to-r from-primary/80 to-primary/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">

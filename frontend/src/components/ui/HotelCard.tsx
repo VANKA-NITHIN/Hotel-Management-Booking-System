@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Star, Heart } from 'lucide-react';
 import type { Hotel } from '../../types';
 import { useToggleWishlist, useWishlist } from '../../hooks/useApi';
+import { OptimizedImage } from './Image';
 
 interface HotelCardProps {
   hotel: Hotel;
@@ -28,11 +29,10 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
         className="group flex flex-col sm:flex-row bg-bg-surface rounded-xl overflow-hidden border border-border-base hover:border-border-strong transition-all duration-200 hover:shadow-elevated"
       >
         <Link to={`/hotels/${hotel.id}`} className="sm:w-72 relative overflow-hidden shrink-0">
-          <img
+          <OptimizedImage
             src={imageUrl}
             alt={hotel.name}
             className="w-full h-52 sm:h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
           />
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist.mutate(hotel.id); }}
@@ -96,12 +96,11 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
       className="group bg-bg-surface rounded-xl overflow-hidden border border-border-base hover:border-border-strong transition-all duration-200 hover:shadow-elevated"
     >
       <Link to={`/hotels/${hotel.id}`} className="block relative overflow-hidden">
-        <div className="aspect-[4/3] w-full overflow-hidden">
-          <img
+        <div className="relative aspect-4/3 overflow-hidden rounded-t-2xl">
+          <OptimizedImage
             src={imageUrl}
             alt={hotel.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
           />
         </div>
         {hotel.starRating && hotel.starRating >= 5 && (
