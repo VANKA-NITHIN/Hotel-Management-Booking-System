@@ -196,6 +196,28 @@ public class JwtTokenProvider {
     }
 
     /**
+     * Extract role from Clerk JWT (public_metadata.role)
+     */
+    public String getRoleFromToken(String token) {
+        try {
+            JWSObject jwsObject = JWSObject.parse(token);
+            Map<String, Object> payload = jwsObject.getPayload().toJSONObject();
+
+            Object publicMetadata = payload.get("public_metadata");
+            if (publicMetadata instanceof Map<?, ?> metadataMap) {
+                Object roleObj = metadataMap.get("role");
+                if (roleObj instanceof String role) {
+                    return role.toUpperCase();
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            log.error("Failed to extract role from token: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Fetch JWKS from Clerk
      */
     private void fetchClerkJwks() {

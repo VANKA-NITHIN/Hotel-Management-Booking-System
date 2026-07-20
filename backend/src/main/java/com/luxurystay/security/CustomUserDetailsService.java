@@ -29,6 +29,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String emailOrSub) throws UsernameNotFoundException {
+        return loadUserByUsernameAndSyncRole(emailOrSub, null);
+    }
+
+    @Transactional
+    public UserDetails loadUserByUsernameAndSyncRole(String emailOrSub, String roleFromToken) throws UsernameNotFoundException {
         // Try to find by email first, then by Clerk sub ID
         User user = userRepository.findByEmail(emailOrSub).orElse(null);
 
@@ -36,12 +41,15 @@ public class CustomUserDetailsService implements UserDetailsService {
             // Check if this looks like a Clerk sub (starts with "user_")
             if (emailOrSub != null && emailOrSub.startsWith("user_")) {
                 // Try to find by email in a broader way, or create new user
-                user = createClerkUser(emailOrSub);
+                user = createClerkUser(emailOrSub, roleFromToken);
             } else {
                 // Try finding by email
                 user = userRepository.findByEmail(emailOrSub)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with identifier: " + emailOrSub));
             }
+        } else if (roleFromToken != null) {
+            // Check if role needs updating
+            syncUserRole(user, roleFromToken);
         }
 
         var authorities = user.getRoles().stream()
@@ -62,14 +70,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     /**
      * Create a new user from Clerk authentication
      */
-    private User createClerkUser(String clerkSub) {
+    private User createClerkUser(String clerkSub, String roleFromToken) {
         log.info("Creating new user from Clerk authentication: {}", clerkSub);
 
-        RoleEntity customerRole = roleRepository.findByName(Role.ROLE_CUSTOMER)
+        Role userRole = determineRole(roleFromToken);
+        
+        RoleEntity roleEntity = roleRepository.findByName(userRole)
                 .orElseGet(() -> {
                     RoleEntity role = RoleEntity.builder()
-                            .name(Role.ROLE_CUSTOMER)
-                            .description("Customer role")
+                            .name(userRole)
+                            .description(userRole.name() + " role")
                             .build();
                     return roleRepository.save(role);
                 });
@@ -81,15 +91,51 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .firstName("LuxuryStay")
                 .lastName("Guest")
                 .email(email)
-                .role(Role.ROLE_CUSTOMER)
+                .role(userRole)
                 .enabled(true)
                 .emailVerified(true)
                 .loyaltyPoints(0)
-                .roles(new HashSet<>(Set.of(customerRole)))
+                .roles(new HashSet<>(Set.of(roleEntity)))
                 .build();
 
         user = userRepository.save(user);
         log.info("Created new user from Clerk: id={}, email={}", user.getId(), email);
         return user;
+    }
+    
+    /**
+     * Synchronizes the user's roles with the role extracted from the Clerk token.
+     */
+    private void syncUserRole(User user, String roleFromToken) {
+        Role newRole = determineRole(roleFromToken);
+        
+        if (user.getRole() != newRole) {
+            log.info("Updating user {} role from {} to {}", user.getEmail(), user.getRole(), newRole);
+            
+            RoleEntity roleEntity = roleRepository.findByName(newRole)
+                    .orElseGet(() -> {
+                        RoleEntity role = RoleEntity.builder()
+                                .name(newRole)
+                                .description(newRole.name() + " role")
+                                .build();
+                        return roleRepository.save(role);
+                    });
+            
+            user.setRole(newRole);
+            user.setRoles(new HashSet<>(Set.of(roleEntity)));
+            userRepository.save(user);
+        }
+    }
+
+    /**
+     * Helper to map token string role to enum
+     */
+    private Role determineRole(String roleStr) {
+        if (roleStr != null) {
+            if (roleStr.contains("ADMIN")) return Role.ROLE_ADMIN;
+            if (roleStr.contains("MANAGER")) return Role.ROLE_MANAGER;
+            if (roleStr.contains("HOUSEKEEPING")) return Role.ROLE_HOUSEKEEPING;
+        }
+        return Role.ROLE_CUSTOMER;
     }
 }
