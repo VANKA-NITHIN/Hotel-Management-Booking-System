@@ -15,6 +15,8 @@ import { DatePicker } from '../components/ui/DatePicker';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { AIReviewSummary } from '../components/ui/AIReviewSummary';
 import { PriceCalendar } from '../components/ui/PriceCalendar';
+import { ShareModal } from '../components/ui/ShareModal';
+import { ReviewFormModal } from '../components/ui/ReviewFormModal';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -59,6 +61,8 @@ export default function HotelDetailPage() {
   const createReview = useCreateReview();
   const likeReview = useLikeReview();
   
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -227,18 +231,7 @@ export default function HotelDetailPage() {
                     <Heart className={`w-5 h-5 ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
                   </button>
                   <button 
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: hotel.name,
-                          text: `Check out ${hotel.name} on LuxuryStay!`,
-                          url: window.location.href,
-                        }).catch(console.error);
-                      } else {
-                        navigator.clipboard.writeText(window.location.href);
-                        toast.success('Link copied to clipboard!');
-                      }
-                    }}
+                    onClick={() => setIsShareOpen(true)}
                     className="w-12 h-12 rounded-full bg-bg-surface border border-border-base flex items-center justify-center hover:bg-bg-surface-hover hover:border-border-strong transition-all shadow-sm"
                     aria-label="Share"
                   >
@@ -396,9 +389,9 @@ export default function HotelDetailPage() {
                         toast.error('Please sign in to write a review');
                         return;
                       }
-                      setShowReviewForm(!showReviewForm);
+                      setIsReviewFormOpen(true);
                     }}>
-                      {showReviewForm ? 'Cancel' : 'Write a Review'}
+                      Write a Review
                     </Button>
                   </div>
                   
@@ -630,21 +623,28 @@ export default function HotelDetailPage() {
               navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
             } else {
               document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
-
-  // Fetch POIs when location tab is active or category changes
-  useEffect(() => {
-    if (activeTab === 'location' && hotel && hotel.latitude && hotel.longitude) {
-      fetchNearbyPOIs(hotel.latitude, hotel.longitude, selectedCategory)
-        .then(data => setPois(data))
-        .catch(err => console.error('Failed to fetch POIs', err));
-    }
-  }, [activeTab, hotel?.id, selectedCategory]);
             }
           }}
         >
           {checkIn && checkOut ? 'Reserve' : 'Select Dates'}
         </Button>
       </div>
+
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        title={hotel?.name || 'Luxury Property'}
+        description={`Discover ${hotel?.name || 'this luxury property'} in ${hotel?.city || ''}, ${hotel?.country || ''}`}
+      />
+
+      {hotel && (
+        <ReviewFormModal
+          isOpen={isReviewFormOpen}
+          onClose={() => setIsReviewFormOpen(false)}
+          hotelId={hotel.id}
+          hotelName={hotel.name}
+        />
+      )}
     </div>
   );
 }

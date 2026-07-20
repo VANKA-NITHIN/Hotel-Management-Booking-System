@@ -29,6 +29,9 @@ export { default as SearchBar } from './SearchBar';
 export { PriceCalendar } from './PriceCalendar';
 export { CurrencySelector } from './CurrencySelector';
 export { InvoiceModal } from './InvoiceModal';
+export { ShareModal } from './ShareModal';
+export { ReviewFormModal } from './ReviewFormModal';
+
 
 
 
