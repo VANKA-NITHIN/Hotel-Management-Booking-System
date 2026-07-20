@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -51,6 +51,7 @@ export default function HotelsPage() {
   });
 
   const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
 
   const totalPages = data?.data?.totalPages || 0;
   const totalElements = hotels.length;
@@ -61,8 +62,19 @@ export default function HotelsPage() {
       return;
     }
 
+    if (isListening && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.error('Error stopping recognition', err);
+      }
+      setIsListening(false);
+      return;
+    }
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
     
     recognition.lang = 'en-US';
     recognition.interimResults = false;
@@ -70,13 +82,13 @@ export default function HotelsPage() {
 
     recognition.onstart = () => {
       setIsListening(true);
-      toast.success('Listening...', { icon: '🎙️', duration: 2000 });
+      toast.success('Listening... Speak your hotel or city search', { icon: '🎙️', duration: 3000 });
     };
 
     recognition.onresult = (event: any) => {
       const speechResult = event.results[0][0].transcript;
       setSearch(speechResult);
-      // Trigger search automatically after a short delay so state updates
+      toast.success(`Searching for "${speechResult}"`, { icon: '🔍', duration: 2000 });
       setTimeout(() => {
         setPage(0);
       }, 100);
@@ -84,15 +96,37 @@ export default function HotelsPage() {
 
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error', event.error);
-      toast.error('Could not hear you properly. Please try again.');
       setIsListening(false);
+
+      if (event.error === 'aborted') {
+        return;
+      }
+      if (event.error === 'no-speech') {
+        toast.error('No speech detected. Please speak clearly into your microphone.');
+        return;
+      }
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        toast.error('Microphone access denied. Please allow microphone permissions in browser settings.');
+        return;
+      }
+      if (event.error === 'audio-capture') {
+        toast.error('No microphone found on your device.');
+        return;
+      }
+
+      toast.error('Could not process voice search. Please try typing your search.');
     };
 
     recognition.onend = () => {
       setIsListening(false);
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch (err) {
+      console.error('Error starting recognition:', err);
+      setIsListening(false);
+    }
   };
 
   const handleSearch = (e: React.FormEvent) => {
