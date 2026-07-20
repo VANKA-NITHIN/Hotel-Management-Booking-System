@@ -37,6 +37,11 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.deny())
+                .xssProtection(xss -> xss.disable())
+                .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'none'; sandbox"))
+            )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Auth (Clerk handles auth, backend accepts tokens)
                 .requestMatchers("/auth/**").permitAll()

@@ -4,6 +4,7 @@ import com.luxurystay.dto.*;
 import com.luxurystay.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class HotelController {
     private final HotelService hotelService;
 
     @GetMapping
+    @Cacheable(value = "hotels", key = "'all_' + #page + '_' + #size")
     public ResponseEntity<PagedResponse<HotelDTO>> getAllHotels(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size) {
@@ -51,6 +53,7 @@ public class HotelController {
     }
 
     @GetMapping("/search")
+    @Cacheable(value = "hotels", key = "'search_' + #city + '_' + #minPrice + '_' + #maxPrice + '_' + #minRating + '_' + #sort + '_' + #page + '_' + #size")
     public ResponseEntity<PagedResponse<HotelDTO>> searchHotels(
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Double minPrice,
@@ -63,11 +66,13 @@ public class HotelController {
     }
 
     @GetMapping("/featured")
+    @Cacheable(value = "featuredHotels")
     public ResponseEntity<List<HotelDTO>> getFeaturedHotels() {
         return ResponseEntity.ok(hotelService.getFeaturedHotels());
     }
 
     @GetMapping("/destinations")
+    @Cacheable(value = "popularDestinations")
     public ResponseEntity<List<String>> getPopularDestinations() {
         return ResponseEntity.ok(hotelService.getPopularDestinations());
     }

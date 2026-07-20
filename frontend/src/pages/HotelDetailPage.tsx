@@ -367,7 +367,7 @@ export default function HotelDetailPage() {
           </div>
 
           {/* Right Sidebar — Booking Widget */}
-          <div className="lg:col-span-1">
+          <div className="hidden lg:block lg:col-span-1">
             <div className="bg-bg-surface rounded-2xl border border-border-base p-6 sticky top-[100px] shadow-elevated">
               <div className="flex items-baseline gap-2 mb-6">
                 <span className="text-3xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
@@ -435,6 +435,24 @@ export default function HotelDetailPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Booking Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-bg-surface border-t border-border-base p-4 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] flex items-center justify-between">
+        <div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
+            <span className="text-xs font-medium text-text-muted uppercase">/ night</span>
+          </div>
+          <p className="text-xs text-text-muted mt-0.5">{checkIn && checkOut ? `${nights} nights selected` : 'Select dates'}</p>
+        </div>
+        <Button
+          size="md"
+          onClick={() => navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}
+          disabled={!checkIn || !checkOut}
+        >
+          {checkIn && checkOut ? 'Reserve' : 'Select Dates'}
+        </Button>
       </div>
     </div>
   );

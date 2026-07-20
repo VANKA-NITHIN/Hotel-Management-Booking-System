@@ -80,7 +80,7 @@ export default function OwnerDashboard() {
   return (
     <div className="min-h-screen bg-bg-surface-hover flex pt-[72px]">
       {/* Sidebar */}
-      <aside className="w-64 bg-primary min-h-[calc(100vh-[72px])] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
+      <aside className="w-64 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
         <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="mb-10 px-4 py-4">
           <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Owner Portal</span>
@@ -109,8 +109,34 @@ export default function OwnerDashboard() {
         </nav>
       </aside>
 
+      {/* Mobile Tab Navigation */}
+      <div className="lg:hidden sticky top-[72px] z-20 bg-bg-surface border-b border-border-base px-4 py-2 overflow-x-auto no-scrollbar">
+        <div className="flex gap-1">
+          {[
+            { id: 'hotels', label: 'My Hotels', icon: Building2 },
+            { id: 'rooms', label: 'Rooms', icon: Bed },
+            { id: 'calendar', label: 'Availability', icon: CalendarIcon },
+            { id: 'staff', label: 'Staff', icon: Briefcase },
+            { id: 'reviews', label: 'Reviews', icon: Users },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-primary text-white shadow-md'
+                  : 'text-text-muted hover:bg-bg-surface-hover hover:text-text-base'
+              }`}
+            >
+              <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-white' : 'text-text-muted'}`} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Main Content */}
-      <main className="flex-1 p-6 lg:p-10 max-w-7xl">
+      <main className="flex-1 w-full p-6 lg:p-10 max-w-7xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
           <h1 className="text-3xl font-serif font-bold text-text-base capitalize">{activeTab.replace('-', ' ')}</h1>
           

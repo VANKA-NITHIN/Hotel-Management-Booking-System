@@ -290,7 +290,7 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-[100] w-[380px] max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col"
+            className="fixed bottom-24 right-6 z-[100] w-[380px] max-w-[calc(100vw-3rem)] bg-bg-surface rounded-2xl shadow-2xl border border-border-base overflow-hidden flex flex-col"
             style={{ height: '500px', maxHeight: 'calc(100vh - 8rem)' }}
           >
             <div className="gradient-bg p-4 text-white">
@@ -325,7 +325,7 @@ export default function AIChat() {
                   <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
                     message.role === 'user'
                       ? 'bg-primary text-white rounded-tr-sm'
-                      : 'bg-gray-100 text-gray-800 rounded-tl-sm'
+                      : 'bg-bg-surface-hover text-text-base rounded-tl-sm'
                   }`}>
                     {message.content}
                   </div>
@@ -337,11 +337,11 @@ export default function AIChat() {
                   <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4 text-secondary" />
                   </div>
-                  <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-3">
+                  <div className="bg-bg-surface-hover rounded-2xl rounded-tl-sm px-4 py-3">
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
                   </div>
                 </motion.div>
@@ -370,7 +370,7 @@ export default function AIChat() {
               </div>
             )}
 
-            <div className="p-3 border-t border-gray-100">
+            <div className="p-3 border-t border-border-base">
               <form
                 id="ai-chat-form"
                 onSubmit={(e) => { e.preventDefault(); sendMessage(); }}
@@ -383,7 +383,7 @@ export default function AIChat() {
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Ask me to book a hotel..."
-                  className="flex-1 px-4 py-2.5 bg-gray-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 border border-gray-200"
+                  className="flex-1 px-4 py-2.5 bg-bg-surface-hover rounded-xl text-sm text-text-base placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-secondary/30 border border-border-base"
                   disabled={isLoading}
                 />
                 <button

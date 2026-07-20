@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings", indexes = {
+    @Index(name = "idx_booking_user", columnList = "user_id"),
+    @Index(name = "idx_booking_hotel", columnList = "hotel_id"),
+    @Index(name = "idx_booking_status", columnList = "status")
+})
 @Getter
 @Setter
 @NoArgsConstructor

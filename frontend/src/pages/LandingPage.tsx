@@ -131,18 +131,18 @@ export default function LandingPage() {
                   className="bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14 text-base"
                 />
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <DatePicker 
                   minDate={new Date().toISOString().split('T')[0]}
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
+                  className="w-full sm:w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
                 />
                 <DatePicker 
                   minDate={checkIn || new Date().toISOString().split('T')[0]}
                   value={checkOut}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
+                  className="w-full sm:w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
                 />
               </div>
               <div className="w-full sm:w-40 relative">

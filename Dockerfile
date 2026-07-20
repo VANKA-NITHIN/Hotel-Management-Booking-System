@@ -24,5 +24,10 @@ EXPOSE 8080
 # Set timezone and other basic envs
 ENV TZ=UTC
 
+# Run as non-root user for security
+RUN addgroup -S spring && adduser -S spring -G spring
+RUN chown -R spring:spring /app
+USER spring:spring
+
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

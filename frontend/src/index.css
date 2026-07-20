@@ -71,6 +71,16 @@
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  /* Z-Index Scale */
+  --z-base: 1;
+  --z-dropdown: 30;
+  --z-sticky: 35;
+  --z-navbar: 40;
+  --z-modal-backdrop: 45;
+  --z-modal: 50;
+  --z-toast: 60;
+  --z-ai-chat: 100;
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -274,6 +284,9 @@
 
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
 
   .aspect-hotel { aspect-ratio: 4/3; }
   .aspect-room { aspect-ratio: 16/9; }

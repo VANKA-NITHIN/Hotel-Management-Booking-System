@@ -157,6 +157,12 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
+        <!-- Spring Boot Actuator for Observability -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- Liquibase for Database Migration Management -->
         <dependency>
             <groupId>org.liquibase</groupId>

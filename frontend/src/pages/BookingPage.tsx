@@ -204,7 +204,7 @@ export default function BookingPage() {
                 }`}>
                   {step > num ? <Check className="w-6 h-6" /> : num}
                 </div>
-                <span className={`text-xs font-bold uppercase tracking-wider ${step >= num ? 'text-text-base' : 'text-text-muted'}`}>
+                <span className={`hidden sm:block text-xs font-bold uppercase tracking-wider ${step >= num ? 'text-text-base' : 'text-text-muted'}`}>
                   {num === 1 ? 'Dates' : num === 2 ? 'Details' : 'Payment'}
                 </span>
               </div>

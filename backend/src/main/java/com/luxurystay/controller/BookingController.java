@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/bookings")
@@ -20,7 +21,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingDTO> createBooking(
-            @RequestBody BookingDTO bookingDTO,
+            @Valid @RequestBody BookingDTO bookingDTO,
             Authentication authentication) {
         User user = authService.getCurrentUser(authentication);
         return ResponseEntity.status(HttpStatus.CREATED)

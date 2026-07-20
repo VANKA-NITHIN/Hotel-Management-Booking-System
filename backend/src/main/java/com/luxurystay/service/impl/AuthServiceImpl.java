@@ -44,6 +44,22 @@ public class AuthServiceImpl implements AuthService {
             user.setPhone(userDTO.getPhone());
             user.setProfileImage(userDTO.getProfileImage());
             
+            // Sync Role from Clerk
+            if (userDTO.getRole() != null) {
+                try {
+                    Role roleEnum = Role.valueOf(userDTO.getRole());
+                    user.setRole(roleEnum);
+                    RoleEntity roleEntity = roleRepository.findByName(roleEnum)
+                            .orElseGet(() -> roleRepository.save(RoleEntity.builder()
+                                    .name(roleEnum)
+                                    .description(roleEnum.name() + " role")
+                                    .build()));
+                    user.setRoles(new HashSet<>(Set.of(roleEntity)));
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid role passed from Clerk: {}", userDTO.getRole());
+                }
+            }
+            
             return userMapper.toDTO(userRepository.save(user));
         } else {
             // Create a new user synced from Clerk
@@ -61,12 +77,24 @@ public class AuthServiceImpl implements AuthService {
                     .loyaltyPoints(0)
                     .build();
 
-            RoleEntity customerRole = roleRepository.findByName(Role.ROLE_CUSTOMER)
+            // Set role from DTO or default to CUSTOMER
+            Role roleEnum = Role.ROLE_CUSTOMER;
+            if (userDTO.getRole() != null) {
+                try {
+                    roleEnum = Role.valueOf(userDTO.getRole());
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid role passed from Clerk: {}", userDTO.getRole());
+                }
+            }
+            user.setRole(roleEnum);
+
+            final Role finalRoleEnum = roleEnum;
+            RoleEntity roleEntity = roleRepository.findByName(finalRoleEnum)
                     .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                            .name(Role.ROLE_CUSTOMER)
-                            .description("Customer role")
+                            .name(finalRoleEnum)
+                            .description(finalRoleEnum.name() + " role")
                             .build()));
-            user.setRoles(new HashSet<>(Set.of(customerRole)));
+            user.setRoles(new HashSet<>(Set.of(roleEntity)));
             
             return userMapper.toDTO(userRepository.save(user));
         }

@@ -56,7 +56,7 @@ public class ImageController {
             @RequestParam("files") List<MultipartFile> files,
             @RequestParam(defaultValue = "general") String folder) {
 
-        if (files.size() > 10) {
+        if (files.size() > 10) {`
             return ResponseEntity.badRequest().body(List.of(Map.of("error", "Maximum 10 files allowed")));
         }
 
@@ -65,6 +65,7 @@ public class ImageController {
     }
 
     /**
+     * `
      * Delete an image by public ID
      * DELETE /api/images/{publicId}
      */

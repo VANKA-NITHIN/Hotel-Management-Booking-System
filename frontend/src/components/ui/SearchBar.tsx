@@ -76,38 +76,38 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
 
   if (variant === 'compact') {
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-3 sm:p-4 flex flex-col sm:flex-row items-stretch gap-2 sm:gap-3">
-        <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl min-w-0">
-          <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
+      <div className="bg-bg-surface rounded-2xl shadow-xl p-3 sm:p-4 flex flex-col sm:flex-row items-stretch gap-2 sm:gap-3">
+        <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-bg-surface-hover rounded-xl min-w-0">
+          <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-text-muted shrink-0" />
           <input
             type="text"
             placeholder="Where to?"
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
-            className="bg-transparent outline-none text-xs sm:text-sm flex-1 min-w-0"
+            className="bg-transparent outline-none text-xs sm:text-sm flex-1 min-w-0 text-text-base placeholder-text-muted"
           />
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl min-w-0">
-          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
+        <div className="flex items-center gap-2 px-3 py-2 bg-bg-surface-hover rounded-xl min-w-0">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-text-muted shrink-0" />
           <input
             type="date"
             value={checkIn}
             onChange={(e) => setCheckIn(e.target.value)}
-            className="bg-transparent outline-none text-xs sm:text-sm min-w-0 w-full"
+            className="bg-transparent outline-none text-xs sm:text-sm min-w-0 w-full text-text-base"
           />
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl min-w-0">
-          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
+        <div className="flex items-center gap-2 px-3 py-2 bg-bg-surface-hover rounded-xl min-w-0">
+          <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-text-muted shrink-0" />
           <input
             type="date"
             value={checkOut}
             onChange={(e) => setCheckOut(e.target.value)}
-            className="bg-transparent outline-none text-xs sm:text-sm min-w-0 w-full"
+            className="bg-transparent outline-none text-xs sm:text-sm min-w-0 w-full text-text-base"
           />
         </div>
-        <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl shrink-0">
-          <Users className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
-          <span className="text-xs sm:text-sm whitespace-nowrap">{guests} Guests</span>
+        <div className="flex items-center gap-2 px-3 py-2 bg-bg-surface-hover rounded-xl shrink-0">
+          <Users className="w-4 h-4 sm:w-5 sm:h-5 text-text-muted shrink-0" />
+          <span className="text-xs sm:text-sm whitespace-nowrap text-text-base">{guests} Guests</span>
         </div>
         <button onClick={handleSearch} className="btn-primary flex items-center justify-center gap-2 text-xs sm:text-sm px-4 sm:px-6 py-2 shrink-0">
           <Search className="w-4 h-4 sm:w-5 sm:h-5" /> Search
@@ -121,10 +121,10 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.4, duration: 0.6 }}
-      className="bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-4xl mx-auto relative overflow-hidden"
+      className="bg-bg-surface/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-4xl mx-auto relative overflow-hidden border border-border-base"
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-serif font-bold text-lg text-gray-800">Find your perfect stay</h3>
+        <h3 className="font-serif font-bold text-lg text-text-base">Find your perfect stay</h3>
         <button
           onClick={() => setIsMagicMode(!isMagicMode)}
           className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold transition-all ${
@@ -155,7 +155,7 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
                 value={magicQuery}
                 onChange={(e) => setMagicQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleMagicSearch()}
-                className="bg-transparent outline-none flex-1 text-gray-800 placeholder-gray-500 text-sm sm:text-base min-w-0"
+                className="bg-transparent outline-none flex-1 text-text-base placeholder-text-muted text-sm sm:text-base min-w-0"
                 disabled={isAiLoading}
               />
             </div>
@@ -178,45 +178,45 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               {/* Destination */}
         <div className="sm:col-span-2 md:col-span-2">
-          <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Destination</label>
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-gray-200 focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
-            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-secondary shrink-0" />
-            <input
-              type="text"
-              placeholder="City or Hotel Name"
-              value={destination}
-              onChange={(e) => setDestination(e.target.value)}
-              className="bg-transparent outline-none flex-1 text-gray-800 placeholder-gray-400 text-sm sm:text-base min-w-0"
+          <label className="block text-xs sm:text-sm font-medium text-text-muted mb-1 sm:mb-2">Destination</label>
+            <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-border-base focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-secondary shrink-0" />
+              <input
+                type="text"
+                placeholder="City or Hotel Name"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="bg-transparent outline-none flex-1 text-text-base placeholder-text-muted text-sm sm:text-base min-w-0"
             />
           </div>
         </div>
 
         {/* Check-in */}
         <div>
-          <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Check-in</label>
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-gray-200 focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
+          <label className="block text-xs sm:text-sm font-medium text-text-muted mb-1 sm:mb-2">Check-in</label>
+          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-border-base focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-secondary shrink-0" />
             <input
               type="date"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              className="bg-transparent outline-none text-gray-800 text-sm sm:text-base min-w-0 w-full"
+              className="bg-transparent outline-none text-text-base text-sm sm:text-base min-w-0 w-full"
             />
           </div>
         </div>
 
         {/* Check-out */}
         <div>
-          <label className="block text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-2">Check-out</label>
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-gray-200 focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
+          <label className="block text-xs sm:text-sm font-medium text-text-muted mb-1 sm:mb-2">Check-out</label>
+          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border border-border-base focus-within:border-secondary focus-within:ring-2 focus-within:ring-secondary/20 transition-all">
             <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-secondary shrink-0" />
             <input
               type="date"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
               min={checkIn || new Date().toISOString().split('T')[0]}
-              className="bg-transparent outline-none text-gray-800 text-sm sm:text-base min-w-0 w-full"
+              className="bg-transparent outline-none text-text-base text-sm sm:text-base min-w-0 w-full"
             />
           </div>
         </div>
@@ -226,13 +226,13 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
         {/* Guests */}
         <div className="flex items-center gap-2 sm:gap-4">
           <div className="flex items-center gap-1.5 sm:gap-3">
-            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 shrink-0" />
-            <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">Guests</span>
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-text-muted shrink-0" />
+            <span className="text-xs sm:text-sm text-text-muted whitespace-nowrap">Guests</span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 bg-gray-50 rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2">
+          <div className="flex items-center gap-2 sm:gap-3 bg-bg-surface-hover rounded-xl px-2.5 sm:px-3 py-1.5 sm:py-2">
             <button
               onClick={() => setGuests(Math.max(1, guests - 1))}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-100 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-bg-surface shadow flex items-center justify-center hover:bg-bg-surface-hover transition-colors"
               aria-label="Decrease guests"
             >
               <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -240,7 +240,7 @@ export default function SearchBar({ variant = 'hero' }: { variant?: 'hero' | 'co
             <span className="w-6 sm:w-8 text-center font-medium text-sm sm:text-base">{guests}</span>
             <button
               onClick={() => setGuests(Math.min(10, guests + 1))}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white shadow flex items-center justify-center hover:bg-gray-100 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-bg-surface shadow flex items-center justify-center hover:bg-bg-surface-hover transition-colors"
               aria-label="Increase guests"
             >
               <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

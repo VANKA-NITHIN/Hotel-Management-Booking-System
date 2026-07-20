@@ -189,7 +189,7 @@ export default function Navbar() {
                     >
                       <Bell className="w-[18px] h-[18px]" />
                       {(notifications.filter(n => !n.isRead).length > 0 || apiUnreadCount > 0) && (
-                        <span className="absolute 2 top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full" />
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full" />
                       )}
                     </button>
                     

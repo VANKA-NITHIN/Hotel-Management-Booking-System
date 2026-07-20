@@ -44,10 +44,12 @@ const queryClient = new QueryClient({
 
 function PageLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 rounded-full border-4 border-secondary border-t-transparent animate-spin" />
-        <p className="text-sm text-gray-500">Loading...</p>
+    <div className="min-h-screen bg-bg-base flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl gold-gradient animate-pulse flex items-center justify-center">
+          <span className="text-2xl font-serif font-bold text-white">L</span>
+        </div>
+        <p className="text-text-muted font-medium animate-pulse">Loading...</p>
       </div>
     </div>
   );
@@ -110,17 +112,17 @@ function ClerkLoginPage() {
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">
             <h1 className="text-4xl font-serif font-bold mb-4">Welcome Back to Luxury</h1>
-            <p className="text-gray-300 text-lg">Sign in to access your exclusive benefits, manage bookings, and discover extraordinary stays.</p>
+            <p className="text-neutral-300 text-lg">Sign in to access your exclusive benefits, manage bookings, and discover extraordinary stays.</p>
           </div>
         </div>
       </div>
-      <div className="flex-1 flex items-center justify-center p-8 md:p-12 bg-white">
+      <div className="flex-1 flex items-center justify-center p-8 md:p-12 bg-bg-surface">
         <div className="w-full max-w-md">
           <a href="/" className="flex items-center gap-2 mb-8">
             <img src="/logo.png" alt="LuxuryStay Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
             <span className="text-xl font-serif font-bold text-primary">LuxuryStay</span>
           </a>
-          <SignIn routing="path" path="/sign-in" signUpUrl="/sign-up" redirectUrl="/dashboard" appearance={{ elements: { formButtonPrimary: 'bg-secondary hover:bg-secondary-light text-primary font-semibold', card: 'shadow-none border border-gray-100' } }} />
+          <SignIn routing="path" path="/sign-in" signUpUrl="/sign-up" redirectUrl="/dashboard" appearance={{ elements: { formButtonPrimary: 'bg-secondary hover:bg-secondary-light text-primary font-semibold', card: 'shadow-none border border-border-base' } }} />
         </div>
       </div>
     </div>
@@ -136,17 +138,17 @@ function ClerkRegisterPage() {
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">
             <h1 className="text-4xl font-serif font-bold mb-4">Join LuxuryStay</h1>
-            <p className="text-gray-300 text-lg">Create your account and unlock exclusive member benefits, earn loyalty points, and access premium deals.</p>
+            <p className="text-neutral-300 text-lg">Create your account and unlock exclusive member benefits, earn loyalty points, and access premium deals.</p>
           </div>
         </div>
       </div>
-      <div className="flex-1 flex items-center justify-center p-8 md:p-12 bg-white">
+      <div className="flex-1 flex items-center justify-center p-8 md:p-12 bg-bg-surface">
         <div className="w-full max-w-md">
           <a href="/" className="flex items-center gap-2 mb-8">
             <img src="/logo.png" alt="LuxuryStay Logo" className="w-10 h-10 rounded-xl object-cover shadow-sm" />
             <span className="text-xl font-serif font-bold text-primary">LuxuryStay</span>
           </a>
-          <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" redirectUrl="/dashboard" appearance={{ elements: { formButtonPrimary: 'bg-secondary hover:bg-secondary-light text-primary font-semibold', card: 'shadow-none border border-gray-100' } }} />
+          <SignUp routing="path" path="/sign-up" signInUrl="/sign-in" redirectUrl="/dashboard" appearance={{ elements: { formButtonPrimary: 'bg-secondary hover:bg-secondary-light text-primary font-semibold', card: 'shadow-none border border-border-base' } }} />
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Heart } from 'lucide-react';
@@ -10,7 +11,7 @@ interface HotelCardProps {
   variant?: 'grid' | 'list';
 }
 
-export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelCardProps) {
+const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelCardProps) {
   const toggleWishlist = useToggleWishlist();
   const { data: wishlistResponse } = useWishlist();
   const wishlistHotels = wishlistResponse?.data || [];
@@ -24,7 +25,7 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.06, duration: 0.4 }}
-        className="group flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-200 hover:shadow-elevated"
+        className="group flex flex-col sm:flex-row bg-bg-surface rounded-xl overflow-hidden border border-border-base hover:border-border-strong transition-all duration-200 hover:shadow-elevated"
       >
         <Link to={`/hotels/${hotel.id}`} className="sm:w-72 relative overflow-hidden shrink-0">
           <img
@@ -35,21 +36,21 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
           />
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist.mutate(hotel.id); }}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all hover:scale-110"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           >
-            <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
+            <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
           </button>
         </Link>
 
         <div className="flex-1 p-5 flex flex-col">
           <div className="flex items-start justify-between gap-3 mb-1">
             <div>
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">
+              <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                 {hotel.city}, {hotel.country}
               </p>
               <Link to={`/hotels/${hotel.id}`}>
-                <h3 className="text-lg font-semibold text-gray-900 group-hover:text-secondary transition-colors leading-tight">
+                <h3 className="text-lg font-semibold text-text-base group-hover:text-secondary transition-colors leading-tight">
                   {hotel.name}
                 </h3>
               </Link>
@@ -64,15 +65,15 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
             {Array.from({ length: hotel.starRating || 5 }).map((_, i) => (
               <Star key={i} className="w-3 h-3 text-secondary fill-secondary" />
             ))}
-            <span className="text-xs text-gray-400 ml-1">({hotel.totalReviews || 0} reviews)</span>
+            <span className="text-xs text-text-muted ml-1">({hotel.totalReviews || 0} reviews)</span>
           </div>
 
-          <div className="flex items-end justify-between pt-4 mt-4 border-t border-gray-50">
+          <div className="flex items-end justify-between pt-4 mt-4 border-t border-border-base/50">
             <div>
-              <span className="text-xs text-gray-400">From</span>
+              <span className="text-xs text-text-muted">From</span>
               <div className="flex items-baseline gap-0.5">
-                <span className="text-xl font-bold text-gray-900">${hotel.startingPrice || 199}</span>
-                <span className="text-xs text-gray-400">/night</span>
+                <span className="text-xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
+                <span className="text-xs text-text-muted">/night</span>
               </div>
             </div>
             <Link
@@ -92,7 +93,7 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.4 }}
-      className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-200 hover:shadow-elevated"
+      className="group bg-bg-surface rounded-xl overflow-hidden border border-border-base hover:border-border-strong transition-all duration-200 hover:shadow-elevated"
     >
       <Link to={`/hotels/${hotel.id}`} className="block relative overflow-hidden">
         <div className="aspect-[4/3] w-full overflow-hidden">
@@ -110,34 +111,34 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
         )}
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist.mutate(hotel.id); }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-all hover:scale-110"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-gray-400'}`} />
+          <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
         </button>
       </Link>
 
       <div className="p-4">
         <div className="flex items-start justify-between gap-2 mb-1">
           <Link to={`/hotels/${hotel.id}`} className="flex-1">
-            <h3 className="text-[15px] font-semibold text-gray-900 group-hover:text-secondary transition-colors leading-tight line-clamp-1">
+            <h3 className="text-[15px] font-semibold text-text-base group-hover:text-secondary transition-colors leading-tight line-clamp-1">
               {hotel.name}
             </h3>
           </Link>
           <div className="flex items-center gap-1 shrink-0">
             <Star className="w-3.5 h-3.5 text-secondary fill-secondary" />
-            <span className="text-sm font-semibold text-gray-900">{hotel.rating?.toFixed(1) || '4.5'}</span>
+            <span className="text-sm font-semibold text-text-base">{hotel.rating?.toFixed(1) || '4.5'}</span>
           </div>
         </div>
 
-        <p className="text-sm text-gray-400 mb-3">{hotel.city}, {hotel.country}</p>
+        <p className="text-sm text-text-muted mb-3">{hotel.city}, {hotel.country}</p>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+        <div className="flex items-center justify-between pt-3 border-t border-border-base/50">
           <div>
-            <span className="text-[11px] text-gray-400 block">From</span>
-            <span className="text-base font-bold text-gray-900">
+            <span className="text-[11px] text-text-muted block">From</span>
+            <span className="text-base font-bold text-text-base">
               ${hotel.startingPrice || 199}
-              <span className="text-xs text-gray-400 font-normal ml-0.5">/night</span>
+              <span className="text-xs text-text-muted font-normal ml-0.5">/night</span>
             </span>
           </div>
           <Link
@@ -150,4 +151,6 @@ export default function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelC
       </div>
     </motion.div>
   );
-}
+});
+
+export default HotelCard;
