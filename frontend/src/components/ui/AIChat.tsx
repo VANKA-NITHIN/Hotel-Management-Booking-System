@@ -83,7 +83,7 @@ export default function AIChat() {
           'X-Title': 'LuxuryStay Agent',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-exp:free', // Fast and excellent at tool calling
+          model: 'openrouter/free', // Fallback to best available free model
           messages: chatHistory.map(m => {
             const cleanMsg: any = { role: m.role, content: m.content || "" };
             if (m.name) cleanMsg.name = m.name;
