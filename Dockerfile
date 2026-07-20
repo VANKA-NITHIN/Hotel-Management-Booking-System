@@ -14,7 +14,7 @@ RUN mvn clean package -DskipTests
 
 
 # Runtime stage
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
 # Copy the built jar from the build stage
@@ -27,7 +27,7 @@ EXPOSE 8080
 ENV TZ=UTC
 
 # Run as non-root user for security
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
