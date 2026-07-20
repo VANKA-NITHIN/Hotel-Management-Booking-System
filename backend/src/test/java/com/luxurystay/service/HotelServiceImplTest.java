@@ -55,7 +55,7 @@ public class HotelServiceImplTest {
                 .name("Grand Plaza")
                 .city("New York")
                 .country("USA")
-                .rating(4.5)
+                .rating(BigDecimal.valueOf(4.5))
                 .build();
     }
 
