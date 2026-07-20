@@ -5,7 +5,7 @@ public class WaitDB {
         String dbUrl = System.getenv("DB_URL");
         if (dbUrl == null || dbUrl.trim().isEmpty()) {
             System.out.println("WaitDB: DB_URL is not set. Skipping wait.");
-            System.exit(0);
+            return;
         }
         
         System.out.println("WaitDB: Parsing DB_URL: " + dbUrl);
@@ -23,11 +23,11 @@ public class WaitDB {
                 }
             } else {
                 System.out.println("WaitDB: Unrecognized DB_URL format. Skipping wait.");
-                System.exit(0);
+                return;
             }
         } catch (Exception e) {
             System.out.println("WaitDB: Failed to parse DB_URL. Skipping wait.");
-            System.exit(0);
+            return;
         }
         
         int maxAttempts = 60; // 3 minutes max wait (60 * 3s)
@@ -38,7 +38,7 @@ public class WaitDB {
         while (attempt < maxAttempts) {
             try (Socket s = new Socket(host, port)) {
                 System.out.println("WaitDB: Successfully connected to database!");
-                System.exit(0);
+                return;
             } catch (Exception e) {
                 attempt++;
                 System.out.println("WaitDB: Attempt " + attempt + " - Database not ready. Waiting 3 seconds...");
