@@ -19,6 +19,8 @@ const sortOptions = [
   { value: 'name', label: 'Name: A-Z' },
 ];
 
+const AMENITIES_LIST = ['Swimming Pool', 'Spa', 'Gym', 'Free WiFi', 'Parking', 'Restaurant'];
+
 export default function HotelsPage() {
   usePageTitle('Hotels');
 
@@ -29,6 +31,7 @@ export default function HotelsPage() {
   const [minPrice, setMinPrice] = useState<number | undefined>();
   const [maxPrice, setMaxPrice] = useState<number | undefined>();
   const [minRating, setMinRating] = useState<number | undefined>();
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [sort, setSort] = useState('rating');
   const [page, setPage] = useState(0);
 
@@ -38,9 +41,16 @@ export default function HotelsPage() {
     sort, page, size: 12,
   });
 
-  const hotels = data?.data?.content || [];
+  const fetchedHotels = data?.data?.content || [];
+  
+  // Smart local filtering for amenities
+  const hotels = fetchedHotels.filter((hotel: Hotel) => {
+    if (selectedAmenities.length === 0) return true;
+    return selectedAmenities.every(amenity => hotel.amenities?.some(a => a.name === amenity));
+  });
+
   const totalPages = data?.data?.totalPages || 0;
-  const totalElements = data?.data?.totalElements || 0;
+  const totalElements = hotels.length;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,10 +61,17 @@ export default function HotelsPage() {
   const clearFilters = () => {
     setSearch(''); setCity(''); setMinPrice(undefined);
     setMaxPrice(undefined); setMinRating(undefined);
+    setSelectedAmenities([]);
     setSort('rating'); setPage(0);
   };
 
-  const hasActiveFilters = !!(city || minPrice || maxPrice || minRating);
+  const hasActiveFilters = !!(city || minPrice || maxPrice || minRating || selectedAmenities.length > 0);
+
+  const toggleAmenity = (amenity: string) => {
+    setSelectedAmenities(prev => 
+      prev.includes(amenity) ? prev.filter(a => a !== amenity) : [...prev, amenity]
+    );
+  };
 
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
@@ -195,6 +212,26 @@ export default function HotelsPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Smart Amenities */}
+                <div className="sm:col-span-2 lg:col-span-4 border-t border-border-base pt-6">
+                  <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-3 block">Smart Amenities</label>
+                  <div className="flex flex-wrap gap-2">
+                    {AMENITIES_LIST.map((amenity) => (
+                      <button
+                        key={amenity}
+                        onClick={() => toggleAmenity(amenity)}
+                        className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                          selectedAmenities.includes(amenity)
+                            ? 'bg-primary text-white border-primary shadow-md'
+                            : 'bg-bg-surface-hover text-text-muted border-border-base hover:border-primary/50'
+                        }`}
+                      >
+                        {amenity}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -229,6 +266,12 @@ export default function HotelsPage() {
                 <button onClick={() => setMinRating(undefined)} className="hover:text-primary"><X className="w-3.5 h-3.5" /></button>
               </span>
             )}
+            {selectedAmenities.map(amenity => (
+              <span key={amenity} className="px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold flex items-center gap-1.5">
+                {amenity}
+                <button onClick={() => toggleAmenity(amenity)} className="hover:text-secondary"><X className="w-3.5 h-3.5" /></button>
+              </span>
+            ))}
           </div>
         </div>
       )}

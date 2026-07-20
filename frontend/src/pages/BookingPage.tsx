@@ -66,7 +66,29 @@ export default function BookingPage() {
     : 1;
 
   const pricePerNight = hotel?.startingPrice || 450;
-  const subtotal = pricePerNight * nights;
+    
+  // Dynamic Pricing Calculation
+  let subtotal = 0;
+  let hasWeekendSurcharge = false;
+  let weekendSurchargeAmount = 0;
+
+  if (watchCheckIn && watchCheckOut && nights > 0) {
+    const start = new Date(watchCheckIn);
+    for (let i = 0; i < nights; i++) {
+      const current = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+      const day = current.getDay(); // 0 is Sunday, 5 is Friday, 6 is Saturday
+      if (day === 5 || day === 6) {
+        subtotal += pricePerNight * 1.2;
+        weekendSurchargeAmount += pricePerNight * 0.2;
+        hasWeekendSurcharge = true;
+      } else {
+        subtotal += pricePerNight;
+      }
+    }
+  } else {
+    subtotal = pricePerNight * nights;
+  }
+
   const tax = subtotal * 0.10;
   const serviceCharge = subtotal * 0.05;
   const total = subtotal + tax + serviceCharge - couponDiscount;
@@ -409,9 +431,15 @@ export default function BookingPage() {
 
               <div className="space-y-4 text-sm mb-8">
                 <div className="flex justify-between text-text-base">
-                  <span>${pricePerNight} × {nights} nights</span>
-                  <span className="font-medium">${subtotal.toLocaleString()}</span>
+                  <span>${pricePerNight.toLocaleString()} × {nights} nights</span>
+                  <span className="font-medium">${(pricePerNight * nights).toLocaleString()}</span>
                 </div>
+                {hasWeekendSurcharge && (
+                  <div className="flex justify-between text-warning">
+                    <span className="flex items-center gap-1.5">Weekend Surcharge (+20%)</span>
+                    <span className="font-medium">+${weekendSurchargeAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-text-base">
                   <span className="flex items-center gap-1.5">Taxes (10%) <Info className="w-3.5 h-3.5 text-text-muted" /></span>
                   <span className="font-medium">${tax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>

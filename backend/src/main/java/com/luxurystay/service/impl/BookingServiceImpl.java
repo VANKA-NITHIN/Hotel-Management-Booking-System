@@ -64,9 +64,21 @@ public class BookingServiceImpl implements BookingService {
 
         long nights = java.time.temporal.ChronoUnit.DAYS.between(checkIn, checkOut);
 
-        BigDecimal totalAmount = hotel.getStartingPrice() != null
-                ? hotel.getStartingPrice().multiply(BigDecimal.valueOf(nights))
-                : BigDecimal.ZERO;
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        BigDecimal basePrice = hotel.getStartingPrice() != null ? hotel.getStartingPrice() : BigDecimal.ZERO;
+        
+        for (int i = 0; i < nights; i++) {
+            java.time.LocalDate currentDate = checkIn.plusDays(i);
+            java.time.DayOfWeek day = currentDate.getDayOfWeek();
+            BigDecimal dailyPrice = basePrice;
+            
+            // Dynamic Pricing: Weekend Surcharge (+20% for Friday and Saturday)
+            if (day == java.time.DayOfWeek.FRIDAY || day == java.time.DayOfWeek.SATURDAY) {
+                dailyPrice = dailyPrice.multiply(BigDecimal.valueOf(1.2));
+            }
+            
+            totalAmount = totalAmount.add(dailyPrice);
+        }
 
         BigDecimal tax = totalAmount.multiply(BigDecimal.valueOf(0.10));
         BigDecimal serviceCharge = totalAmount.multiply(BigDecimal.valueOf(0.05));
