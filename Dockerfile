@@ -11,17 +11,14 @@ RUN mvn dependency:go-offline -B
 COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
-# Compile WaitDB script
-COPY backend/WaitDB.java .
-RUN javac WaitDB.java
+
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copy the built jar and wait script from the build stage
+# Copy the built jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
-COPY --from=build /app/WaitDB.class .
 
 # Expose the port the app runs on
 EXPOSE 8080
@@ -34,5 +31,5 @@ RUN addgroup -S spring && adduser -S spring -G spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
-# Run the application (with robust Java-based wait for DB initialization)
-ENTRYPOINT ["sh", "-c", "java WaitDB.java; exec java -jar app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
