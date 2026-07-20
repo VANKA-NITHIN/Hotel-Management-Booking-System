@@ -54,6 +54,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/amenities").permitAll()
                 .requestMatchers(HttpMethod.GET, "/coupons/validate/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/search/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
                 // AI Assistant (authenticated users only)
                 .requestMatchers("/ai/**").authenticated()
                 // Payment endpoints
