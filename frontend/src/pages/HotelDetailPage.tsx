@@ -59,6 +59,14 @@ export default function HotelDetailPage() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
+  
+  const [selectedRooms, setSelectedRooms] = useState<number[]>([]);
+
+  const toggleRoomSelection = (roomId: number) => {
+    setSelectedRooms(prev => 
+      prev.includes(roomId) ? prev.filter(id => id !== roomId) : [...prev, roomId]
+    );
+  };
 
   const submitReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -317,10 +325,11 @@ export default function HotelDetailPage() {
                       )}
                       <div className="mt-auto pt-5">
                         <Button
+                          variant={selectedRooms.includes(room.id!) ? 'primary' : 'outline'}
                           fullWidth
-                          onClick={() => navigate(`/booking?hotelId=${hotel.id}&roomId=${room.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}
+                          onClick={() => toggleRoomSelection(room.id!)}
                         >
-                          Reserve Room
+                          {selectedRooms.includes(room.id!) ? 'Selected' : 'Select Room'}
                         </Button>
                       </div>
                     </div>
@@ -328,6 +337,24 @@ export default function HotelDetailPage() {
                 )) : (
                   <EmptyState title="No rooms available" description="Try different dates or check back later." />
                 )}
+                
+                <AnimatePresence>
+                  {selectedRooms.length > 0 && (
+                    <motion.div
+                      initial={{ y: 100, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 100, opacity: 0 }}
+                      className="fixed bottom-0 left-0 right-0 p-4 bg-bg-surface border-t border-border-base shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 flex items-center justify-between lg:px-[15%] 2xl:px-[25%]"
+                    >
+                      <div>
+                        <p className="text-lg font-bold text-text-base">{selectedRooms.length} Room{selectedRooms.length > 1 ? 's' : ''} Selected</p>
+                      </div>
+                      <Button onClick={() => navigate(`/booking?hotelId=${hotel.id}&roomId=${selectedRooms.join(',')}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}>
+                        Continue to Checkout
+                      </Button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 

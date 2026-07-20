@@ -65,7 +65,20 @@ public class BookingServiceImpl implements BookingService {
         long nights = java.time.temporal.ChronoUnit.DAYS.between(checkIn, checkOut);
 
         BigDecimal totalAmount = BigDecimal.ZERO;
-        BigDecimal basePrice = hotel.getStartingPrice() != null ? hotel.getStartingPrice() : BigDecimal.ZERO;
+        java.util.List<com.luxurystay.entity.Room> selectedRooms = new java.util.ArrayList<>();
+        
+        if (bookingDTO.getRoomIds() != null && !bookingDTO.getRoomIds().isEmpty()) {
+            selectedRooms = roomRepository.findAllById(bookingDTO.getRoomIds());
+        }
+
+        BigDecimal basePrice = BigDecimal.ZERO;
+        if (!selectedRooms.isEmpty()) {
+            for (com.luxurystay.entity.Room r : selectedRooms) {
+                basePrice = basePrice.add(r.getPricePerNight());
+            }
+        } else {
+            basePrice = hotel.getStartingPrice() != null ? hotel.getStartingPrice() : BigDecimal.ZERO;
+        }
         
         for (int i = 0; i < nights; i++) {
             java.time.LocalDate currentDate = checkIn.plusDays(i);
@@ -121,6 +134,21 @@ public class BookingServiceImpl implements BookingService {
                 .couponCode(bookingDTO.getCouponCode())
                 .specialRequests(bookingDTO.getSpecialRequests())
                 .build();
+
+        // Create BookingRoom entities
+        if (!selectedRooms.isEmpty()) {
+            java.util.List<com.luxurystay.entity.BookingRoom> bookingRooms = new java.util.ArrayList<>();
+            for (com.luxurystay.entity.Room r : selectedRooms) {
+                com.luxurystay.entity.BookingRoom br = com.luxurystay.entity.BookingRoom.builder()
+                        .booking(booking)
+                        .room(r)
+                        .pricePerNight(r.getPricePerNight())
+                        .quantity(1)
+                        .build();
+                bookingRooms.add(br);
+            }
+            booking.setBookingRooms(bookingRooms);
+        }
 
         booking = bookingRepository.save(booking);
 

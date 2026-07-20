@@ -20,6 +20,8 @@ public class BookingDTO {
     @NotNull(message = "Hotel ID is required")
     private Long hotelId;
 
+    private java.util.List<Long> roomIds;
+
     @NotNull(message = "Check-in date is required")
     private String checkInDate;
 

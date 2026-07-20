@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Users, MapPin, ArrowLeft, CheckCircle, Shield, CreditCard, Lock, Info, Star, Check, ArrowRight } from 'lucide-react';
 import { useAuth } from '@clerk/clerk-react';
-import { useHotel, useCreateBooking } from '../hooks/useApi';
+import { useHotel, useRooms, useCreateBooking } from '../hooks/useApi';
 import { bookingSchema, type BookingFormData } from '../validation/schemas';
 import { BookingSkeleton } from '../components/ui/Skeleton';
+import type { Room } from '../types';
 import toast from 'react-hot-toast';
 import { razorpayApi } from '../api';
 import { loadRazorpay } from '../utils/razorpay';
@@ -26,8 +27,14 @@ export default function BookingPage() {
   const { isSignedIn } = useAuth();
 
   const { data: hotelData, isLoading } = useHotel(hotelId);
+  const { data: roomsData } = useRooms(hotelId);
   const createBooking = useCreateBooking();
   const hotel = hotelData?.data;
+  const allRooms = (roomsData?.data?.content || []) as Room[];
+
+  const rawRoomIds = searchParams.get('roomId');
+  const selectedRoomIds = rawRoomIds ? rawRoomIds.split(',').map(Number) : [];
+  const selectedRooms = allRooms.filter(r => selectedRoomIds.includes(r.id!));
 
   const [step, setStep] = usePersistentState(`booking_step_${hotelId}`, 1);
   const [couponDiscount, setCouponDiscount] = usePersistentState(`booking_discount_${hotelId}`, 0);
@@ -65,7 +72,13 @@ export default function BookingPage() {
     ? Math.max(1, Math.ceil((new Date(watchCheckOut).getTime() - new Date(watchCheckIn).getTime()) / 86400000))
     : 1;
 
-  const pricePerNight = hotel?.startingPrice || 450;
+  // If rooms are selected, sum their prices. Otherwise fallback to hotel starting price.
+  let pricePerNight = 0;
+  if (selectedRooms.length > 0) {
+    pricePerNight = selectedRooms.reduce((sum, room) => sum + room.pricePerNight, 0);
+  } else {
+    pricePerNight = hotel?.startingPrice || 450;
+  }
     
   // Dynamic Pricing Calculation
   let subtotal = 0;
@@ -151,6 +164,7 @@ export default function BookingPage() {
 
             await createBooking.mutateAsync({
               hotelId,
+              roomIds: selectedRoomIds.length > 0 ? selectedRoomIds : undefined,
               checkInDate: data.checkIn,
               checkOutDate: data.checkOut,
               guestCount: data.guests,
