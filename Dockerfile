@@ -31,4 +31,4 @@ RUN chown -R spring:spring /app
 USER spring:spring
 
 # Run the application (with robust Java-based wait for DB initialization)
-ENTRYPOINT ["sh", "-c", "if [ -n \"$WAIT_FOR_DB_HOST\" ]; then java WaitDB.java $WAIT_FOR_DB_HOST $WAIT_FOR_DB_PORT; fi; exec java -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java WaitDB.java; exec java -jar app.jar"]
