@@ -1,0 +1,7 @@
+{
+  "name": "hotel-management-booking-system-root",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  }
+}
