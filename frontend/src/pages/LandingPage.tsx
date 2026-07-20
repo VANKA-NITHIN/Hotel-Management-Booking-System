@@ -88,7 +88,7 @@ export default function LandingPage() {
             className="w-full h-[120%] object-cover"
             priority={true}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/40 via-neutral-900/20 to-neutral-900/80" />
+          <div className="absolute inset-0 bg-linear-to-b from-neutral-900/40 via-neutral-900/20 to-neutral-900/80" />
         </motion.div>
 
         <motion.div
@@ -250,8 +250,8 @@ export default function LandingPage() {
                     alt={dest.name}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
-                  <div className="absolute inset-0 bg-linear-to-b from-bg-base/60 via-bg-base/30 to-bg-base/90 pointer-events-none" />
-                  <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bg-surface/50 to-bg-surface z-10 pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6 z-20">
                     <h3 className="text-white font-serif font-bold text-xl lg:text-2xl">{dest.name}</h3>
                     <p className="text-white/80 text-sm mt-1">{dest.hotels} Premium Properties</p>
                   </div>

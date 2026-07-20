@@ -39,6 +39,10 @@ api.interceptors.request.use(
 
 import toast from 'react-hot-toast';
 
+// Debounce state for network errors
+let lastNetworkErrorTime = 0;
+const NETWORK_ERROR_COOLDOWN = 5000; // 5 seconds
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
@@ -81,7 +85,11 @@ api.interceptors.response.use(
       }
     } else if (error.request) {
       // Network errors
-      toast.error('Network error. Please check your connection.');
+      const now = Date.now();
+      if (now - lastNetworkErrorTime > NETWORK_ERROR_COOLDOWN) {
+        toast.error('Network error. Please check your connection or wait for the server to wake up.');
+        lastNetworkErrorTime = now;
+      }
     }
 
     return Promise.reject(error);
