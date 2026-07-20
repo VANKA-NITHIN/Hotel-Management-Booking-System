@@ -31,6 +31,9 @@ export { CurrencySelector } from './CurrencySelector';
 export { InvoiceModal } from './InvoiceModal';
 export { ShareModal } from './ShareModal';
 export { ReviewFormModal } from './ReviewFormModal';
+export { RoomComparisonModal } from './RoomComparisonModal';
+export { PromoCodeModal } from './PromoCodeModal';
+
 
 
 

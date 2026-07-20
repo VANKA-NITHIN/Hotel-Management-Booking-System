@@ -17,6 +17,7 @@ import { AIReviewSummary } from '../components/ui/AIReviewSummary';
 import { PriceCalendar } from '../components/ui/PriceCalendar';
 import { ShareModal } from '../components/ui/ShareModal';
 import { ReviewFormModal } from '../components/ui/ReviewFormModal';
+import { RoomComparisonModal } from '../components/ui/RoomComparisonModal';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -63,6 +64,7 @@ export default function HotelDetailPage() {
   
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -309,6 +311,17 @@ export default function HotelDetailPage() {
 
             {activeTab === 'rooms' && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-6">
+                {rooms.length > 1 && (
+                  <div className="flex items-center justify-between bg-bg-surface p-4 rounded-2xl border border-border-base shadow-sm">
+                    <div>
+                      <h3 className="font-bold text-sm text-text-base">Available Accommodations</h3>
+                      <p className="text-xs text-text-muted">{rooms.length} room types available for your stay</p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => setIsCompareOpen(true)}>
+                      Compare Room Types
+                    </Button>
+                  </div>
+                )}
                 {rooms.length > 0 ? rooms.map((room) => (
                   <div key={room.id} className="bg-bg-surface rounded-2xl border border-border-base p-5 flex flex-col sm:flex-row gap-6 shadow-sm hover:border-border-strong transition-colors">
                     <div className="sm:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-bg-surface-hover relative group">
@@ -643,6 +656,21 @@ export default function HotelDetailPage() {
           onClose={() => setIsReviewFormOpen(false)}
           hotelId={hotel.id}
           hotelName={hotel.name}
+        />
+      )}
+
+      {rooms.length > 0 && (
+        <RoomComparisonModal
+          isOpen={isCompareOpen}
+          onClose={() => setIsCompareOpen(false)}
+          rooms={rooms}
+          onSelectRoom={(room) => {
+            if (checkIn && checkOut) {
+              navigate(`/booking?hotelId=${hotel?.id}&roomId=${room.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
+            } else {
+              document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
         />
       )}
     </div>

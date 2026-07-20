@@ -14,6 +14,8 @@ import { razorpayApi } from '../api';
 import { loadRazorpay } from '../utils/razorpay';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { usePersistentState } from '../hooks/usePersistentState';
+import { PromoCodeModal } from '../components/ui/PromoCodeModal';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { DatePicker } from '../components/ui/DatePicker';
@@ -36,8 +38,11 @@ export default function BookingPage() {
   const selectedRoomIds = rawRoomIds ? rawRoomIds.split(',').map(Number) : [];
   const selectedRooms = allRooms.filter(r => selectedRoomIds.includes(r.id!));
 
+  const { formatPrice } = useCurrency();
   const [step, setStep] = usePersistentState(`booking_step_${hotelId}`, 1);
   const [couponDiscount, setCouponDiscount] = usePersistentState(`booking_discount_${hotelId}`, 0);
+  const [isPromoModalOpen, setIsPromoModalOpen] = usePersistentState<boolean>(`booking_promo_modal_${hotelId}`, false);
+  const [appliedCode, setAppliedCode] = usePersistentState<string>(`booking_applied_code_${hotelId}`, '');
 
   const savedForm = sessionStorage.getItem(`booking_form_${hotelId}`);
   const initialForm = savedForm ? JSON.parse(savedForm) : null;
@@ -472,10 +477,19 @@ export default function BookingPage() {
 
               {step < 3 && (
                 <div className="mb-8 pt-8 border-t border-border-base">
-                  <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Have a coupon?</p>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Have a coupon?</p>
+                    <button
+                      type="button"
+                      onClick={() => setIsPromoModalOpen(true)}
+                      className="text-xs font-bold text-primary hover:underline"
+                    >
+                      View Available Coupons
+                    </button>
+                  </div>
                   <div className="flex gap-2">
                     <Input 
-                      placeholder="e.g. LUXURY20" 
+                      placeholder="e.g. LUXURY2026" 
                       {...register('couponCode')}
                       className="uppercase"
                     />
@@ -489,12 +503,27 @@ export default function BookingPage() {
                   <span className="text-base font-bold text-text-base block">Total Amount</span>
                   <span className="text-xs font-medium text-text-muted mt-1 block">Includes all taxes and fees</span>
                 </div>
-                <span className="text-3xl font-bold text-text-base">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                <span className="text-3xl font-bold text-text-base">{formatPrice(total)}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <PromoCodeModal
+        isOpen={isPromoModalOpen}
+        onClose={() => setIsPromoModalOpen(false)}
+        appliedCode={appliedCode}
+        onApplyPromo={(promo) => {
+          setValue('couponCode', promo.code);
+          setAppliedCode(promo.code);
+          if (promo.discountType === 'percentage') {
+            setCouponDiscount(Math.round((total * promo.discountValue) / 100));
+          } else {
+            setCouponDiscount(promo.discountValue);
+          }
+        }}
+      />
     </div>
   );
 }
