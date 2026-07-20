@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "rooms", indexes = {
     @Index(name = "idx_room_hotel", columnList = "hotel_id"),
-    @Index(name = "idx_room_status", columnList = "status")
+    @Index(name = "idx_room_status", columnList = "room_status")
 })
 @Getter
 @Setter
@@ -61,7 +61,7 @@ public class Room {
 
     private int floor;
 
-    @Column(nullable = false)
+    @Column(name = "room_status", nullable = false)
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private RoomStatus status = RoomStatus.AVAILABLE;

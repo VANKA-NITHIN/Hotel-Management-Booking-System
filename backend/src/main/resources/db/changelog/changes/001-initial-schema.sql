@@ -13,7 +13,7 @@ CREATE TABLE users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(255),
     phone VARCHAR(20),
     profile_image VARCHAR(500),
     role VARCHAR(50) NOT NULL DEFAULT 'ROLE_CUSTOMER',
@@ -28,6 +28,10 @@ CREATE TABLE users (
     oauth_provider VARCHAR(50),
     oauth_provider_id VARCHAR(255),
     loyalty_points INT DEFAULT 0,
+    email_bookings BOOLEAN NOT NULL DEFAULT TRUE,
+    email_promotions BOOLEAN NOT NULL DEFAULT FALSE,
+    push_bookings BOOLEAN NOT NULL DEFAULT TRUE,
+    push_promotions BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
