@@ -31,5 +31,5 @@ RUN addgroup -S spring && adduser -S spring -G spring
 RUN chown -R spring:spring /app
 USER spring:spring
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application with explicit memory limits for Render free tier
+ENTRYPOINT ["java", "-Xmx300m", "-jar", "app.jar"]

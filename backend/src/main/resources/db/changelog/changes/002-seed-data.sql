@@ -54,7 +54,7 @@ INSERT INTO rooms (hotel_id, name, description, room_type, price_per_night, max_
 (6, 'Bamboo Bungalow', 'Eco-friendly bamboo bungalow with traditional Balinese design.', 'DELUXE', 320.00, 2, 1, 'Queen', 2, 'AVAILABLE', TRUE, 45, 'Garden', 201);
 
 -- Default Settings
-INSERT INTO settings (`key`, value, description, type) VALUES
+INSERT INTO settings (setting_key, setting_value, description, type) VALUES
 ('site_name', 'LuxuryStay', 'Website name', 'STRING'),
 ('site_description', 'Luxury Hotel Management & Online Booking Platform', 'Website description', 'STRING'),
 ('currency', 'USD', 'Default currency', 'STRING'),
