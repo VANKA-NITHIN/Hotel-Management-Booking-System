@@ -21,6 +21,8 @@ import { RoomComparisonModal } from '../components/ui/RoomComparisonModal';
 import { WeatherWidget } from '../components/ui/WeatherWidget';
 import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
 import { VirtualTourModal } from '../components/ui/VirtualTourModal';
+import { ResortActivityModal } from '../components/ui/ResortActivityModal';
+import { ItineraryModal } from '../components/ui/ItineraryModal';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -70,6 +72,8 @@ export default function HotelDetailPage() {
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isConciergeOpen, setIsConciergeOpen] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [isActivityOpen, setIsActivityOpen] = useState(false);
+  const [isItineraryOpen, setIsItineraryOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -252,6 +256,22 @@ export default function HotelDetailPage() {
                   >
                     <Compass className="w-4 h-4 text-primary" />
                     <span>360° Tour</span>
+                  </button>
+                  <button 
+                    onClick={() => setIsActivityOpen(true)}
+                    className="px-4 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center gap-2 hover:bg-amber-500/20 transition-all shadow-sm text-xs font-bold text-amber-600"
+                    title="Book Resort Experiences"
+                  >
+                    <UtensilsCrossed className="w-4 h-4 text-amber-600" />
+                    <span>Experiences</span>
+                  </button>
+                  <button 
+                    onClick={() => setIsItineraryOpen(true)}
+                    className="px-4 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center gap-2 hover:bg-indigo-500/20 transition-all shadow-sm text-xs font-bold text-indigo-600"
+                    title="View AI Travel Itinerary"
+                  >
+                    <MapPin className="w-4 h-4 text-indigo-600" />
+                    <span>AI Guide</span>
                   </button>
                 </div>
               </div>
@@ -709,6 +729,19 @@ export default function HotelDetailPage() {
       <VirtualTourModal
         isOpen={isTourOpen}
         onClose={() => setIsTourOpen(false)}
+        hotelName={hotel?.name}
+      />
+
+      <ResortActivityModal
+        isOpen={isActivityOpen}
+        onClose={() => setIsActivityOpen(false)}
+        hotelName={hotel?.name}
+      />
+
+      <ItineraryModal
+        isOpen={isItineraryOpen}
+        onClose={() => setIsItineraryOpen(false)}
+        cityName={hotel?.city}
         hotelName={hotel?.name}
       />
     </div>

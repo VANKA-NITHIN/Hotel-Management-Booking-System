@@ -37,6 +37,9 @@ export { ConciergeRequestModal } from './ConciergeRequestModal';
 export { WeatherWidget } from './WeatherWidget';
 export { VirtualTourModal } from './VirtualTourModal';
 export { LoyaltyTierModal } from './LoyaltyTierModal';
+export { ResortActivityModal } from './ResortActivityModal';
+export { ItineraryModal } from './ItineraryModal';
+
 
 
 
