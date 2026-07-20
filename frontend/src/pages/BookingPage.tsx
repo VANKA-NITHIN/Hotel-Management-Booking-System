@@ -113,7 +113,7 @@ export default function BookingPage() {
       }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_YOUR_KEY',
+        key: import.meta.env.VITE_RAZORPAY_KEY || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_YOUR_KEY',
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'LuxuryStay',
