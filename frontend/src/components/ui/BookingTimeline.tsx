@@ -7,21 +7,28 @@ export interface BookingTimelineProps {
   className?: string;
 }
 
-const steps = [
+const standardSteps = [
   { id: 'PENDING', label: 'Booking Placed', description: 'Waiting for payment' },
   { id: 'CONFIRMED', label: 'Confirmed', description: 'Payment received' },
   { id: 'CHECKED_IN', label: 'Checked In', description: 'Enjoy your stay' },
   { id: 'COMPLETED', label: 'Completed', description: 'Checkout successful' },
 ];
 
+const cancelledSteps = [
+  { id: 'PENDING', label: 'Booking Placed', description: 'Waiting for payment' },
+  { id: 'CANCELLED', label: 'Cancelled', description: 'Booking was cancelled' },
+];
+
 export function BookingTimeline({ status, className = '' }: BookingTimelineProps) {
+  const activeSteps = status === 'CANCELLED' ? cancelledSteps : standardSteps;
+
   const getStepStatus = (stepId: string, currentStatus: BookingStatus) => {
     if (currentStatus === 'CANCELLED') {
       return stepId === 'PENDING' ? 'completed' : 'cancelled';
     }
     
-    const currentIndex = steps.findIndex(s => s.id === currentStatus);
-    const stepIndex = steps.findIndex(s => s.id === stepId);
+    const currentIndex = activeSteps.findIndex(s => s.id === currentStatus);
+    const stepIndex = activeSteps.findIndex(s => s.id === stepId);
     
     if (stepIndex < currentIndex) return 'completed';
     if (stepIndex === currentIndex) return 'current';
@@ -34,13 +41,13 @@ export function BookingTimeline({ status, className = '' }: BookingTimelineProps
       <div className="absolute top-5 left-6 right-6 h-0.5 bg-border-base hidden sm:block" />
       
       <div className="flex flex-col sm:flex-row justify-between gap-6 sm:gap-4 relative z-10">
-        {steps.map((step, index) => {
+        {activeSteps.map((step, index) => {
           const stepStatus = getStepStatus(step.id, status);
           
           return (
             <div key={step.id} className="flex sm:flex-col items-center gap-4 sm:gap-3 flex-1 text-left sm:text-center group">
               {/* Vertical line for mobile */}
-              {index !== steps.length - 1 && (
+              {index !== activeSteps.length - 1 && (
                 <div className="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-0.5 bg-border-base sm:hidden -z-10" />
               )}
               
@@ -49,7 +56,7 @@ export function BookingTimeline({ status, className = '' }: BookingTimelineProps
                 ${stepStatus === 'completed' ? 'bg-success text-white border-success' : ''}
                 ${stepStatus === 'current' ? 'bg-bg-surface text-primary border-primary shadow-sm' : ''}
                 ${stepStatus === 'upcoming' ? 'bg-bg-surface text-text-muted border-border-strong' : ''}
-                ${stepStatus === 'cancelled' && index > 0 ? 'bg-danger text-white border-danger' : ''}
+                ${stepStatus === 'cancelled' ? 'bg-danger text-white border-danger' : ''}
               `}>
                 {stepStatus === 'completed' && <Check className="w-5 h-5" />}
                 {stepStatus === 'current' && <Clock className="w-5 h-5 animate-pulse-soft" />}
@@ -61,12 +68,12 @@ export function BookingTimeline({ status, className = '' }: BookingTimelineProps
                 <h4 className={`text-sm font-bold ${
                   stepStatus === 'current' ? 'text-primary' : 
                   stepStatus === 'completed' ? 'text-text-base' : 
-                  stepStatus === 'cancelled' && index > 0 ? 'text-danger' : 'text-text-muted'
+                  stepStatus === 'cancelled' ? 'text-danger' : 'text-text-muted'
                 }`}>
-                  {status === 'CANCELLED' && index === 1 ? 'Cancelled' : step.label}
+                  {step.label}
                 </h4>
                 <p className="text-xs text-text-muted mt-0.5 sm:mx-auto max-w-[120px]">
-                  {status === 'CANCELLED' && index === 1 ? 'Booking was cancelled' : step.description}
+                  {step.description}
                 </p>
               </div>
             </div>

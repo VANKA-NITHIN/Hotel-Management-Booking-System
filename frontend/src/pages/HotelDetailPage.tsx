@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
 import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
+import { LocationMap } from '../components/ui/LocationMap';
+import { fetchNearbyPOIs, POICategory, POI } from '../api/overpass';
 import { HotelDetailSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -61,6 +63,8 @@ export default function HotelDetailPage() {
   const [reviewComment, setReviewComment] = useState('');
   
   const [selectedRooms, setSelectedRooms] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<POICategory>('restaurant');
+  const [pois, setPois] = useState<POI[]>([]);
 
   const toggleRoomSelection = (roomId: number) => {
     setSelectedRooms(prev => 
@@ -108,7 +112,7 @@ export default function HotelDetailPage() {
     'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=600&h=400&fit=crop',
   ];
 
-  const tabs = ['overview', 'rooms', 'reviews', 'policies'];
+  const tabs = ['overview', 'rooms', 'reviews', 'policies', 'location'];
 
   if (hotelLoading) return <HotelDetailSkeleton />;
   if (!hotel) return (
@@ -498,6 +502,24 @@ export default function HotelDetailPage() {
                   )}
                 </div>
               </motion.div>
+
+          {/* Location Tab */}
+          {activeTab === 'location' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-6">
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {(['restaurant', 'attraction', 'hospital', 'atm', 'shopping', 'park'] as POICategory[]).map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-4 py-1 rounded-full text-sm capitalize ${selectedCategory === cat ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted'} transition-colors`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <LocationMap hotel={hotel!} pois={pois} />
+            </motion.div>
+          )}
             )}
           </div>
 
@@ -588,6 +610,15 @@ export default function HotelDetailPage() {
               navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`);
             } else {
               document.getElementById('booking-widget')?.scrollIntoView({ behavior: 'smooth' });
+
+  // Fetch POIs when location tab is active or category changes
+  useEffect(() => {
+    if (activeTab === 'location' && hotel && hotel.latitude && hotel.longitude) {
+      fetchNearbyPOIs(hotel.latitude, hotel.longitude, selectedCategory)
+        .then(data => setPois(data))
+        .catch(err => console.error('Failed to fetch POIs', err));
+    }
+  }, [activeTab, hotel?.id, selectedCategory]);
             }
           }}
         >
