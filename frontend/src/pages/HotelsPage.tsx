@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown } from 'lucide-react';
+import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon } from 'lucide-react';
 import { useSearchHotels } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
+import { HotelMap } from '../components/ui/HotelMap';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -21,7 +22,7 @@ const sortOptions = [
 export default function HotelsPage() {
   usePageTitle('Hotels');
 
-  const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [view, setView] = useState<'grid' | 'list' | 'map'>('grid');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [city, setCity] = useState('');
@@ -82,6 +83,13 @@ export default function HotelsPage() {
                 aria-label="List view"
               >
                 <List className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setView('map')}
+                className={`p-2 rounded-md transition-all ${view === 'map' ? 'bg-bg-surface text-primary shadow-sm' : 'text-text-muted hover:text-text-base'}`}
+                aria-label="Map view"
+              >
+                <MapIcon className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -236,14 +244,18 @@ export default function HotelsPage() {
           </div>
         ) : hotels.length > 0 ? (
           <>
-            <div className={view === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-              : 'space-y-6'
-            }>
-              {hotels.map((hotel: Hotel, i: number) => (
-                <HotelCard key={hotel.id} hotel={hotel} index={i} variant={view} />
-              ))}
-            </div>
+            {view === 'map' ? (
+              <HotelMap hotels={hotels} />
+            ) : (
+              <div className={view === 'grid'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                : 'space-y-6'
+              }>
+                {hotels.map((hotel: Hotel, i: number) => (
+                  <HotelCard key={hotel.id} hotel={hotel} index={i} variant={view} />
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             {totalPages > 1 && (
