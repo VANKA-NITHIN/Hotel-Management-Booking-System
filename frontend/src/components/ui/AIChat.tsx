@@ -264,7 +264,7 @@ export default function AIChat() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -288,7 +288,7 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-[100] w-[380px] max-w-[calc(100vw-3rem)] bg-bg-surface rounded-2xl shadow-2xl border border-border-base overflow-hidden flex flex-col"
+            className="fixed bottom-24 right-6 z-100 w-[380px] max-w-[calc(100vw-3rem)] bg-bg-surface rounded-2xl shadow-2xl border border-border-base overflow-hidden flex flex-col"
             style={{ height: '500px', maxHeight: 'calc(100vh - 8rem)' }}
           >
             <div className="gradient-bg p-4 text-white">

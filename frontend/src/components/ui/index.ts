@@ -39,10 +39,8 @@ export { VirtualTourModal } from './VirtualTourModal';
 export { LoyaltyTierModal } from './LoyaltyTierModal';
 export { ResortActivityModal } from './ResortActivityModal';
 export { ItineraryModal } from './ItineraryModal';
-
-
-
-
+export { BookingConfirmationModal } from './BookingConfirmationModal';
+export { GuestReviewHighlights } from './GuestReviewHighlights';
 
 
 

@@ -14,6 +14,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Badge, statusBadge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { OptimizedImage } from '../components/ui/Image';
+import { BookingTimeline } from '../components/ui/BookingTimeline';
 import { LoyaltyCard } from '../components/ui/LoyaltyCard';
 import { authApi } from '../api';
 import { useQuery } from '@tanstack/react-query';
@@ -159,6 +160,11 @@ export default function DashboardPage() {
                                   <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1">Check-out</p>
                                   <p className="text-sm font-bold text-text-base flex items-center gap-1.5"><Calendar className="w-4 h-4 text-text-muted" /> {booking.checkOutDate}</p>
                                </div>
+                            </div>
+                            
+                            {/* Booking Progress Timeline */}
+                            <div className="mt-5 pt-5 border-t border-border-base">
+                              <BookingTimeline status={booking.status} />
                             </div>
                           </div>
                         </div>

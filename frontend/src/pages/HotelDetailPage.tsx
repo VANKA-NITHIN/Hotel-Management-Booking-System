@@ -23,6 +23,7 @@ import { ConciergeRequestModal } from '../components/ui/ConciergeRequestModal';
 import { VirtualTourModal } from '../components/ui/VirtualTourModal';
 import { ResortActivityModal } from '../components/ui/ResortActivityModal';
 import { ItineraryModal } from '../components/ui/ItineraryModal';
+import { GuestReviewHighlights } from '../components/ui/GuestReviewHighlights';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
@@ -427,6 +428,9 @@ export default function HotelDetailPage() {
                 
                 {/* AI Review Summary Widget */}
                 <AIReviewSummary reviews={reviews} hotelName={hotel.name} />
+
+                {/* Guest Highlights — Social Proof */}
+                <GuestReviewHighlights />
 
                 <div className="space-y-6 mt-8">
                   <div className="flex items-center justify-between">
