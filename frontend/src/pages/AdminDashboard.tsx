@@ -7,7 +7,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import {
   LayoutDashboard, Users, Building2, Bed, Calendar, BarChart3,
   TrendingUp, Settings, Edit, Trash2, Plus,
-  DollarSign, Package, ArrowUp, ArrowDown, MapPin, Star
+  DollarSign, Package, ArrowUp, ArrowDown, MapPin, Star, Download
 } from 'lucide-react';
 import { AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -26,6 +26,8 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Modal } from '../components/ui/Modal';
 import { OptimizedImage } from '../components/ui/Image';
+import { reportApi } from '../api';
+import { useExport } from '../hooks/useExport';
 
 const roomTypeData = [
   { name: 'Luxury Suite', value: 35, color: '#c9a84c' },
@@ -101,6 +103,7 @@ export default function AdminDashboard() {
   const bookings = bookingsData?.data?.content || [];
   const hotels = hotelsData?.data?.content || [];
   const employees = employeesData?.data || [];
+  const { downloadFile, isExporting } = useExport();
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -170,7 +173,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
+        <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
           <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
           <div className="mb-10 px-4 py-4">
             <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Admin Portal</span>
@@ -213,7 +216,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 w-full p-6 lg:p-10 max-w-7xl">
+        <main className="flex-1 w-full p-6 lg:p-10 max-w-[100rem] 3xl:max-w-[140rem] mx-auto">
           {activeTab === 'overview' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
               <h1 className="text-3xl font-serif font-bold text-text-base">Dashboard Overview</h1>
@@ -379,6 +382,14 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-bg-surface rounded-2xl p-8 shadow-sm border border-border-base">
               <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-serif font-bold text-text-base">All Bookings</h1>
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminBookings('pdf'), 'pdf', { filenamePrefix: 'Admin_Bookings' })} disabled={isExporting}>
+                    Export PDF
+                  </Button>
+                  <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminBookings('csv'), 'csv', { filenamePrefix: 'Admin_Bookings' })} disabled={isExporting}>
+                    Export CSV
+                  </Button>
+                </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -413,7 +424,15 @@ export default function AdminDashboard() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-bg-surface rounded-2xl p-8 shadow-sm border border-border-base">
               <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-serif font-bold text-text-base">Employee Directory</h1>
-                <Button onClick={() => openModal()} icon={<Plus className="w-4 h-4" />}>Add Employee</Button>
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminEmployees('pdf'), 'pdf', { filenamePrefix: 'Admin_Employees' })} disabled={isExporting}>
+                    Export PDF
+                  </Button>
+                  <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminEmployees('csv'), 'csv', { filenamePrefix: 'Admin_Employees' })} disabled={isExporting}>
+                    Export CSV
+                  </Button>
+                  <Button onClick={() => openModal()} icon={<Plus className="w-4 h-4" />}>Add Employee</Button>
+                </div>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">

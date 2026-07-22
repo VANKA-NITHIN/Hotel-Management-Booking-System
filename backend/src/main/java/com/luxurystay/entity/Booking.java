@@ -88,6 +88,9 @@ public class Booking {
     @Column(length = 500)
     private String cancellationReason;
 
+    @Embedded
+    private CorporateContext corporateContext;
+
     private LocalDateTime cancelledAt;
 
     @CreationTimestamp
@@ -96,6 +99,9 @@ public class Booking {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CheckIn checkIn;
 
     @Transient
     public int getNights() {

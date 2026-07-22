@@ -55,7 +55,7 @@ export default function SettingsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-bg-surface-hover pt-28 pb-16">
+    <div className="min-h-screen bg-bg-surface-hover pt-28 pb-32 lg:pb-16">
       <div className="container-section max-w-4xl mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base">Preferences</h1>

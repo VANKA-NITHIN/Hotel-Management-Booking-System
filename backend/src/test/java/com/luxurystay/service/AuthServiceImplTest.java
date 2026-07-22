@@ -70,7 +70,7 @@ public class AuthServiceImplTest {
 
     @Test
     void testSyncUser_ExistingUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
         
         RoleEntity customerRoleEntity = RoleEntity.builder().name(Role.ROLE_CUSTOMER).build();
         when(roleRepository.findByName(Role.ROLE_CUSTOMER)).thenReturn(Optional.of(customerRoleEntity));
@@ -87,7 +87,7 @@ public class AuthServiceImplTest {
 
     @Test
     void testSyncUser_NewUser() {
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
         
         RoleEntity adminRoleEntity = RoleEntity.builder().name(Role.ROLE_ADMIN).build();
         when(roleRepository.findByName(Role.ROLE_ADMIN)).thenReturn(Optional.of(adminRoleEntity));

@@ -6,6 +6,8 @@ import com.luxurystay.entity.Hotel;
 import com.luxurystay.entity.Room;
 import com.luxurystay.entity.User;
 import com.luxurystay.enums.BookingStatus;
+import com.luxurystay.event.EventPublisherService;
+import com.luxurystay.event.EventType;
 import com.luxurystay.exception.BadRequestException;
 import com.luxurystay.exception.ResourceNotFoundException;
 import com.luxurystay.mapper.BookingMapper;
@@ -15,6 +17,7 @@ import com.luxurystay.service.EmailService;
 import com.luxurystay.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -43,8 +46,10 @@ public class BookingServiceImpl implements BookingService {
     private final BookingMapper bookingMapper;
     private final EmailService emailService;
     private final NotificationService notificationService;
+    private final EventPublisherService eventPublisherService;
 
     @Override
+    @CacheEvict(value = {"corporateAnalytics", "dashboardStats"}, allEntries = true)
     public BookingDTO createBooking(BookingDTO bookingDTO, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
@@ -169,6 +174,20 @@ public class BookingServiceImpl implements BookingService {
                 "BOOKING_CONFIRMATION",
                 "/dashboard"
             );
+            eventPublisherService.publishBookingEvent(
+                EventType.BOOKING_CREATED, 
+                String.valueOf(booking.getId()), 
+                String.valueOf(userId), 
+                toDTO(booking), 
+                String.valueOf(userId)
+            );
+            eventPublisherService.publishNotificationEvent(
+                EventType.SYSTEM_NOTIFICATION,
+                bookingRef,
+                "SYSTEM",
+                "Your booking " + bookingRef + " is confirmed.",
+                String.valueOf(userId)
+            );
         } catch (Exception e) {
             log.error("Failed to send booking confirmation or notification: {}", e.getMessage());
         }
@@ -273,6 +292,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @CacheEvict(value = {"corporateAnalytics", "dashboardStats"}, allEntries = true)
     public BookingDTO updateBookingStatus(Long id, String status) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "id", id));
@@ -287,6 +307,13 @@ public class BookingServiceImpl implements BookingService {
                 "SYSTEM_ALERT",
                 "/dashboard"
             );
+            eventPublisherService.publishBookingEvent(
+                EventType.BOOKING_UPDATED, 
+                String.valueOf(booking.getId()), 
+                "ADMIN", 
+                toDTO(booking), 
+                String.valueOf(booking.getUser().getId())
+            );
         } catch (Exception e) {
             log.error("Failed to create notification: {}", e.getMessage());
         }
@@ -295,6 +322,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @CacheEvict(value = {"corporateAnalytics", "dashboardStats"}, allEntries = true)
     public BookingDTO cancelBooking(Long id, String reason) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "id", id));
@@ -317,6 +345,13 @@ public class BookingServiceImpl implements BookingService {
                 "Your booking " + booking.getBookingReference() + " has been cancelled.",
                 "SYSTEM_ALERT",
                 "/dashboard"
+            );
+            eventPublisherService.publishBookingEvent(
+                EventType.BOOKING_CANCELLED, 
+                String.valueOf(booking.getId()), 
+                String.valueOf(booking.getUser().getId()), 
+                toDTO(booking), 
+                String.valueOf(booking.getUser().getId())
             );
         } catch (Exception e) {
             log.error("Failed to send booking cancellation or notification: {}", e.getMessage());

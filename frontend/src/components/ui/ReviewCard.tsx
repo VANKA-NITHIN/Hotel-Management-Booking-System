@@ -13,6 +13,11 @@ export interface ReviewProps {
   content: string;
   likes?: number;
   roomType?: string;
+  photos?: string[];
+  cleanlinessRating?: number;
+  serviceRating?: number;
+  locationRating?: number;
+  valueRating?: number;
   onLike?: () => void;
 }
 
@@ -23,6 +28,11 @@ export function ReviewCard({
   content,
   likes = 0,
   roomType,
+  photos = [],
+  cleanlinessRating,
+  serviceRating,
+  locationRating,
+  valueRating,
   onLike,
 }: ReviewProps) {
   return (
@@ -71,6 +81,27 @@ export function ReviewCard({
       <p className="text-sm text-text-base leading-relaxed mb-4">
         {content}
       </p>
+
+      {/* Sub Ratings */}
+      {(cleanlinessRating || serviceRating || locationRating || valueRating) && (
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-4 p-3 bg-bg-surface-hover rounded-lg text-xs">
+          {cleanlinessRating && <div className="flex justify-between text-text-muted"><span>Cleanliness</span><span className="font-bold text-text-base">{cleanlinessRating.toFixed(1)}</span></div>}
+          {serviceRating && <div className="flex justify-between text-text-muted"><span>Service</span><span className="font-bold text-text-base">{serviceRating.toFixed(1)}</span></div>}
+          {locationRating && <div className="flex justify-between text-text-muted"><span>Location</span><span className="font-bold text-text-base">{locationRating.toFixed(1)}</span></div>}
+          {valueRating && <div className="flex justify-between text-text-muted"><span>Value</span><span className="font-bold text-text-base">{valueRating.toFixed(1)}</span></div>}
+        </div>
+      )}
+
+      {/* Photo Gallery */}
+      {photos && photos.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-2 no-scrollbar">
+          {photos.map((photo, idx) => (
+            <div key={idx} className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-bg-surface-hover border border-border-base">
+              <img src={photo} alt="Review" className="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex items-center justify-between mt-auto">
         {roomType ? (

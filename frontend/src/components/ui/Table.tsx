@@ -17,6 +17,7 @@ interface TableProps<T> {
   loading?: boolean;
   emptyMessage?: string;
   className?: string;
+  responsiveMode?: 'scroll' | 'cards';
 }
 
 export function Table<T extends Record<string, any>>({
@@ -26,6 +27,7 @@ export function Table<T extends Record<string, any>>({
   onRowClick,
   emptyMessage = 'No data found',
   className = '',
+  responsiveMode = 'cards',
 }: TableProps<T>) {
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
@@ -56,17 +58,17 @@ export function Table<T extends Record<string, any>>({
   };
 
   return (
-    <div className={`overflow-x-auto ${className}`}>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
+    <div className={`w-full ${responsiveMode === 'scroll' ? 'overflow-x-auto' : ''} ${className}`}>
+      <table className="w-full text-left border-collapse">
+        <thead className={responsiveMode === 'cards' ? 'hidden md:table-header-group' : ''}>
+          <tr className="border-b border-border-base">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`text-left text-xs font-medium text-gray-500 uppercase tracking-wider pb-3 px-4 first:pl-0 last:pr-0 ${col.className || ''} ${col.sortable ? 'cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-300' : ''}`}
+                className={`text-xs font-semibold text-text-muted uppercase tracking-wider py-3 px-4 first:pl-4 last:pr-4 md:first:pl-0 md:last:pr-0 ${col.className || ''} ${col.sortable ? 'cursor-pointer select-none hover:text-text-base transition-colors' : ''} sticky top-0 bg-bg-surface z-10`}
                 onClick={() => col.sortable && handleSort(col.key)}
               >
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   {col.header}
                   <SortIcon column={col} />
                 </div>
@@ -74,23 +76,44 @@ export function Table<T extends Record<string, any>>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+        <tbody className="divide-y divide-border-base md:divide-y md:divide-border-base">
           {sortedData.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="text-center py-12 text-sm text-gray-500">
+              <td colSpan={columns.length} className="text-center py-16 text-sm text-text-muted">
                 {emptyMessage}
               </td>
             </tr>
           ) : (
-            sortedData.map((item) => (
+            sortedData.map((item, index) => (
               <tr
                 key={keyExtractor(item)}
                 onClick={() => onRowClick?.(item)}
-                className={`${onRowClick ? 'cursor-pointer' : ''} hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors`}
+                className={`
+                  ${onRowClick ? 'cursor-pointer hover:bg-bg-surface-hover transition-colors' : ''}
+                  ${responsiveMode === 'cards' 
+                    ? 'block md:table-row bg-bg-surface border border-border-base md:border-none rounded-xl md:rounded-none mb-4 md:mb-0 shadow-sm md:shadow-none overflow-hidden' 
+                    : ''}
+                `}
               >
-                {columns.map((col) => (
-                  <td key={col.key} className={`py-3 px-4 first:pl-0 last:pr-0 text-sm ${col.className || ''}`}>
-                    {col.render ? col.render(item) : item[col.key]}
+                {columns.map((col, colIndex) => (
+                  <td 
+                    key={col.key} 
+                    className={`
+                      ${responsiveMode === 'cards'
+                        ? 'flex md:table-cell justify-between items-center p-3 md:py-3.5 md:px-4 border-b border-border-base md:border-b-0 last:border-b-0'
+                        : 'py-3.5 px-4'} 
+                      text-sm md:first:pl-0 md:last:pr-0
+                      ${col.className || ''}
+                    `}
+                  >
+                    {responsiveMode === 'cards' && (
+                      <span className="md:hidden font-medium text-xs text-text-muted uppercase tracking-wider pr-4 whitespace-nowrap">
+                        {col.header}
+                      </span>
+                    )}
+                    <div className={responsiveMode === 'cards' ? 'text-right md:text-left wrap-break-word max-w-[60%]' : ''}>
+                      {col.render ? col.render(item) : item[col.key]}
+                    </div>
                   </td>
                 ))}
               </tr>

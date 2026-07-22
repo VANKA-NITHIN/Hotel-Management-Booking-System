@@ -39,6 +39,8 @@ public class BookingDTO {
     private BigDecimal serviceCharge;
     private String couponCode;
     private String specialRequests;
+    private String hotelName;
+    private String guestName;
 
     private UserDTO user;
     private HotelDTO hotel;

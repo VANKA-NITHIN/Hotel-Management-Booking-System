@@ -170,7 +170,7 @@ export default function LandingPage() {
 
         <motion.div
           style={{ opacity: heroOpacity }}
-          className="relative z-10 w-full container-section"
+          className="relative z-10 w-full container-safe"
         >
           <div className="max-w-4xl">
             <motion.p
@@ -252,7 +252,7 @@ export default function LandingPage() {
 
       {/* ═══════ STATS ═══════ */}
       <section className="bg-bg-surface border-b border-border-base">
-        <div className="container-section py-12">
+        <div className="container-safe py-12">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, i) => (
               <motion.div
@@ -276,7 +276,7 @@ export default function LandingPage() {
 
       {/* ═══════ FEATURED HOTELS ═══════ */}
       <section className="section-padding bg-bg-surface-hover">
-        <div className="container-section">
+        <div className="container-safe">
           <div className="flex items-end justify-between mb-10">
             <div className="max-w-2xl">
               <h2 className="section-title">Featured Collections</h2>
@@ -311,7 +311,7 @@ export default function LandingPage() {
 
       {/* ═══════ DESTINATIONS ═══════ */}
       <section className="section-padding bg-bg-surface">
-        <div className="container-section">
+        <div className="container-safe">
           <div className="text-center mb-12">
             <h2 className="section-title">Iconic Destinations</h2>
             <p className="section-subtitle mx-auto mt-4">Immerse yourself in the world's most sought-after locations, curated for the discerning traveler.</p>
@@ -349,7 +349,7 @@ export default function LandingPage() {
 
       {/* ═══════ TESTIMONIALS ═══════ */}
       <section className="section-padding bg-bg-surface-hover">
-        <div className="container-section">
+        <div className="container-safe">
           <div className="text-center mb-12">
             <h2 className="section-title">Guest Experiences</h2>
             <p className="section-subtitle mx-auto mt-4">Hear what our members have to say about their unforgettable journeys.</p>
@@ -380,7 +380,7 @@ export default function LandingPage() {
 
       {/* ═══════ FAQ ═══════ */}
       <section className="section-padding bg-bg-surface">
-        <div className="container-section">
+        <div className="container-safe">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="section-title">Frequently Asked Questions</h2>
@@ -396,7 +396,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-primary-900 dark:bg-black" />
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80')] opacity-20 bg-cover bg-center mix-blend-overlay" />
         
-        <div className="container-section relative z-10 text-center">
+        <div className="container-safe relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

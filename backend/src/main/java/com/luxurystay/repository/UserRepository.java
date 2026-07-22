@@ -17,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByReferralCode(String referralCode);
+
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.enabled = true AND u.accountLocked = false")

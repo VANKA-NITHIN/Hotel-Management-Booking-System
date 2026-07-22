@@ -1,5 +1,6 @@
 package com.luxurystay.entity;
 
+import com.luxurystay.enums.AuditActionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,31 +20,44 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime timestamp;
 
-    @Column(nullable = false, length = 50)
-    private String action;
+    @Column(name = "actor_id")
+    private String actorId;
 
-    @Column(nullable = false, length = 100)
-    private String entity;
+    @Column(name = "actor_username")
+    private String actorUsername;
 
-    private Long entityId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "action_type", nullable = false)
+    private AuditActionType actionType;
 
-    @Column(columnDefinition = "TEXT")
-    private String oldValues;
+    @Column(name = "resource_type")
+    private String resourceType;
 
-    @Column(columnDefinition = "TEXT")
-    private String newValues;
+    @Column(name = "resource_id")
+    private String resourceId;
 
-    @Column(length = 50)
+    @Column(name = "request_path", length = 1024)
+    private String requestPath;
+
+    @Column(name = "http_method")
+    private String httpMethod;
+
+    @Column(name = "ip_address")
     private String ipAddress;
 
-    @Column(length = 500)
+    @Column(name = "user_agent", length = 1024)
     private String userAgent;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "session_id")
+    private String sessionId;
+
+    @Column(nullable = false)
+    private String outcome; // SUCCESS or FAILURE
+
+    @Column(name = "error_code")
+    private String errorCode;
 }

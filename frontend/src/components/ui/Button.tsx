@@ -21,11 +21,11 @@ const variantClasses: Record<string, string> = {
 };
 
 const sizeClasses: Record<string, string> = {
-  xs: 'text-xs px-2.5 py-1.5',
-  sm: 'text-sm px-3 py-2',
-  md: 'text-sm px-5 py-2.5',
-  lg: 'text-base px-6 py-3',
-  xl: 'text-lg px-8 py-4',
+  xs: 'text-xs px-2.5 py-2 min-h-[36px]', // Exception for very small UI elements
+  sm: 'text-sm px-3 py-2 min-h-[44px]', // Standard accessible touch target
+  md: 'text-sm px-5 py-2.5 min-h-[44px]', // Standard accessible touch target
+  lg: 'text-base px-6 py-3 min-h-[48px]',
+  xl: 'text-lg px-8 py-4 min-h-[56px]',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

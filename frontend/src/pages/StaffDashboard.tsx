@@ -59,7 +59,7 @@ export default function StaffDashboard() {
   return (
     <div className="min-h-screen bg-bg-surface-hover flex pt-[72px]">
       {/* Sidebar */}
-      <aside className="w-64 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
+      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
         <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="mb-10 px-4 py-4">
           <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Staff Portal</span>
@@ -111,7 +111,7 @@ export default function StaffDashboard() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 w-full p-6 lg:p-10 max-w-7xl">
+      <main className="flex-1 w-full p-6 lg:p-10 max-w-[100rem] 3xl:max-w-[140rem] mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
           <h1 className="text-3xl font-serif font-bold text-text-base capitalize">{activeTab.replace('-', ' ')}</h1>
           

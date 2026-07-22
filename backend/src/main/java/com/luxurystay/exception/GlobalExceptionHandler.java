@@ -94,9 +94,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGeneral(Exception ex) {
-        log.error("Unexpected error: ", ex);
+        String correlationId = java.util.UUID.randomUUID().toString();
+        log.error("Unexpected error (Correlation ID: {}): ", correlationId, ex);
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.");
         problemDetail.setTitle("Internal Server Error");
+        problemDetail.setProperty("correlationId", correlationId);
         return problemDetail;
     }
 }

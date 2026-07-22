@@ -1,6 +1,7 @@
 package com.luxurystay.controller;
 
 import com.luxurystay.dto.ApiResponse;
+import com.luxurystay.dto.ReviewAnalyticsDTO;
 import com.luxurystay.dto.ReviewDTO;
 import com.luxurystay.service.ReviewService;
 import jakarta.validation.Valid;
@@ -23,6 +24,11 @@ public class ReviewController {
     @GetMapping("/hotel/{hotelId}")
     public ResponseEntity<List<ReviewDTO>> getHotelReviews(@PathVariable Long hotelId) {
         return ResponseEntity.ok(reviewService.getHotelReviews(hotelId));
+    }
+
+    @GetMapping("/hotel/{hotelId}/analytics")
+    public ResponseEntity<ReviewAnalyticsDTO> getHotelReviewAnalytics(@PathVariable Long hotelId) {
+        return ResponseEntity.ok(reviewService.getHotelReviewAnalytics(hotelId));
     }
 
     @GetMapping("/my-reviews")

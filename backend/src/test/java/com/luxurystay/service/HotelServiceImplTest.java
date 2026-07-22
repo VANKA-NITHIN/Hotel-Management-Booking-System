@@ -5,7 +5,7 @@ import com.luxurystay.dto.PagedResponse;
 import com.luxurystay.entity.Hotel;
 import com.luxurystay.exception.ResourceNotFoundException;
 import com.luxurystay.mapper.HotelMapper;
-import com.luxurystay.repository.HotelRepository;
+import com.luxurystay.repository.*;
 import com.luxurystay.service.impl.HotelServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +30,21 @@ public class HotelServiceImplTest {
 
     @Mock
     private HotelRepository hotelRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private BookingRepository bookingRepository;
+
+    @Mock
+    private RoomRepository roomRepository;
+
+    @Mock
+    private PaymentRepository paymentRepository;
+
+    @Mock
+    private ReviewRepository reviewRepository;
 
     @Mock
     private HotelMapper hotelMapper;

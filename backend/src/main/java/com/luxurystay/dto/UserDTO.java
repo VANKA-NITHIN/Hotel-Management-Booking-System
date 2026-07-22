@@ -29,6 +29,9 @@ public class UserDTO {
     private boolean emailPromotions;
     private boolean pushBookings;
     private boolean pushPromotions;
+    private String companyRole;
+    private String department;
+    private String jobTitle;
 
     private LocalDateTime createdAt;
 }

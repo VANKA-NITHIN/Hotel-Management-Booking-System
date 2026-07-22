@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check, Compass } from 'lucide-react';
@@ -12,6 +12,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import type { Hotel, Room, Review } from '../types';
 import { Button } from '../components/ui/Button';
 import { DatePicker } from '../components/ui/DatePicker';
+import { GroupBookingModal } from '../components/ui/GroupBookingModal';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { AIReviewSummary } from '../components/ui/AIReviewSummary';
 import { PriceCalendar } from '../components/ui/PriceCalendar';
@@ -75,6 +76,7 @@ export default function HotelDetailPage() {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [isActivityOpen, setIsActivityOpen] = useState(false);
   const [isItineraryOpen, setIsItineraryOpen] = useState(false);
+  const [isGroupBookingOpen, setIsGroupBookingOpen] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -83,10 +85,29 @@ export default function HotelDetailPage() {
   const [selectedCategory, setSelectedCategory] = useState<POICategory>('restaurant');
   const [pois, setPois] = useState<POI[]>([]);
 
-  const toggleRoomSelection = (roomId: number) => {
-    setSelectedRooms(prev => 
-      prev.includes(roomId) ? prev.filter(id => id !== roomId) : [...prev, roomId]
-    );
+  const selectedRoomsData = rooms.filter(r => selectedRooms.includes(r.id!));
+  const selectedRoomsPrice = selectedRoomsData.reduce((sum, r) => sum + r.pricePerNight, 0);
+  const basePriceToUse = selectedRooms.length > 0 ? selectedRoomsPrice : (hotel?.startingPrice || 199);
+
+  const groupedRooms = useMemo(() => {
+    const groups: Record<string, { baseRoom: Room, availablePhysicalRooms: Room[] }> = {};
+    rooms.forEach(room => {
+      const key = `${room.name}-${room.pricePerNight}`;
+      if (!groups[key]) {
+        groups[key] = { baseRoom: room, availablePhysicalRooms: [] };
+      }
+      groups[key].availablePhysicalRooms.push(room);
+    });
+    return Object.values(groups);
+  }, [rooms]);
+
+  const handleQuantityChange = (quantity: number, availableRooms: Room[]) => {
+    setSelectedRooms(prev => {
+      const availableIds = availableRooms.map(r => r.id!);
+      const filtered = prev.filter(id => !availableIds.includes(id));
+      const roomsToAdd = availableIds.slice(0, quantity);
+      return [...filtered, ...roomsToAdd];
+    });
   };
 
   const submitReview = (e: React.FormEvent) => {
@@ -154,7 +175,7 @@ export default function HotelDetailPage() {
     <div className="min-h-screen bg-bg-surface-hover pt-16">
       {/* Image Gallery */}
       <section className="bg-bg-surface border-b border-border-base pb-4">
-        <div className="container-section pt-4">
+        <div className="container-safe pt-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 rounded-2xl overflow-hidden h-64 sm:h-80 md:h-[500px]">
             <button
               onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
@@ -209,10 +230,10 @@ export default function HotelDetailPage() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className="container-section py-8 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
+      <div className="container-safe py-8 pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-3 3xl:grid-cols-4 gap-8 xl:gap-12 3xl:gap-16">
           {/* Left Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 3xl:col-span-3 space-y-8">
             {/* Hotel Header */}
             <div>
               <div className="flex items-start justify-between gap-4">
@@ -357,8 +378,13 @@ export default function HotelDetailPage() {
                     </Button>
                   </div>
                 )}
-                {rooms.length > 0 ? rooms.map((room) => (
-                  <div key={room.id} className="bg-bg-surface rounded-2xl border border-border-base p-5 flex flex-col sm:flex-row gap-6 shadow-sm hover:border-border-strong transition-colors">
+                {groupedRooms.length > 0 ? groupedRooms.map((group) => {
+                  const room = group.baseRoom;
+                  const availableCount = group.availablePhysicalRooms.length;
+                  const selectedCount = group.availablePhysicalRooms.filter(r => selectedRooms.includes(r.id!)).length;
+                  
+                  return (
+                  <div key={`${room.name}-${room.pricePerNight}`} className="bg-bg-surface rounded-2xl border border-border-base p-5 flex flex-col sm:flex-row gap-6 shadow-sm hover:border-border-strong transition-colors">
                     <div className="sm:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-bg-surface-hover relative group">
                       <OptimizedImage
                         src={room.images?.[0] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=300&fit=crop'}
@@ -388,18 +414,32 @@ export default function HotelDetailPage() {
                           ))}
                         </div>
                       )}
-                      <div className="mt-auto pt-5">
-                        <Button
-                          variant={selectedRooms.includes(room.id!) ? 'primary' : 'outline'}
-                          fullWidth
-                          onClick={() => toggleRoomSelection(room.id!)}
-                        >
-                          {selectedRooms.includes(room.id!) ? 'Selected' : 'Select Room'}
-                        </Button>
+                      <div className="mt-auto pt-5 flex items-center justify-between">
+                        <div>
+                          <span className="text-sm font-bold text-text-base block">Quantity:</span>
+                          <span className="text-xs text-text-muted">{availableCount} available</span>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <button 
+                            className="w-10 h-10 rounded-full border border-border-strong flex items-center justify-center hover:bg-bg-surface-hover disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                            onClick={() => handleQuantityChange(selectedCount - 1, group.availablePhysicalRooms)}
+                            disabled={selectedCount === 0}
+                          >
+                            <span className="text-xl font-medium leading-none mb-1">-</span>
+                          </button>
+                          <span className="w-4 text-center font-bold text-lg text-text-base">{selectedCount}</span>
+                          <button 
+                            className="w-10 h-10 rounded-full border border-border-strong flex items-center justify-center hover:bg-bg-surface-hover disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                            onClick={() => handleQuantityChange(selectedCount + 1, group.availablePhysicalRooms)}
+                            disabled={selectedCount >= availableCount}
+                          >
+                            <span className="text-xl font-medium leading-none mb-1">+</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                )) : (
+                )}) : (
                   <EmptyState title="No rooms available" description="Try different dates or check back later." />
                 )}
                 
@@ -493,7 +533,7 @@ export default function HotelDetailPage() {
                     <ReviewCard
                       key={review.id}
                       id={`review-${review.id}`}
-                      author={{ name: review.guestName || 'Anonymous Guest', isVerified: true }}
+                      author={{ name: review.userName || 'Anonymous Guest', isVerified: true }}
                       rating={review.rating}
                       date={new Date(review.createdAt || Date.now()).toLocaleDateString()}
                       content={review.comment}
@@ -627,17 +667,28 @@ export default function HotelDetailPage() {
 
               {nights > 0 && (
                 <div className="border-t border-border-base pt-4 mb-6 space-y-3 text-sm">
+                  {selectedRooms.length > 0 && (
+                    <div className="mb-3 space-y-1">
+                      <p className="text-xs font-bold text-text-muted uppercase">Selected Rooms</p>
+                      {selectedRoomsData.map(r => (
+                        <div key={r.id} className="flex justify-between text-xs text-text-muted">
+                          <span>{r.name}</span>
+                          <span>${r.pricePerNight}/night</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex justify-between text-text-base">
-                    <span>${hotel.startingPrice} × {nights} nights</span>
-                    <span className="font-medium">${(hotel.startingPrice || 199) * nights}</span>
+                    <span>${basePriceToUse} × {nights} nights</span>
+                    <span className="font-medium">${basePriceToUse * nights}</span>
                   </div>
                   <div className="flex justify-between text-text-base">
                     <span>Taxes & fees (12%)</span>
-                    <span className="font-medium">${Math.round((hotel.startingPrice || 199) * nights * 0.12)}</span>
+                    <span className="font-medium">${Math.round(basePriceToUse * nights * 0.12)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg text-text-base pt-3 border-t border-border-base">
                     <span>Total</span>
-                    <span>${Math.round((hotel.startingPrice || 199) * nights * 1.12)}</span>
+                    <span>${Math.round(basePriceToUse * nights * 1.12)}</span>
                   </div>
                 </div>
               )}
@@ -645,17 +696,17 @@ export default function HotelDetailPage() {
               <Button
                 fullWidth
                 size="lg"
-                onClick={() => navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}
-                disabled={!checkIn || !checkOut}
+                onClick={() => navigate(`/booking?hotelId=${hotel.id}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}&roomId=${selectedRooms.join(',')}`)}
+                disabled={!checkIn || !checkOut || selectedRooms.length === 0}
               >
-                {checkIn && checkOut ? 'Reserve Now' : 'Select Dates'}
+                {!checkIn || !checkOut ? 'Select Dates' : selectedRooms.length === 0 ? 'Select a Room' : `Reserve ${selectedRooms.length} Room(s)`}
               </Button>
 
               <p className="text-xs font-medium text-text-muted text-center mt-4 flex items-center justify-center gap-1.5">
                 <Shield className="w-3.5 h-3.5" /> You won't be charged yet
               </p>
 
-              <div className="mt-6 pt-6 border-t border-border-base text-center">
+              <div className="mt-6 pt-6 border-t border-border-base text-center space-y-3">
                 <Button
                   variant="outline"
                   size="sm"
@@ -663,6 +714,14 @@ export default function HotelDetailPage() {
                   onClick={() => setIsConciergeOpen(true)}
                 >
                   Request Concierge Services
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  fullWidth
+                  onClick={() => setIsGroupBookingOpen(true)}
+                >
+                  Group / Corporate Booking
                 </Button>
               </div>
             </div>
@@ -746,6 +805,12 @@ export default function HotelDetailPage() {
         isOpen={isItineraryOpen}
         onClose={() => setIsItineraryOpen(false)}
         cityName={hotel?.city}
+        hotelName={hotel?.name}
+      />
+      
+      <GroupBookingModal
+        isOpen={isGroupBookingOpen}
+        onClose={() => setIsGroupBookingOpen(false)}
         hotelName={hotel?.name}
       />
     </div>

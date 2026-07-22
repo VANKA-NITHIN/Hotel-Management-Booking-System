@@ -18,9 +18,11 @@ import com.itextpdf.layout.properties.UnitValue;
 import com.luxurystay.entity.Booking;
 import com.luxurystay.entity.Hotel;
 import com.luxurystay.entity.User;
+import com.luxurystay.enums.CorporateRole;
 import com.luxurystay.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -32,10 +34,29 @@ import java.time.format.DateTimeFormatter;
 public class InvoiceService {
 
     private final BookingRepository bookingRepository;
+    private final AuthService authService;
 
-    public byte[] generateInvoice(Long bookingId) {
+    public byte[] generateInvoice(Long bookingId, Authentication authentication) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+        
+        User user = authService.getCurrentUser(authentication);
+        boolean isOwner = booking.getUser() != null && booking.getUser().getId().equals(user.getId());
+        boolean isAdmin = user.getRole().equals("ROLE_ADMIN");
+        boolean isCorporateManager = user.getCompanyRole() != null && 
+                                   (user.getCompanyRole() == CorporateRole.CORPORATE_ADMIN || user.getCompanyRole() == CorporateRole.TRAVEL_MANAGER || user.getCompanyRole() == CorporateRole.SUPER_ADMIN) &&
+                                   booking.getCorporateContext() != null && 
+                                   booking.getCorporateContext().getCompanyId().equals(user.getCompany().getId());
+
+        if (!isOwner && !isAdmin && !isCorporateManager) {
+            throw new RuntimeException("Unauthorized to download this invoice");
+        }
+
+        return generateInvoiceInternal(booking);
+    }
+
+    public byte[] generateInvoiceInternal(Booking booking) {
+        String invoiceNumber = String.format("INV-%d-%08d", booking.getCreatedAt().getYear(), booking.getId());
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(baos);
@@ -64,7 +85,7 @@ public class InvoiceService {
                     .useAllAvailableWidth();
 
             invoiceTable.addCell(new Cell().add(new Paragraph("Invoice #: ").setFont(font))
-                    .add(new Paragraph(booking.getBookingReference()).setFont(boldFont))
+                    .add(new Paragraph(invoiceNumber).setFont(boldFont))
                     .setBorder(null).setPaddingBottom(5));
 
             invoiceTable.addCell(new Cell().add(new Paragraph("Date: ").setFont(font))
@@ -190,7 +211,7 @@ public class InvoiceService {
             return baos.toByteArray();
 
         } catch (Exception e) {
-            log.error("Failed to generate invoice for booking {}: {}", bookingId, e.getMessage());
+            log.error("Failed to generate invoice for booking {}: {}", booking.getId(), e.getMessage());
             throw new RuntimeException("Failed to generate invoice", e);
         }
     }

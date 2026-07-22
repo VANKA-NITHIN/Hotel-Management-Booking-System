@@ -20,10 +20,10 @@ public class Setting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "setting_key", nullable = false, unique = true, length = 100)
     private String key;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "setting_value", columnDefinition = "TEXT")
     private String value;
 
     @Column(length = 200)

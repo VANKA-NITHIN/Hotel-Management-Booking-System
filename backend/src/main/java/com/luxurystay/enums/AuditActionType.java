@@ -1,0 +1,19 @@
+package com.luxurystay.enums;
+
+public enum AuditActionType {
+    LOGIN,
+    LOGOUT,
+    DOWNLOAD_INVOICE,
+    EXPORT_REPORT,
+    CREATE_BOOKING,
+    UPDATE_BOOKING,
+    CANCEL_BOOKING,
+    CHECK_IN,
+    CHECK_OUT,
+    CREATE_COMPANY,
+    INVITE_EMPLOYEE,
+    CHANGE_ROLE,
+    WALLET_UPDATE,
+    LOYALTY_UPDATE,
+    ADMIN_CONFIGURATION_CHANGE
+}

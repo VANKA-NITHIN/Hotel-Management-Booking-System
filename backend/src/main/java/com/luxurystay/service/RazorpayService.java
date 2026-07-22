@@ -40,7 +40,7 @@ public class RazorpayService {
     public Map<String, String> createOrder(long amount, String currency, String receiptId) throws RazorpayException {
         if (razorpayClient == null) {
             // Mock mode - return simulated order
-            String mockOrderId = "order_mock_" + System.currentTimeMillis();
+            String mockOrderId = "order_mock_" + java.util.UUID.randomUUID().toString().substring(0, 8);
             log.info("Razorpay mock order created: {} for amount: {} {}", mockOrderId, amount, currency);
             return Map.of(
                 "orderId", mockOrderId,

@@ -1,0 +1,15 @@
+package com.luxurystay.enums;
+
+public enum TransactionType {
+    BOOKING_PAYMENT,
+    REFUND,
+    CASHBACK,
+    REWARD_CREDIT,
+    REWARD_REDEMPTION,
+    COUPON_CREDIT,
+    PROMOTIONAL_BONUS,
+    ROOM_SERVICE_CHARGE,
+    RESTAURANT_CHARGE,
+    SPA_CHARGE,
+    ADJUSTMENT
+}

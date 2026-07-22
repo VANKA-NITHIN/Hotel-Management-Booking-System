@@ -164,8 +164,8 @@ export default function Navbar() {
 
             {/* Right Actions */}
             <div className="hidden lg:flex items-center gap-1.5">
-              <button className={`p-2 rounded-lg transition-colors ${textColor}`} aria-label="Search">
-                <Search className="w-[18px] h-[18px]" />
+              <button className={`flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors ${textColor}`} aria-label="Search">
+                <Search className="w-5 h-5" />
               </button>
               
               <div className="w-px h-5 bg-border-base mx-1" />
@@ -177,19 +177,19 @@ export default function Navbar() {
                 <>
                   <Link
                     to="/wishlist"
-                    className={`p-2 rounded-lg transition-colors ${textColor}`}
+                    className={`flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors ${textColor}`}
                     aria-label="Wishlist"
                   >
-                    <Heart className="w-[18px] h-[18px]" />
+                    <Heart className="w-5 h-5" />
                   </Link>
                   
                   <div className="relative">
                     <button
                       onClick={() => setShowNotifications(!showNotifications)}
-                      className={`p-2 rounded-lg transition-colors relative ${textColor} ${showNotifications ? 'bg-bg-surface-active' : ''}`}
+                      className={`flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors relative ${textColor} ${showNotifications ? 'bg-bg-surface-active' : ''}`}
                       aria-label="Notifications"
                     >
-                      <Bell className="w-[18px] h-[18px]" />
+                      <Bell className="w-5 h-5" />
                       {(notifications.filter(n => !n.isRead).length > 0 || apiUnreadCount > 0) && (
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full" />
                       )}
@@ -210,10 +210,10 @@ export default function Navbar() {
 
                   <Link
                     to="/dashboard"
-                    className={`p-2 rounded-lg transition-colors ${textColor}`}
+                    className={`flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors ${textColor}`}
                     aria-label="Dashboard"
                   >
-                    <LayoutDashboard className="w-[18px] h-[18px]" />
+                    <LayoutDashboard className="w-5 h-5" />
                   </Link>
                   <div className="ml-2 pl-2 border-l border-border-base">
                     <UserButton
@@ -248,10 +248,10 @@ export default function Navbar() {
               <ThemeToggle />
               <button
                 onClick={() => setMobileOpen(true)}
-                className={`p-2 rounded-lg transition-colors ${textColor}`}
+                className={`flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg transition-colors ${textColor}`}
                 aria-label="Open menu"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-6 h-6" />
               </button>
             </div>
           </div>

@@ -41,7 +41,7 @@ export { ResortActivityModal } from './ResortActivityModal';
 export { ItineraryModal } from './ItineraryModal';
 export { BookingConfirmationModal } from './BookingConfirmationModal';
 export { GuestReviewHighlights } from './GuestReviewHighlights';
-
-
-
-
+export { GroupBookingModal } from './GroupBookingModal';
+export { GuestWallet } from './GuestWallet';
+export { DigitalPassModal } from './DigitalPassModal';
+export { DigitalCheckInFlow } from './DigitalCheckInFlow';

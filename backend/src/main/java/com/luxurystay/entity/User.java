@@ -65,6 +65,12 @@ public class User {
     @Builder.Default
     private int loyaltyPoints = 0;
 
+    @Column(unique = true, length = 20)
+    private String referralCode;
+
+    @Column(length = 20)
+    private String referredByCode;
+
     // Notification Preferences
     @Column(nullable = false)
     @Builder.Default
@@ -91,12 +97,34 @@ public class User {
     @Builder.Default
     private Set<RoleEntity> roles = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private com.luxurystay.enums.CorporateRole companyRole;
+
+    @Column(length = 100)
+    private String department;
+
+    @Column(length = 100)
+    private String jobTitle;
+
+    @Column(length = 50)
+    private String employeeId;
+
+    private java.math.BigDecimal travelBudget;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Wallet wallet;
 
     @Transient
     public String getFullName() {

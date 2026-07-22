@@ -1,0 +1,15 @@
+# Test profile supplementary configuration
+# Core H2/JPA config is in the main application.yml under the 'test' profile section
+# This file only provides properties that are missing from the main profile
+
+spring:
+  cache:
+    type: simple
+
+  thymeleaf:
+    check-template-location: false
+
+management:
+  health:
+    mail:
+      enabled: false

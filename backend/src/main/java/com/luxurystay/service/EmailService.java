@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -17,9 +18,12 @@ import java.time.format.DateTimeFormatter;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final InvoiceService invoiceService;
 
-    public EmailService(@Autowired(required = false) JavaMailSender mailSender) {
+    public EmailService(@Autowired(required = false) JavaMailSender mailSender, 
+                       @Autowired(required = false) InvoiceService invoiceService) {
         this.mailSender = mailSender;
+        this.invoiceService = invoiceService;
     }
 
     @Async
@@ -33,7 +37,17 @@ public class EmailService {
         String subject = "Booking Confirmed - " + booking.getBookingReference();
         String htmlBody = buildBookingConfirmationHtml(booking);
 
-        sendHtmlEmail(user.getEmail(), subject, htmlBody);
+        byte[] invoicePdf = null;
+        if (invoiceService != null) {
+            try {
+                invoicePdf = invoiceService.generateInvoiceInternal(booking);
+            } catch (Exception e) {
+                log.error("Could not generate invoice attachment for email: {}", e.getMessage());
+            }
+        }
+
+        sendHtmlEmailWithAttachment(user.getEmail(), subject, htmlBody, invoicePdf, 
+            "LuxuryStay-Invoice-" + booking.getBookingReference() + ".pdf", "application/pdf");
     }
 
     @Async
@@ -55,6 +69,10 @@ public class EmailService {
     }
 
     private void sendHtmlEmail(String to, String subject, String htmlBody) {
+        sendHtmlEmailWithAttachment(to, subject, htmlBody, null, null, null);
+    }
+
+    private void sendHtmlEmailWithAttachment(String to, String subject, String htmlBody, byte[] attachment, String attachmentName, String contentType) {
         if (mailSender == null) {
             log.warn("MailSender not configured. Skipping email to {}: {}", to, subject);
             return;
@@ -67,6 +85,10 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlBody, true);
+
+            if (attachment != null && attachmentName != null) {
+                helper.addAttachment(attachmentName, new ByteArrayDataSource(attachment, contentType));
+            }
 
             mailSender.send(message);
             log.info("Email sent to {} with subject: {}", to, subject);

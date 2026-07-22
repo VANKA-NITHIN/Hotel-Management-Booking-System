@@ -1,6 +1,7 @@
 package com.luxurystay.service.impl;
 
 import com.luxurystay.dto.ApiResponse;
+import com.luxurystay.dto.ReviewAnalyticsDTO;
 import com.luxurystay.dto.ReviewDTO;
 import com.luxurystay.entity.Booking;
 import com.luxurystay.entity.Hotel;
@@ -16,7 +17,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +39,58 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findByHotelIdOrderByCreatedAtDesc(hotelId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ReviewAnalyticsDTO getHotelReviewAnalytics(Long hotelId) {
+        List<Review> reviews = reviewRepository.findByHotelIdOrderByCreatedAtDesc(hotelId);
+        
+        int totalReviews = reviews.size();
+        if (totalReviews == 0) {
+            return ReviewAnalyticsDTO.builder()
+                    .hotelId(hotelId)
+                    .totalReviews(0)
+                    .averageRating(BigDecimal.ZERO)
+                    .averageCleanliness(BigDecimal.ZERO)
+                    .averageService(BigDecimal.ZERO)
+                    .averageLocation(BigDecimal.ZERO)
+                    .averageValue(BigDecimal.ZERO)
+                    .ratingDistribution(new HashMap<>())
+                    .build();
+        }
+        
+        BigDecimal sumRating = BigDecimal.ZERO;
+        BigDecimal sumCleanliness = BigDecimal.ZERO;
+        BigDecimal sumService = BigDecimal.ZERO;
+        BigDecimal sumLocation = BigDecimal.ZERO;
+        BigDecimal sumValue = BigDecimal.ZERO;
+        Map<Integer, Integer> distribution = new HashMap<>();
+        for (int i = 1; i <= 5; i++) distribution.put(i, 0);
+        
+        for (Review r : reviews) {
+            sumRating = sumRating.add(r.getRating());
+            sumCleanliness = sumCleanliness.add(r.getCleanlinessRating() != null ? r.getCleanlinessRating() : r.getRating());
+            sumService = sumService.add(r.getServiceRating() != null ? r.getServiceRating() : r.getRating());
+            sumLocation = sumLocation.add(r.getLocationRating() != null ? r.getLocationRating() : r.getRating());
+            sumValue = sumValue.add(r.getValueRating() != null ? r.getValueRating() : r.getRating());
+            
+            int stars = Math.round(r.getRating().floatValue());
+            if (stars < 1) stars = 1;
+            if (stars > 5) stars = 5;
+            distribution.put(stars, distribution.get(stars) + 1);
+        }
+        
+        BigDecimal total = BigDecimal.valueOf(totalReviews);
+        return ReviewAnalyticsDTO.builder()
+                .hotelId(hotelId)
+                .totalReviews(totalReviews)
+                .averageRating(sumRating.divide(total, 1, RoundingMode.HALF_UP))
+                .averageCleanliness(sumCleanliness.divide(total, 1, RoundingMode.HALF_UP))
+                .averageService(sumService.divide(total, 1, RoundingMode.HALF_UP))
+                .averageLocation(sumLocation.divide(total, 1, RoundingMode.HALF_UP))
+                .averageValue(sumValue.divide(total, 1, RoundingMode.HALF_UP))
+                .ratingDistribution(distribution)
+                .build();
     }
 
     @Override
@@ -63,7 +120,12 @@ public class ReviewServiceImpl implements ReviewService {
                 .hotel(hotel)
                 .booking(booking)
                 .rating(reviewDTO.getRating())
+                .cleanlinessRating(reviewDTO.getCleanlinessRating() != null ? reviewDTO.getCleanlinessRating() : reviewDTO.getRating())
+                .serviceRating(reviewDTO.getServiceRating() != null ? reviewDTO.getServiceRating() : reviewDTO.getRating())
+                .locationRating(reviewDTO.getLocationRating() != null ? reviewDTO.getLocationRating() : reviewDTO.getRating())
+                .valueRating(reviewDTO.getValueRating() != null ? reviewDTO.getValueRating() : reviewDTO.getRating())
                 .comment(reviewDTO.getComment())
+                .photos(reviewDTO.getPhotos())
                 .verified(true)
                 .build();
 
@@ -107,7 +169,19 @@ public class ReviewServiceImpl implements ReviewService {
                 .roomId(review.getRoom() != null ? review.getRoom().getId() : null)
                 .bookingId(review.getBooking() != null ? review.getBooking().getId() : null)
                 .rating(review.getRating())
+                .cleanlinessRating(review.getCleanlinessRating())
+                .serviceRating(review.getServiceRating())
+                .locationRating(review.getLocationRating())
+                .valueRating(review.getValueRating())
                 .comment(review.getComment())
+                .photos(review.getPhotos())
+                .userName(review.getUser() != null ? review.getUser().getFirstName() + " " + review.getUser().getLastName() : "Guest")
+                .userImage(review.getUser() != null ? review.getUser().getProfileImage() : null)
+                .createdAt(review.getCreatedAt())
+                .verified(review.isVerified())
+                .likes(review.getLikes())
+                .reply(review.getReply())
+                .repliedByName(review.getRepliedBy() != null ? review.getRepliedBy().getFirstName() : null)
                 .build();
     }
 }

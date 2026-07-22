@@ -11,6 +11,8 @@ import com.luxurystay.repository.*;
 import com.luxurystay.service.HotelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,6 +39,7 @@ public class HotelServiceImpl implements HotelService {
     private final HotelMapper hotelMapper;
 
     @Override
+    @CacheEvict(value = {"hotels", "allHotels", "searchHotels", "featuredHotels", "popularDestinations"}, allEntries = true)
     public HotelDTO createHotel(HotelDTO hotelDTO) {
         Hotel hotel = hotelMapper.toEntity(hotelDTO);
         hotel.setRating(BigDecimal.ZERO);
@@ -47,6 +50,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @CacheEvict(value = {"hotels", "allHotels", "searchHotels", "featuredHotels", "popularDestinations"}, allEntries = true)
     public HotelDTO updateHotel(Long id, HotelDTO hotelDTO) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel", "id", id));
@@ -78,6 +82,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @CacheEvict(value = {"hotels", "allHotels", "searchHotels", "featuredHotels", "popularDestinations"}, allEntries = true)
     public void deleteHotel(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel", "id", id));
@@ -87,6 +92,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "hotels", key = "#id")
     public HotelDTO getHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel", "id", id));
@@ -95,6 +101,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "allHotels", key = "#page + '-' + #size")
     public PagedResponse<HotelDTO> getAllHotels(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Hotel> hotelPage = hotelRepository.findAll(pageRequest);
@@ -115,6 +122,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "searchHotels", key = "(#city != null ? #city : '') + '-' + (#minPrice != null ? #minPrice : '') + '-' + (#maxPrice != null ? #maxPrice : '') + '-' + (#minRating != null ? #minRating : '') + '-' + (#sort != null ? #sort : '') + '-' + #page + '-' + #size")
     public PagedResponse<HotelDTO> searchHotels(String city, Double minPrice, Double maxPrice,
                                                  Double minRating, String sort, int page, int size) {
         Sort sortObj = Sort.by("createdAt").descending();
@@ -154,6 +162,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "featuredHotels")
     public List<HotelDTO> getFeaturedHotels() {
         List<Hotel> hotels = hotelRepository.findTopRated(PageRequest.of(0, 6));
         return hotels.stream().map(hotelMapper::toDTO).collect(Collectors.toList());
@@ -161,6 +170,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "popularDestinations")
     public List<String> getPopularDestinations() {
         return hotelRepository.findDistinctCities();
     }
@@ -184,6 +194,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "dashboardStats", key = "#hotelId != null ? #hotelId : 'global'")
     public DashboardStatsDTO getDashboardStats(Long hotelId) {
         long totalRooms = hotelId != null
                 ? roomRepository.countActiveByHotelId(hotelId)

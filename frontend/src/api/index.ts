@@ -1,7 +1,7 @@
 import api from './client';
 import type {
   AuthResponse, User, Hotel, Room, Booking, PagedResponse,
-  ChartDataPoint, DashboardStats, Notification, Coupon, Employee, Review, Housekeeping
+  ChartDataPoint, DashboardStats, Notification, Coupon, Employee, Review, Housekeeping, CheckIn, Wallet, WalletTransaction, ReviewAnalytics, Referral, ReferralMetrics, Company, CompanyInvitation, CorporateAnalytics
 } from '../types';
 
 // Auth API
@@ -86,6 +86,8 @@ export const paymentApi = {
 export const reviewApi = {
   getHotelReviews: (hotelId: number) =>
     api.get<Review[]>(`/reviews/hotel/${hotelId}`),
+  getHotelReviewAnalytics: (hotelId: number) =>
+    api.get<ReviewAnalytics>(`/reviews/hotel/${hotelId}/analytics`),
   getMyReviews: () => api.get<Review[]>('/reviews/my-reviews'),
   create: (data: Partial<Review>) => api.post<Review>('/reviews', data),
   like: (id: number) => api.post(`/reviews/${id}/like`),
@@ -174,7 +176,63 @@ export const contactApi = {
 
 // Newsletter API
 export const newsletterApi = {
-  subscribe: (email: string) =>
-    api.post('/newsletter/subscribe', { email }),
+  subscribe: (email: string) => api.post('/newsletter/subscribe', { email }),
 };
 
+// CheckIn API
+export const checkInApi = {
+  getStatus: (bookingId: number) => api.get<CheckIn>(`/checkin/${bookingId}`),
+  submit: (bookingId: number, data: Partial<CheckIn>) => api.post<CheckIn>(`/checkin/${bookingId}/submit`, data),
+  verify: (bookingId: number) => api.post<CheckIn>(`/checkin/${bookingId}/verify`),
+  getPass: (bookingId: number) => api.get<string>(`/checkin/${bookingId}/pass`),
+};
+
+// Wallet API
+export const walletApi = {
+  getMyWallet: () => api.get<Wallet>('/wallet'),
+  getTransactions: (page = 0, size = 10) => api.get<PagedResponse<WalletTransaction>>('/wallet/transactions', { params: { page, size } }),
+  redeemPoints: (points: number) => api.post<Wallet>('/wallet/redeem', { points }),
+  applyCoupon: (couponCode: string) => api.post<Wallet>('/wallet/apply', { couponCode }),
+};
+
+// Referral API
+export const referralApi = {
+  getMyCode: () => api.get<{ referralCode: string }>('/referrals/my-code'),
+  getHistory: () => api.get<Referral[]>('/referrals/history'),
+  getMetrics: () => api.get<ReferralMetrics>('/referrals/metrics'),
+  applyCode: (referralCode: string) => api.post<{ success: boolean; message: string }>('/referrals/apply', { referralCode }),
+};
+
+// Corporate API
+export const corporateApi = {
+  // Company Profile
+  registerCompany: (data: Partial<Company>) => api.post<{ success: boolean; message: string }>('/corporate/company', data),
+  getMyCompany: () => api.get<Company>('/corporate/company/my-company'),
+  
+  // Employees
+  getEmployees: () => api.get<User[]>('/corporate/employees'),
+  updateRole: (employeeId: number, role: string) => api.put<{ success: boolean; message: string }>(`/corporate/employees/${employeeId}/role`, { role }),
+  
+  // Invitations
+  inviteEmployee: (data: { email: string; role: string }) => api.post<{ success: boolean; message: string }>('/corporate/invitations', data),
+  getPendingInvitations: () => api.get<CompanyInvitation[]>('/corporate/invitations/pending'),
+  acceptInvitation: (token: string) => api.post<{ success: boolean; message: string }>('/corporate/invitations/accept', { token }),
+  
+  // Bookings
+  getCorporateBookings: () => api.get<Booking[]>('/corporate/bookings'),
+  
+  // Analytics
+  getAnalytics: () => api.get<CorporateAnalytics>('/corporate/analytics'),
+};
+
+// Invoice API
+export const invoiceApi = {
+  downloadInvoice: (id: string | number) => api.get(`/invoices/${id}`, { responseType: 'blob' }),
+};
+
+// Report API
+export const reportApi = {
+  exportAdminBookings: (format: string = 'pdf') => api.get(`/reports/admin/bookings?format=${format}`, { responseType: 'blob' }),
+  exportAdminEmployees: (format: string = 'csv') => api.get(`/reports/admin/employees?format=${format}`, { responseType: 'blob' }),
+  exportCorporateBookings: (format: string = 'pdf') => api.get(`/reports/corporate/bookings?format=${format}`, { responseType: 'blob' }),
+};

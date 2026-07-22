@@ -42,8 +42,22 @@ public class Review {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
-    @Column(length = 500)
-    private String reviewImage;
+    @Column(nullable = false, precision = 3, scale = 1)
+    private BigDecimal cleanlinessRating;
+
+    @Column(nullable = false, precision = 3, scale = 1)
+    private BigDecimal serviceRating;
+
+    @Column(nullable = false, precision = 3, scale = 1)
+    private BigDecimal locationRating;
+
+    @Column(nullable = false, precision = 3, scale = 1)
+    private BigDecimal valueRating;
+
+    @ElementCollection
+    @CollectionTable(name = "review_photos", joinColumns = @JoinColumn(name = "review_id"))
+    @Column(name = "photo_url")
+    private java.util.List<String> photos;
 
     @Column(nullable = false)
     @Builder.Default

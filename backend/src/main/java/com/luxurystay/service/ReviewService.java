@@ -2,6 +2,7 @@ package com.luxurystay.service;
 
 import com.luxurystay.dto.ApiResponse;
 import com.luxurystay.dto.ReviewDTO;
+import com.luxurystay.dto.ReviewAnalyticsDTO;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 public interface ReviewService {
 
     List<ReviewDTO> getHotelReviews(Long hotelId);
+
+    ReviewAnalyticsDTO getHotelReviewAnalytics(Long hotelId);
 
     List<ReviewDTO> getMyReviews(Authentication authentication);
 

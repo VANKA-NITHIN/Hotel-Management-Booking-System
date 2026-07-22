@@ -190,10 +190,18 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        user.setEmailBookings(request.getEmailBookings());
-        user.setEmailPromotions(request.getEmailPromotions());
-        user.setPushBookings(request.getPushBookings());
-        user.setPushPromotions(request.getPushPromotions());
+        if (request.getEmailBookings() != null) {
+            user.setEmailBookings(request.getEmailBookings());
+        }
+        if (request.getEmailPromotions() != null) {
+            user.setEmailPromotions(request.getEmailPromotions());
+        }
+        if (request.getPushBookings() != null) {
+            user.setPushBookings(request.getPushBookings());
+        }
+        if (request.getPushPromotions() != null) {
+            user.setPushPromotions(request.getPushPromotions());
+        }
 
         user = userRepository.save(user);
         return userMapper.toDTO(user);

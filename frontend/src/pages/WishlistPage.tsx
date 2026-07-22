@@ -28,7 +28,7 @@ export default function WishlistPage() {
               {isLoading ? 'Loading your saved properties...' : `You have ${hotels.length} saved properties`}
             </p>
           </div>
-          <Button variant="outline" onClick={() => navigate('/hotels')} className="hidden sm:flex">
+          <Button variant="outline" onClick={() => navigate('/hotels')} className="!hidden sm:!flex">
             Browse more hotels
           </Button>
         </motion.div>

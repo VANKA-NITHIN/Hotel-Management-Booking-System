@@ -2,6 +2,9 @@ import { Modal } from './Modal';
 import { Button } from './Button';
 import { Printer, Download, Building, CheckCircle2 } from 'lucide-react';
 import { useCurrency } from '../../contexts/CurrencyContext';
+import { invoiceApi } from '../../api';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 interface BookingInvoiceData {
   bookingId: string | number;
@@ -34,8 +37,28 @@ export function InvoiceModal({ isOpen, onClose, booking }: InvoiceModalProps) {
   const roomSubtotal = Math.round(booking.totalAmount / 1.12);
   const taxAmount = booking.totalAmount - roomSubtotal;
 
-  const handlePrint = () => {
-    window.print();
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handlePrint = async () => {
+    try {
+      setIsDownloading(true);
+      const response = await invoiceApi.downloadInvoice(booking.bookingId);
+      
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `LuxuryStay-Invoice-${booking.bookingId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      if (link.parentNode) link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download invoice:', error);
+      toast.error('Failed to download invoice. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -118,11 +141,15 @@ export function InvoiceModal({ isOpen, onClose, booking }: InvoiceModalProps) {
 
         {/* Actions Footer */}
         <div className="flex items-center justify-end gap-3 pt-2 print:hidden">
-          <Button variant="outline" icon={<Printer className="w-4 h-4" />} onClick={handlePrint}>
-            Print / Save PDF
+          <Button variant="outline" icon={<Printer className="w-4 h-4" />} onClick={() => window.print()}>
+            Print
           </Button>
-          <Button icon={<Download className="w-4 h-4" />} onClick={handlePrint}>
-            Download Invoice
+          <Button 
+            icon={isDownloading ? <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-4 h-4" /> : <Download className="w-4 h-4" />} 
+            onClick={handlePrint}
+            disabled={isDownloading}
+          >
+            {isDownloading ? 'Generating PDF...' : 'Download Invoice'}
           </Button>
         </div>
       </div>

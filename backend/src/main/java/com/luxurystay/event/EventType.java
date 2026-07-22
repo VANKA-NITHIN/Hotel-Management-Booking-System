@@ -1,0 +1,43 @@
+package com.luxurystay.event;
+
+public enum EventType {
+    // Booking Events
+    BOOKING_CREATED,
+    BOOKING_UPDATED,
+    BOOKING_CONFIRMED,
+    BOOKING_CANCELLED,
+    BOOKING_CHECKED_IN,
+    BOOKING_CHECKED_OUT,
+
+    // Hotel & Room Events
+    HOTEL_UPDATED,
+    ROOM_STATUS_CHANGED,
+    ROOM_AVAILABLE,
+    ROOM_MAINTENANCE,
+    ROOM_DIRTY,
+    ROOM_CLEANED,
+
+    // User Events
+    USER_PROFILE_UPDATED,
+    WALLET_UPDATED,
+    LOYALTY_UPDATED,
+    REFERRAL_REWARDED,
+
+    // Corporate Events
+    EMPLOYEE_INVITED,
+    EMPLOYEE_JOINED,
+    ROLE_UPDATED,
+    COMPANY_APPROVED,
+    COMPANY_SUSPENDED,
+
+    // Reviews
+    REVIEW_CREATED,
+    REVIEW_APPROVED,
+    REVIEW_DELETED,
+
+    // Notifications
+    SYSTEM_NOTIFICATION,
+    PROMOTION,
+    SECURITY_ALERT,
+    MAINTENANCE_NOTICE
+}

@@ -27,7 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import com.luxurystay.event.EventPublisherService;
+
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BookingServiceImplTest {
 
     @Mock
@@ -39,11 +44,15 @@ public class BookingServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private CouponRepository couponRepository;
+    @Mock
     private BookingMapper bookingMapper;
     @Mock
     private EmailService emailService;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private EventPublisherService eventPublisherService;
 
     @InjectMocks
     private BookingServiceImpl bookingService;

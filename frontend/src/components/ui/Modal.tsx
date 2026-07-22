@@ -16,10 +16,10 @@ export interface ModalProps {
 }
 
 const sizeClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-2xl',
+  sm: 'w-full max-w-sm',
+  md: 'w-full max-w-md',
+  lg: 'w-full max-w-lg',
+  xl: 'w-full max-w-2xl',
   fullscreen: 'w-screen h-screen max-w-none rounded-none',
 };
 
@@ -105,7 +105,7 @@ export function Modal({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className={`
               relative bg-bg-surface flex flex-col
-              ${isFullscreen ? '' : 'rounded-2xl shadow-modal'}
+              ${isFullscreen ? '' : 'rounded-2xl shadow-modal max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)]'}
               ${sizeClasses[size]} 
               ${className}
             `}
@@ -131,7 +131,7 @@ export function Modal({
                 {!hideCloseButton && (
                   <button
                     onClick={onClose}
-                    className="p-2 -mr-2 -mt-2 rounded-lg text-text-muted hover:text-text-base hover:bg-bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus"
+                    className="flex items-center justify-center min-w-[44px] min-h-[44px] -mr-2 -mt-2 rounded-lg text-text-muted hover:text-text-base hover:bg-bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-secondary"
                     aria-label="Close modal"
                   >
                     <X className="w-5 h-5" />

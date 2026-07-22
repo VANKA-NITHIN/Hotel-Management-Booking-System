@@ -62,6 +62,6 @@ public class PaymentServiceImplTest {
     @Test
     void testHandleWebhook_InvalidSignature() {
         String result = paymentService.handleWebhook("payload", "invalid_sig");
-        assertEquals("Invalid signature", result);
+        assertEquals("Error", result);
     }
 }

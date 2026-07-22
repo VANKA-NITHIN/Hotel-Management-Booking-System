@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic } from 'lucide-react';
+import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { parseNaturalLanguageSearch } from '../utils/searchParser';
 import { useSearchHotels } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
 import { HotelMap } from '../components/ui/HotelMap';
@@ -20,7 +21,29 @@ const sortOptions = [
   { value: 'name', label: 'Name: A-Z' },
 ];
 
-const AMENITIES_LIST = ['Swimming Pool', 'Spa', 'Gym', 'Free WiFi', 'Parking', 'Restaurant'];
+const AMENITY_GROUPS = [
+  {
+    title: 'Popular',
+    amenities: ['Free Breakfast', 'Swimming Pool', 'Spa', 'Parking', 'Fast Wi-Fi']
+  },
+  {
+    title: 'Room Features',
+    amenities: ['Kitchen', 'Balcony', 'Jacuzzi', 'Family Rooms']
+  },
+  {
+    title: 'Property Themes',
+    amenities: ['Pet Friendly', 'Couples Friendly', 'Business Hotel']
+  },
+  {
+    title: 'Views',
+    amenities: ['Beach View', 'Mountain View', 'Lake View']
+  },
+  {
+    title: 'Facilities',
+    amenities: ['Wheelchair Accessible', 'EV Charging', 'Conference Hall']
+  }
+];
+
 
 export default function HotelsPage() {
   usePageTitle('Hotels');
@@ -90,7 +113,7 @@ export default function HotelsPage() {
       setSearch(speechResult);
       toast.success(`Searching for "${speechResult}"`, { icon: '🔍', duration: 2000 });
       setTimeout(() => {
-        setPage(0);
+        processSearchQuery(speechResult);
       }, 100);
     };
 
@@ -129,10 +152,23 @@ export default function HotelsPage() {
     }
   };
 
+  const processSearchQuery = (query: string) => {
+    const parsed = parseNaturalLanguageSearch(query);
+    if (parsed.city) setCity(parsed.city);
+    if (parsed.minPrice) setMinPrice(parsed.minPrice);
+    if (parsed.maxPrice) setMaxPrice(parsed.maxPrice);
+    if (parsed.amenities.length > 0) {
+      setSelectedAmenities(prev => {
+        const combined = new Set([...prev, ...parsed.amenities]);
+        return Array.from(combined);
+      });
+    }
+    setPage(0);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCity(search);
-    setPage(0);
+    processSearchQuery(search);
   };
 
   const clearFilters = () => {
@@ -154,7 +190,7 @@ export default function HotelsPage() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       {/* Header & Controls */}
       <div className="bg-bg-surface border-b border-border-base sticky top-[72px] z-30 shadow-sm">
-        <div className="container-section py-6">
+        <div className="container-safe py-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
               <h1 className="text-3xl font-serif font-bold text-text-base">Explore Properties</h1>
@@ -248,7 +284,7 @@ export default function HotelsPage() {
             exit={{ height: 0, opacity: 0 }}
             className="bg-bg-surface border-b border-border-base overflow-hidden relative z-20"
           >
-            <div className="container-section py-6">
+            <div className="container-safe py-6">
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">Refine Search</h3>
                 {hasActiveFilters && (
@@ -299,21 +335,24 @@ export default function HotelsPage() {
                 </div>
 
                 {/* Smart Amenities */}
-                <div className="sm:col-span-2 lg:col-span-4 border-t border-border-base pt-6">
-                  <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-3 block">Smart Amenities</label>
-                  <div className="flex flex-wrap gap-2">
-                    {AMENITIES_LIST.map((amenity) => (
-                      <button
-                        key={amenity}
-                        onClick={() => toggleAmenity(amenity)}
-                        className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
-                          selectedAmenities.includes(amenity)
-                            ? 'bg-primary text-white border-primary shadow-md'
-                            : 'bg-bg-surface-hover text-text-muted border-border-base hover:border-primary/50'
-                        }`}
-                      >
-                        {amenity}
-                      </button>
+                <div className="sm:col-span-2 lg:col-span-4 border-t border-border-base pt-6 mt-2">
+                  <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4 block">Smart Amenities & Features</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                    {AMENITY_GROUPS.map((group) => (
+                      <div key={group.title}>
+                        <h4 className="text-[13px] font-bold text-text-base mb-3 border-b border-border-base pb-2">{group.title}</h4>
+                        <div className="flex flex-col gap-2.5">
+                          {group.amenities.map((amenity) => (
+                            <label key={amenity} className="flex items-center gap-3 cursor-pointer group">
+                              <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedAmenities.includes(amenity) ? 'bg-primary border-primary text-white' : 'bg-bg-surface border-border-strong group-hover:border-primary text-transparent'}`}>
+                                <Check className="w-3 h-3" strokeWidth={3} />
+                              </div>
+                              <span className={`text-sm select-none transition-colors ${selectedAmenities.includes(amenity) ? 'font-bold text-text-base' : 'text-text-muted group-hover:text-text-base'}`}>{amenity}</span>
+                              <input type="checkbox" className="hidden" checked={selectedAmenities.includes(amenity)} onChange={() => toggleAmenity(amenity)} />
+                            </label>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -325,7 +364,7 @@ export default function HotelsPage() {
 
       {/* Active Filter Tags */}
       {hasActiveFilters && (
-        <div className="container-section py-4">
+        <div className="container-safe py-4">
           <div className="flex flex-wrap items-center gap-2">
             {city && (
               <span className="px-3 py-1.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 text-xs font-bold flex items-center gap-1.5">
@@ -362,10 +401,10 @@ export default function HotelsPage() {
       )}
 
       {/* Results */}
-      <div className="container-section py-8 pb-20">
+      <div className="container-safe py-8 pb-20">
         {isLoading ? (
           <div className={view === 'grid'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-6 3xl:gap-8'
             : 'space-y-6'
           }>
             {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
@@ -376,7 +415,7 @@ export default function HotelsPage() {
               <HotelMap hotels={hotels} />
             ) : (
               <div className={view === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-6 3xl:gap-8'
                 : 'space-y-6'
               }>
                 {hotels.map((hotel: Hotel, i: number) => (

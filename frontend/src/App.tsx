@@ -7,6 +7,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { NotificationProvider } from './contexts/NotificationContext';
+import { WebSocketProvider } from './contexts/WebSocketContext';
+import { useRealtimeEvents } from './hooks/useRealtimeEvents';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AIChat from './components/ui/AIChat';
@@ -105,6 +107,11 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function RealtimeManager() {
+  useRealtimeEvents();
+  return null;
+}
+
 function ClerkLoginPage() {
   return (
     <div className="min-h-screen flex">
@@ -165,9 +172,11 @@ export default function App() {
           <AuthProvider>
             <NotificationProvider>
               <QueryClientProvider client={queryClient}>
-                <BrowserRouter>
-                  <ErrorBoundary>
-                    <Suspense fallback={<PageLoader />}>
+                <WebSocketProvider>
+                  <BrowserRouter>
+                    <RealtimeManager />
+                    <ErrorBoundary>
+                      <Suspense fallback={<PageLoader />}>
                       <Routes>
                         {/* ... */}
                         {/* Clerk auth routes */}
@@ -205,6 +214,7 @@ export default function App() {
                   </ErrorBoundary>
                   <Toaster position="top-right" toastOptions={{ duration: 3000, style: { borderRadius: '12px', padding: '16px', fontSize: '14px' } }} />
                 </BrowserRouter>
+                </WebSocketProvider>
               </QueryClientProvider>
             </NotificationProvider>
           </AuthProvider>

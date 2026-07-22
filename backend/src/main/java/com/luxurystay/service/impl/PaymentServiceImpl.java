@@ -153,6 +153,7 @@ public class PaymentServiceImpl implements PaymentService {
             return "Invalid signature";
         } catch (Exception e) {
             log.error("Webhook processing error: {}", e.getMessage());
+            return "Error";
         }
 
         return "OK";

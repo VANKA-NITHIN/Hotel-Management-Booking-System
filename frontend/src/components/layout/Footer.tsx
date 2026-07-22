@@ -135,7 +135,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
-            <Link to="/" className="flex items-center gap-3 mb-6 inline-block">
+            <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="flex items-center gap-3">
                 <img src="/favicon.svg" alt="LuxuryStay Logo" className="w-10 h-10 rounded-xl" />
                 <span className="text-white font-serif font-bold text-2xl tracking-tight">LuxuryStay</span>
@@ -190,7 +190,7 @@ export default function Footer() {
             <ul className="space-y-3.5">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block">{link.label}</Link>
+                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block py-1.5">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -200,7 +200,7 @@ export default function Footer() {
             <ul className="space-y-3.5">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block">{link.label}</Link>
+                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block py-1.5">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -210,7 +210,7 @@ export default function Footer() {
             <ul className="space-y-3.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block">{link.label}</Link>
+                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block py-1.5">{link.label}</Link>
                 </li>
               ))}
             </ul>
@@ -220,7 +220,7 @@ export default function Footer() {
             <ul className="space-y-3.5">
               {footerLinks.destinations.map((link) => (
                 <li key={link.label}>
-                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block">{link.label}</Link>
+                  <Link to={link.to} className="text-sm hover:text-secondary transition-colors inline-block py-1.5">{link.label}</Link>
                 </li>
               ))}
             </ul>

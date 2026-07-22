@@ -6,6 +6,8 @@ import com.luxurystay.entity.Housekeeping;
 import com.luxurystay.enums.CleaningStatus;
 import com.luxurystay.repository.HousekeepingRepository;
 import com.luxurystay.service.HousekeepingService;
+import com.luxurystay.event.EventPublisherService;
+import com.luxurystay.event.EventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class HousekeepingServiceImpl implements HousekeepingService {
 
     private final HousekeepingRepository housekeepingRepository;
+    private final EventPublisherService eventPublisherService;
 
     @Override
     public List<HousekeepingDTO> getHotelHousekeeping(Long hotelId, String status) {
@@ -46,6 +49,14 @@ public class HousekeepingServiceImpl implements HousekeepingService {
         }
         hk.setStatus(CleaningStatus.valueOf(status));
         housekeepingRepository.save(hk);
+        
+        eventPublisherService.publishHousekeepingEvent(
+                EventType.ROOM_STATUS_CHANGED, 
+                String.valueOf(hk.getRoom().getId()), 
+                "STAFF", 
+                toDTO(hk)
+        );
+        
         return ApiResponse.builder()
                 .success(true)
                 .message("Status updated")

@@ -232,7 +232,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px] pb-24">
-      <div className="container-section">
+      <div className="container-safe">
         {/* Step Indicator */}
         <div className="max-w-2xl mx-auto mb-12 mt-8">
           <div className="flex items-center justify-between relative">
@@ -254,7 +254,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 xl:gap-12">
+        <div className="flex flex-col lg:flex-row gap-8 xl:gap-12 3xl:gap-20">
           {/* Main Form Area */}
           <div className="flex-1">
             <AnimatePresence mode="wait">
@@ -417,7 +417,7 @@ export default function BookingPage() {
           </div>
 
           {/* Sticky Order Summary Sidebar */}
-          <div className="lg:w-[400px] shrink-0">
+          <div className="lg:w-[400px] 3xl:w-[500px] 4xl:w-[600px] shrink-0">
             <div className="bg-bg-surface rounded-2xl border border-border-base p-6 lg:p-8 sticky top-24 shadow-sm">
               <h3 className="text-xl font-serif font-bold text-text-base mb-6 pb-6 border-b border-border-base">Order Summary</h3>
               
@@ -446,6 +446,19 @@ export default function BookingPage() {
                   <span className="text-text-muted font-medium">Guests</span>
                   <span className="font-bold text-text-base">{watch('guests')} Adults{watch('children') > 0 ? `, ${watch('children')} Children` : ''}</span>
                 </div>
+                {selectedRooms.length > 0 && (
+                  <div className="border-t border-border-base pt-3 mt-3">
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Selected Accommodations</p>
+                    <div className="space-y-1.5">
+                      {selectedRooms.map((r, i) => (
+                        <div key={`${r.id}-${i}`} className="flex justify-between text-sm">
+                          <span className="text-text-base">{r.name} <span className="text-xs text-text-muted ml-1">({r.roomType?.replace('_', ' ')})</span></span>
+                          <span className="font-bold text-text-base">${r.pricePerNight}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4 text-sm mb-8">

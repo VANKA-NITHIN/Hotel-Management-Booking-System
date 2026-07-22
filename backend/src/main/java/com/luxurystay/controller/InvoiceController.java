@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,12 +15,23 @@ import org.springframework.web.bind.annotation.*;
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
+    private final com.luxurystay.service.AuditService auditService;
+    private final com.luxurystay.service.AuthService authService;
 
     @GetMapping("/{bookingId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long bookingId) {
+    public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long bookingId, Authentication authentication, jakarta.servlet.http.HttpServletRequest request) {
         try {
-            byte[] pdfBytes = invoiceService.generateInvoice(bookingId);
+            com.luxurystay.entity.User user = authService.getCurrentUser(authentication);
+            byte[] pdfBytes = invoiceService.generateInvoice(bookingId, authentication);
+            
+            auditService.logAction(auditService.createLogBuilder(user.getId().toString(), user.getEmail(), com.luxurystay.enums.AuditActionType.DOWNLOAD_INVOICE)
+                    .resourceType("INVOICE")
+                    .resourceId(bookingId.toString())
+                    .requestPath(request.getRequestURI())
+                    .httpMethod(request.getMethod())
+                    .ipAddress(request.getRemoteAddr())
+                    .build());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);

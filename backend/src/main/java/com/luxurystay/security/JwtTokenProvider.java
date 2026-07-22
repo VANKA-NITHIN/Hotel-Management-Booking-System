@@ -230,7 +230,7 @@ public class JwtTokenProvider {
      */
     private void fetchClerkJwks() {
         try {
-            JWKSet jwkSet = JWKSet.load(new URL(clerkJwksUrl));
+            JWKSet jwkSet = JWKSet.load(java.net.URI.create(clerkJwksUrl).toURL());
             clerkKeys.clear();
             for (JWK jwk : jwkSet.getKeys()) {
                 if (jwk instanceof RSAKey rsaKey) {
@@ -255,5 +255,28 @@ public class JwtTokenProvider {
 
     public long getJwtExpiration() {
         return jwtExpiration;
+    }
+
+    /**
+     * Generate a time-bound encrypted JWT for Check-In QR Passes
+     */
+    public String generateQrToken(Long bookingId, Long userId, Long hotelId, long expirationMillis) {
+        if (jwtSecret == null || jwtSecret.isEmpty()) {
+            jwtSecret = "a_very_long_secure_fallback_secret_key_for_testing_only_1234567890"; // fallback for testing
+        }
+        
+        SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMillis);
+
+        return Jwts.builder()
+                .setSubject(bookingId.toString())
+                .claim("userId", userId)
+                .claim("hotelId", hotelId)
+                .claim("type", "qr_pass")
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 }

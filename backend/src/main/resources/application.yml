@@ -105,6 +105,11 @@ openrouter:
   api-key: ${OPENROUTER_API_KEY:YOUR_OPENROUTER_API_KEY}
   model: ${OPENROUTER_MODEL:meta-llama/llama-4-maverick:free}
 
+# Gemini (AI Assistant)
+gemini:
+  api-key: ${GEMINI_API_KEY:YOUR_GEMINI_API_KEY}
+  model: ${GEMINI_MODEL:gemini-1.5-flash}
+
 # Application specific
 app:
   jwt-issuer: LuxuryStay
@@ -153,6 +158,14 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+management:
+  health:
+    mail:
+      enabled: false
 
 ---
 # Production profile

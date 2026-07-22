@@ -87,7 +87,7 @@ export function Drawer({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-[110] overflow-hidden">
           <motion.div
             ref={overlayRef}
             initial={{ opacity: 0 }}
@@ -107,6 +107,7 @@ export function Drawer({
               absolute bg-bg-surface border-border-base shadow-2xl flex flex-col
               ${positionClasses[position]} 
               ${sizeClass} 
+              ${position !== 'bottom' ? 'max-w-[calc(100vw-3rem)] sm:max-w-none' : ''}
               ${className}
             `}
             role="dialog"
@@ -122,7 +123,7 @@ export function Drawer({
                 {!hideCloseButton && (
                   <button
                     onClick={onClose}
-                    className="p-2 -mr-2 -mt-2 rounded-lg text-text-muted hover:text-text-base hover:bg-bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus"
+                    className="flex items-center justify-center min-w-[44px] min-h-[44px] -mr-2 -mt-2 rounded-lg text-text-muted hover:text-text-base hover:bg-bg-surface-hover transition-colors focus:outline-none focus:ring-2 focus:ring-secondary"
                     aria-label="Close drawer"
                   >
                     <X className="w-5 h-5" />

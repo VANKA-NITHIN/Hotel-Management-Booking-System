@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi } from '../api';
+import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi, checkInApi, walletApi, referralApi, corporateApi } from '../api';
 import type { Hotel, Room } from '../types';
 
 // Hotels
@@ -150,6 +150,14 @@ export function useHotelReviews(hotelId: number) {
   return useQuery({
     queryKey: ['hotelReviews', hotelId],
     queryFn: () => reviewApi.getHotelReviews(hotelId),
+    enabled: !!hotelId,
+  });
+}
+
+export function useHotelReviewAnalytics(hotelId: number) {
+  return useQuery({
+    queryKey: ['hotelReviewAnalytics', hotelId],
+    queryFn: () => reviewApi.getHotelReviewAnalytics(hotelId),
     enabled: !!hotelId,
   });
 }
@@ -331,5 +339,191 @@ export function useSubmitContact() {
 export function useSubscribeNewsletter() {
   return useMutation({
     mutationFn: newsletterApi.subscribe,
+  });
+}
+
+// CheckIn
+export function useCheckIn(bookingId: number, enabled = true) {
+  return useQuery({
+    queryKey: ['checkIn', bookingId],
+    queryFn: () => checkInApi.getStatus(bookingId),
+    enabled: !!bookingId && enabled,
+    retry: false, // Don't retry if checkIn doesn't exist yet
+  });
+}
+
+export function useSubmitCheckIn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ bookingId, data }: { bookingId: number; data: any }) => checkInApi.submit(bookingId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['checkIn', variables.bookingId] });
+      queryClient.invalidateQueries({ queryKey: ['myBookings'] });
+    },
+  });
+}
+
+export function useVerifyCheckIn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (bookingId: number) => checkInApi.verify(bookingId),
+    onSuccess: (_, bookingId) => {
+      queryClient.invalidateQueries({ queryKey: ['checkIn', bookingId] });
+      queryClient.invalidateQueries({ queryKey: ['adminBookings'] });
+    },
+  });
+}
+
+export function useDigitalPass(bookingId: number, enabled = false) {
+  return useQuery({
+    queryKey: ['digitalPass', bookingId],
+    queryFn: () => checkInApi.getPass(bookingId),
+    enabled: !!bookingId && enabled,
+  });
+}
+
+// Wallet
+export function useMyWallet() {
+  return useQuery({
+    queryKey: ['myWallet'],
+    queryFn: () => walletApi.getMyWallet(),
+  });
+}
+
+export function useWalletTransactions(page = 0, size = 10) {
+  return useQuery({
+    queryKey: ['walletTransactions', page, size],
+    queryFn: () => walletApi.getTransactions(page, size),
+  });
+}
+
+export function useRedeemPoints() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: walletApi.redeemPoints,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myWallet'] });
+      queryClient.invalidateQueries({ queryKey: ['walletTransactions'] });
+    },
+  });
+}
+
+export function useApplyCoupon() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: walletApi.applyCoupon,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myWallet'] });
+      queryClient.invalidateQueries({ queryKey: ['walletTransactions'] });
+    },
+  });
+}
+
+// Referrals
+export function useMyReferralCode() {
+  return useQuery({
+    queryKey: ['myReferralCode'],
+    queryFn: () => referralApi.getMyCode(),
+  });
+}
+
+export function useReferralHistory() {
+  return useQuery({
+    queryKey: ['referralHistory'],
+    queryFn: () => referralApi.getHistory(),
+  });
+}
+
+export function useReferralMetrics() {
+  return useQuery({
+    queryKey: ['referralMetrics'],
+    queryFn: () => referralApi.getMetrics(),
+  });
+}
+
+export function useApplyReferralCode() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: referralApi.applyCode,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myWallet'] });
+      queryClient.invalidateQueries({ queryKey: ['walletTransactions'] });
+      queryClient.invalidateQueries({ queryKey: ['myReferralCode'] });
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+    },
+  });
+}
+
+// Corporate API Hooks
+export function useRegisterCompany() {
+  return useMutation({
+    mutationFn: corporateApi.registerCompany,
+  });
+}
+
+export function useMyCompany() {
+  return useQuery({
+    queryKey: ['myCompany'],
+    queryFn: () => corporateApi.getMyCompany().then(res => res.data),
+    retry: false, // Don't retry if they don't have a company
+  });
+}
+
+export function useCompanyEmployees() {
+  return useQuery({
+    queryKey: ['companyEmployees'],
+    queryFn: () => corporateApi.getEmployees().then(res => res.data),
+  });
+}
+
+export function useUpdateEmployeeRole() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ employeeId, role }: { employeeId: number, role: string }) => corporateApi.updateRole(employeeId, role),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['companyEmployees'] });
+    },
+  });
+}
+
+export function useInviteEmployee() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: corporateApi.inviteEmployee,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pendingInvitations'] });
+    },
+  });
+}
+
+export function usePendingInvitations() {
+  return useQuery({
+    queryKey: ['pendingInvitations'],
+    queryFn: () => corporateApi.getPendingInvitations().then(res => res.data),
+  });
+}
+
+export function useAcceptInvitation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: corporateApi.acceptInvitation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['auth'] });
+      queryClient.invalidateQueries({ queryKey: ['myCompany'] });
+    },
+  });
+}
+
+export function useCorporateBookings() {
+  return useQuery({
+    queryKey: ['corporateBookings'],
+    queryFn: () => corporateApi.getCorporateBookings().then(res => res.data),
+  });
+}
+
+export function useCorporateAnalytics() {
+  return useQuery({
+    queryKey: ['corporateAnalytics'],
+    queryFn: () => corporateApi.getAnalytics().then(res => res.data),
   });
 }

@@ -14,6 +14,16 @@ export interface User {
   emailPromotions?: boolean;
   pushBookings?: boolean;
   pushPromotions?: boolean;
+  referralCode?: string;
+  referredByCode?: string;
+  
+  // Corporate Fields
+  companyId?: number;
+  companyRole?: string;
+  department?: string;
+  jobTitle?: string;
+  employeeId?: string;
+  travelBudget?: number;
 }
 
 export interface AuthResponse {
@@ -95,8 +105,110 @@ export interface Booking {
   serviceCharge: number;
   couponCode?: string;
   specialRequests?: string;
+  cancellationReason?: string;
+  cancelledAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  hotelName?: string;
+  guestName?: string;
   user?: User;
   hotel?: Hotel;
+}
+
+export interface Company {
+  id: number;
+  name: string;
+  companyCode: string;
+  taxId: string;
+  contactEmail: string;
+  status: string;
+  industry?: string;
+  website?: string;
+  employeeLimit?: number;
+  companySize?: string;
+  country?: string;
+  timeZone?: string;
+  preferredCurrency?: string;
+  billingAddress?: string;
+  createdAt: string;
+}
+
+export interface CompanyInvitation {
+  id: number;
+  companyId: number;
+  email: string;
+  role: string;
+  token: string;
+  status: string;
+  expiresAt: string;
+  acceptedAt?: string;
+  createdByUserName: string;
+  createdAt: string;
+}
+
+export interface CorporateAnalytics {
+  totalEmployees: number;
+  activeEmployees: number;
+  totalBookings: number;
+  monthlySpend: number;
+  averageBookingValue: number;
+  spendByDepartment: { department: string; spend: number }[];
+  topDestinations: { destination: string; bookingCount: number }[];
+}
+
+export type CheckInStatus = 'PENDING' | 'SUBMITTED' | 'VERIFIED' | 'CHECKED_IN';
+
+export interface CheckIn {
+  id?: number;
+  bookingId: number;
+  status: CheckInStatus;
+  submittedAt?: string;
+  verifiedAt?: string;
+  termsAccepted: boolean;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  specialRequests?: string;
+  qrToken?: string;
+}
+
+export type TransactionType = 'BOOKING_PAYMENT' | 'REFUND' | 'CASHBACK' | 'REWARD_CREDIT' | 'REWARD_REDEMPTION' | 'COUPON_CREDIT' | 'PROMOTIONAL_BONUS' | 'ROOM_SERVICE_CHARGE' | 'RESTAURANT_CHARGE' | 'SPA_CHARGE' | 'ADJUSTMENT';
+
+export type TransactionStatus = 'PENDING' | 'COMPLETED' | 'FAILED';
+
+export interface WalletTransaction {
+  id?: number;
+  walletId: number;
+  amount: number;
+  type: TransactionType;
+  status: TransactionStatus;
+  referenceId?: string;
+  description?: string;
+  timestamp: string;
+}
+
+export interface Wallet {
+  id?: number;
+  userId: number;
+  balance: number;
+  rewardPoints: number;
+  loyaltyTier: string;
+  tierProgress: number;
+  transactions: WalletTransaction[];
+}
+
+export interface Referral {
+  id: number;
+  referredUserName: string;
+  status: string;
+  rewardPoints: number;
+  createdAt: string;
+}
+
+export interface ReferralMetrics {
+  totalReferrals: number;
+  successfulReferrals: number;
+  pendingReferrals: number;
+  totalRewardsEarned: number;
 }
 
 export interface Amenity {
@@ -118,15 +230,36 @@ export interface Payment {
 }
 
 export interface Review {
-  id: number;
+  id?: number;
   hotelId: number;
   roomId?: number;
   bookingId?: number;
   rating: number;
+  cleanlinessRating?: number;
+  serviceRating?: number;
+  locationRating?: number;
+  valueRating?: number;
   comment: string;
-  reviewImage?: string;
-  guestName?: string;
+  photos?: string[];
+  userName?: string;
+  userImage?: string;
+  roomName?: string;
   createdAt?: string;
+  verified?: boolean;
+  likes?: number;
+  reply?: string;
+  repliedByName?: string;
+}
+
+export interface ReviewAnalytics {
+  hotelId: number;
+  totalReviews: number;
+  averageRating: number;
+  averageCleanliness: number;
+  averageService: number;
+  averageLocation: number;
+  averageValue: number;
+  ratingDistribution: Record<number, number>;
 }
 
 export interface PagedResponse<T> {

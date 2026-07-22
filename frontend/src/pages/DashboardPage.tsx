@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, useUser, UserProfile } from '@clerk/clerk-react';
-import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search, FileText, Sparkles } from 'lucide-react';
+import { Calendar, User, Heart, Settings, LayoutDashboard, MapPin, Search, FileText, Sparkles, Wallet, QrCode, Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useMyBookings } from '../hooks/useApi';
@@ -16,12 +16,22 @@ import { Button } from '../components/ui/Button';
 import { OptimizedImage } from '../components/ui/Image';
 import { BookingTimeline } from '../components/ui/BookingTimeline';
 import { LoyaltyCard } from '../components/ui/LoyaltyCard';
+import { GuestWallet } from '../components/ui/GuestWallet';
+import { DigitalCheckInFlow } from '../components/ui/DigitalCheckInFlow';
+import { DigitalPassModal } from '../components/ui/DigitalPassModal';
 import { authApi } from '../api';
 import { useQuery } from '@tanstack/react-query';
+import { useDigitalPass } from '../hooks/useApi';
+
+import { Gift } from 'lucide-react';
+import { ReferralDashboard } from '../components/ui/ReferralDashboard';
+import CorporateDashboard from '../components/corporate/CorporateDashboard';
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'bookings', label: 'My Trips', icon: Calendar },
+  { id: 'wallet', label: 'Rewards & Loyalty', icon: Gift },
+  { id: 'corporate', label: 'Corporate Portal', icon: Building2 },
   { id: 'saved', label: 'Saved', icon: Heart },
   { id: 'account', label: 'Account', icon: User },
 ];
@@ -42,6 +52,11 @@ export default function DashboardPage() {
     enabled: isSignedIn,
   });
   const user: any = profileRes?.data || clerkUser;
+  
+  const [activeCheckInBooking, setActiveCheckInBooking] = useState<any>(null);
+  const [activePassBooking, setActivePassBooking] = useState<any>(null);
+  
+  const { data: passData } = useDigitalPass(activePassBooking?.id, !!activePassBooking);
   const { data: bookingsData, isLoading } = useMyBookings();
   const bookings = bookingsData?.data?.content || [];
 
@@ -51,7 +66,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px] pb-24">
-      <div className="container-section mt-8">
+      <div className="container-safe mt-8 lg:mt-12">
         {/* Header Profile Summary */}
         <div className="bg-bg-surface rounded-2xl p-6 md:p-8 mb-8 border border-border-base shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
           <div className="w-24 h-24 rounded-2xl bg-bg-surface-hover overflow-hidden shrink-0 shadow-inner">
@@ -90,11 +105,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 xl:gap-10">
+        <div className="flex flex-col lg:flex-row gap-8 xl:gap-10 3xl:gap-16">
           {/* Sidebar Navigation */}
-          <div className="lg:w-64 shrink-0">
+          <div className="lg:w-64 3xl:w-80 shrink-0">
             <div className="bg-bg-surface rounded-2xl border border-border-base p-2 shadow-sm sticky top-24">
-              <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar">
+              <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pr-20 lg:pr-0">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -160,6 +175,23 @@ export default function DashboardPage() {
                                   <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1">Check-out</p>
                                   <p className="text-sm font-bold text-text-base flex items-center gap-1.5"><Calendar className="w-4 h-4 text-text-muted" /> {booking.checkOutDate}</p>
                                </div>
+                            </div>
+                            
+                            {/* Action Buttons */}
+                            <div className="flex flex-wrap items-center gap-3 mt-4 pt-4 border-t border-border-base">
+                              {booking.status === 'CONFIRMED' && (
+                                <Button size="sm" onClick={() => setActiveCheckInBooking(booking)}>
+                                  Start Digital Check-In
+                                </Button>
+                              )}
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                icon={<QrCode className="w-4 h-4" />}
+                                onClick={() => setActivePassBooking(booking)}
+                              >
+                                View Digital Pass
+                              </Button>
                             </div>
                             
                             {/* Booking Progress Timeline */}
@@ -255,6 +287,36 @@ export default function DashboardPage() {
                 </motion.div>
               )}
 
+              {activeTab === 'wallet' && (
+                <motion.div key="wallet" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
+                  <section>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-serif font-bold text-text-base flex items-center gap-2">
+                        <Wallet className="w-6 h-6 text-primary" /> Guest Wallet
+                      </h2>
+                    </div>
+                    <GuestWallet />
+                  </section>
+                  
+                  <hr className="border-border-base" />
+                  
+                  <section>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-serif font-bold text-text-base flex items-center gap-2">
+                        <Gift className="w-6 h-6 text-primary" /> Referral Program
+                      </h2>
+                    </div>
+                    <ReferralDashboard />
+                  </section>
+                </motion.div>
+              )}
+
+              {activeTab === 'corporate' && (
+                <motion.div key="corporate" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                  <CorporateDashboard />
+                </motion.div>
+              )}
+
               {activeTab === 'saved' && (
                 <motion.div key="saved" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                    <div className="flex items-center justify-between mb-6">
@@ -321,6 +383,26 @@ export default function DashboardPage() {
         onClose={() => setIsLoyaltyOpen(false)}
         currentPoints={user?.loyaltyPoints || 1250}
       />
+
+      {activeCheckInBooking && (
+        <DigitalCheckInFlow
+          isOpen={!!activeCheckInBooking}
+          onClose={() => setActiveCheckInBooking(null)}
+          bookingId={activeCheckInBooking.id}
+          bookingRef={activeCheckInBooking.bookingReference}
+          hotelName={activeCheckInBooking.hotelName || 'LuxuryStay Property'}
+        />
+      )}
+
+      {activePassBooking && (
+        <DigitalPassModal
+          isOpen={!!activePassBooking}
+          onClose={() => setActivePassBooking(null)}
+          bookingRef={activePassBooking.bookingReference}
+          hotelName={activePassBooking.hotelName || 'LuxuryStay Property'}
+          qrToken={passData?.data}
+        />
+      )}
     </div>
   );
 }

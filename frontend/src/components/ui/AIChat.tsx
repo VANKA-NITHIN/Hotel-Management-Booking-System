@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import api from '../../api/client';
-import toast from 'react-hot-toast';
+
 
 interface Message {
   id: string;
@@ -14,40 +14,20 @@ interface Message {
   tool_call_id?: string;
 }
 
-const SYSTEM_PROMPT = `You are the LuxuryStay AI Concierge. You are a helpful, professional, and sophisticated hotel booking agent. 
-Your goal is to help users find hotels and book them. 
-
-You have access to the following tools:
-1. \`search_hotels\`: Fetches a list of available hotels. You can optionally provide a 'city' to filter the results.
-2. \`start_booking\`: Automatically navigates the user's browser to the booking page for a specific hotel ID.
-
-When a user asks to find a hotel, ALWAYS use the \`search_hotels\` tool to get real data. Never make up hotel names. 
-After getting the results, present them nicely to the user (mentioning Name, City, and Starting Price).
-When a user asks to book a specific hotel, use the \`start_booking\` tool with the correct \`hotelId\`. 
-When a user asks about their own bookings or trips, use the \`check_my_bookings\` tool.
-Keep your responses concise, elegant, and professional. Use formatting like bullet points when listing hotels.`;
-
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
 export default function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: 'system',
-      role: 'system',
-      content: SYSTEM_PROMPT,
-    },
-    {
       id: 'greeting',
       role: 'assistant',
-      content: "Hello! Welcome to LuxuryStay! 🏨 I'm your AI hotel agent. I can help you find real-time hotel availability and even book a room for you. Where would you like to stay?",
+      content: "Hello! Welcome to LuxuryStay! 🏨 I'm your secure AI hotel agent. How can I assist you with your travels today?",
     },
   ]);
+  const [sessionId] = useState(() => Math.random().toString(36).substring(7));
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
   const location = useLocation();
 
   const scrollToBottom = () => {
@@ -64,160 +44,33 @@ export default function AIChat() {
     }
   }, [isOpen]);
 
-  // The main chat logic with tool execution loop
-  const handleAgenticChat = async (chatHistory: Message[]) => {
-    if (!GEMINI_API_KEY) {
-      toast.error('Gemini API key is missing from .env');
-      setIsLoading(false);
-      return;
-    }
-
+  // Secure backend AI call
+  const handleAgenticChat = async (userMessageContent: string) => {
     try {
-      // 1. Send the conversation to the AI
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${GEMINI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'gemini-2.0-flash', // Use the robust Gemini 2.0 Flash model
-          messages: chatHistory.map(m => {
-            const cleanMsg: any = { role: m.role, content: m.content || "" };
-            if (m.name) cleanMsg.name = m.name;
-            if (m.tool_calls) cleanMsg.tool_calls = m.tool_calls;
-            if (m.tool_call_id) cleanMsg.tool_call_id = m.tool_call_id;
-            return cleanMsg;
-          }),
-          tools: [
-            {
-              type: "function",
-              function: {
-                name: "search_hotels",
-                description: "Search for available hotels in the database.",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    city: { type: "string", description: "The city to search in (e.g. 'Paris', 'New York'). Optional." }
-                  }
-                }
-              }
-            },
-            {
-              type: "function",
-              function: {
-                name: "start_booking",
-                description: "Navigates the user to the secure checkout page for a specific hotel.",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    hotelId: { type: "number", description: "The ID of the hotel to book." }
-                  },
-                  required: ["hotelId"]
-                }
-              }
-            },
-            {
-              type: "function",
-              function: {
-                name: "check_my_bookings",
-                description: "Checks the currently logged-in user's upcoming bookings.",
-                parameters: {
-                  type: "object",
-                  properties: {}
-                }
-              }
-            }
-          ],
-          tool_choice: "auto"
-        }),
+      // Send only the user message if the backend tracks memory, or send history.
+      // We will send the latest user message and the session ID.
+      const response = await api.post('/v1/ai/chat', {
+        sessionId: sessionId,
+        userMessage: userMessageContent
       });
 
-      if (!response.ok) throw new Error('API Request Failed');
-
-      const data = await response.json();
-      const assistantMessage = data.choices[0].message;
-
-      // Add the assistant's message (might contain text, tool_calls, or both)
+      const data = response.data;
+      
       const newAssistantMsg: Message = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: assistantMessage.content || "",
-        tool_calls: assistantMessage.tool_calls
+        content: data.content || "I'm sorry, I couldn't formulate a response.",
       };
       
-      let updatedHistory = [...chatHistory, newAssistantMsg];
-      setMessages(updatedHistory);
-
-      // 2. If the AI decided to call a tool, execute it
-      if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
-        for (const toolCall of assistantMessage.tool_calls) {
-          const args = JSON.parse(toolCall.function.arguments);
-          let toolResult = "";
-
-          try {
-            if (toolCall.function.name === 'search_hotels') {
-              // Execute local search
-              const res = await api.get('/hotels'); // We fetch all for simplicity, then filter
-              let hotels = res.data.content || [];
-              if (args.city) {
-                hotels = hotels.filter((h: any) => h.city.toLowerCase().includes(args.city.toLowerCase()));
-              }
-              // Map to a smaller payload to save tokens
-              const simplified = hotels.map((h: any) => ({
-                id: h.id,
-                name: h.name,
-                city: h.city,
-                price: h.startingPrice,
-                rating: h.rating
-              }));
-              toolResult = JSON.stringify(simplified);
-            } 
-            else if (toolCall.function.name === 'start_booking') {
-              // Execute navigation
-              setTimeout(() => {
-                setIsOpen(false);
-                navigate(`/booking?hotelId=${args.hotelId}`);
-              }, 1500);
-              toolResult = JSON.stringify({ success: true, message: `Navigating user to checkout for hotel ID ${args.hotelId}...` });
-            }
-            else if (toolCall.function.name === 'check_my_bookings') {
-              // Mocked response for demo purposes (would normally hit /api/bookings/me)
-              toolResult = JSON.stringify([
-                { id: 101, hotelName: "Grand Plaza", checkIn: "2026-08-15", checkOut: "2026-08-20", status: "CONFIRMED" }
-              ]);
-            }
-          } catch (err: any) {
-             toolResult = JSON.stringify({ error: err.message });
-          }
-
-          // Append tool result to history
-          updatedHistory = [
-            ...updatedHistory,
-            {
-              id: Date.now().toString() + Math.random(),
-              role: 'tool',
-              name: toolCall.function.name,
-              tool_call_id: toolCall.id,
-              content: toolResult
-            }
-          ];
-        }
-
-        setMessages(updatedHistory);
-        // 3. Send the tool results back to the AI for a final response
-        await handleAgenticChat(updatedHistory);
-      } else {
-        // If no tool calls, the conversation turn is complete
-        setIsLoading(false);
-      }
+      setMessages((prev) => [...prev, newAssistantMsg]);
+      setIsLoading(false);
 
     } catch (error) {
       console.error(error);
       setMessages((prev) => [...prev, {
         id: Date.now().toString(),
         role: 'assistant',
-        content: "I'm sorry, I'm having trouble connecting to my brain right now. Please try again in a moment.",
+        content: "I'm sorry, I'm having trouble connecting to my secure brain right now. Please try again in a moment.",
       }]);
       setIsLoading(false);
     }
@@ -242,7 +95,7 @@ export default function AIChat() {
     setInputValue('');
     setIsLoading(true);
 
-    await handleAgenticChat(newHistory);
+    await handleAgenticChat(contextualContent);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -264,7 +117,7 @@ export default function AIChat() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed bottom-24 lg:bottom-6 right-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
