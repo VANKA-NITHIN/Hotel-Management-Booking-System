@@ -16,7 +16,7 @@ public class CurrencyExchangeRate {
     private String targetCurrency;
     
     @Column(precision = 10, scale = 4)
-    private double rate;
+    private java.math.BigDecimal rate;
     
     private LocalDateTime lastUpdated;
 }

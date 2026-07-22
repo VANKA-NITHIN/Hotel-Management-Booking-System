@@ -12,6 +12,7 @@ public class ContactInformation {
     private Long id;
 
     private String type; // e.g., "phone", "email", "address"
+    @Column(name = "contact_value")
     private String value;
     private String label;
     private boolean active = true;
