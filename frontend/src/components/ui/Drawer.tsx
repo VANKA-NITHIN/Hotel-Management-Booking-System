@@ -16,9 +16,9 @@ export interface DrawerProps {
 }
 
 const positionClasses = {
-  left: 'top-0 left-0 h-full border-r',
-  right: 'top-0 right-0 h-full border-l',
-  bottom: 'bottom-0 left-0 right-0 w-full rounded-t-2xl border-t',
+  left: 'top-0 start-0 h-full border-e',
+  right: 'top-0 end-0 h-full border-s',
+  bottom: 'bottom-0 start-0 end-0 w-full rounded-t-2xl border-t',
 };
 
 const sizeClasses = {

@@ -27,7 +27,7 @@ export const OptimizedImage = React.forwardRef<HTMLImageElement, ImageProps>(
           if (!u.searchParams.has('q')) u.searchParams.append('q', '80');
           return u.toString();
         }
-      } catch (e) {
+      } catch {
         // Ignore invalid URLs
       }
       return url;

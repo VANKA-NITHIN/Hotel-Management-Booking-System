@@ -1,0 +1,69 @@
+{
+    "heroSubtitle": "The New Standard of Luxury",
+    "heroTitle1": "Curated stays for the",
+    "heroTitleHighlight": "extraordinary",
+    "heroTitle2": "traveler.",
+    "searchPlaceholder": "Where are you going?",
+    "searchButton": "Search",
+    "guestsPlaceholder": "2 Guests",
+    "voiceSearchNotSupported": "Voice search is not supported in this browser.",
+    "listening": "Listening... Speak your destination",
+    "searchingFor": "Searching for \"{{query}}\"",
+    "noSpeechDetected": "No speech detected. Please speak clearly into your microphone.",
+    "micAccessDenied": "Microphone access denied. Please allow microphone permissions in browser settings.",
+    "noMicFound": "No microphone found on your device.",
+    "voiceSearchError": "Could not process voice search. Please try typing your destination.",
+    "luxuryHotels": "Luxury Hotels",
+    "happyGuests": "Happy Guests",
+    "awardsWon": "Awards Won",
+    "premiumRooms": "Premium Rooms",
+    "featuredCollections": "Featured Collections",
+    "featuredSubtitle": "Discover our handpicked selection of extraordinary properties, designed to provide the ultimate luxury experience.",
+    "viewAllCollections": "View all collections",
+    "noHotelsAvailable": "No hotels available",
+    "noHotelsDescription": "Check back soon for new listings.",
+    "browseAllHotels": "Browse All Hotels",
+    "viewAllHotels": "View all hotels",
+    "iconicDestinations": "Iconic Destinations",
+    "destinationsSubtitle": "Immerse yourself in the world's most sought-after locations, curated for the discerning traveler.",
+    "premiumProperties": "Premium Properties",
+    "guestExperiences": "Guest Experiences",
+    "testimonialsSubtitle": "Hear what our members have to say about their unforgettable journeys.",
+    "recentStay": "Recent Stay",
+    "faq": "Frequently Asked Questions",
+    "faqSubtitle": "Everything you need to know before you book.",
+    "faq1Title": "How do I make a reservation?",
+    "faq1Content": "Simply search for your destination, select your dates and preferred hotel, choose a room, and complete the booking. You will receive instant confirmation via email.",
+    "faq2Title": "What is the cancellation policy?",
+    "faq2Content": "Most properties offer free cancellation up to 48 hours before check-in. Some special rates may have different terms, which are clearly displayed during booking.",
+    "faq3Title": "Are there loyalty rewards?",
+    "faq3Content": "Yes! Our LuxuryStay Rewards program lets you earn points on every booking. Points can be redeemed for free nights, room upgrades, and exclusive member experiences.",
+    "faq4Title": "How do I contact customer support?",
+    "faq4Content": "Our concierge team is available 24/7 via phone at +1 (800) 123-4567, email at support@luxurystay.com, or through the in-app chat assistant.",
+    "ctaTitle": "Ready to elevate your travel experience?",
+    "ctaSubtitle": "Join our exclusive community and unlock access to the world's most extraordinary properties.",
+    "exploreCollection": "Explore Collection",
+    "scrollTop": "Scroll to top",
+    "testimonials": {
+        "sarah": {
+            "name": "Sarah Johnson",
+            "role": "Business Traveler",
+            "text": "An absolutely extraordinary experience. The attention to detail and level of service exceeded all expectations. Will definitely return."
+        },
+        "michael": {
+            "name": "Michael Chen",
+            "role": "Vacation Guest",
+            "text": "The most luxurious stay I have ever experienced. The spa treatments were world-class and the ocean views breathtaking."
+        },
+        "emily": {
+            "name": "Emily Rodriguez",
+            "role": "Family Vacation",
+            "text": "Perfect for our family getaway. The kids loved the pool and activities while we enjoyed the fine dining. Highly recommended!"
+        },
+        "james": {
+            "name": "James Wilson",
+            "role": "Honeymoon",
+            "text": "They made our honeymoon magical. The beachfront villa was stunning and the private dining experience unforgettable."
+        }
+    }
+}

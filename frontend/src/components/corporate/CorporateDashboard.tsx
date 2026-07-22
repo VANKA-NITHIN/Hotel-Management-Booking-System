@@ -158,7 +158,7 @@ function EmployeeDirectory({ role }: { role?: string }) {
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full text-start border-collapse">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-700/50">
               <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Name</th>
@@ -289,7 +289,7 @@ function CorporateBookings({ role }: { role?: string }) {
         <div className="p-12 text-center text-gray-500">No corporate bookings found.</div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-start border-collapse">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-700/50">
                 <th className="px-6 py-4 text-sm font-semibold text-gray-600 dark:text-gray-300">Reference</th>

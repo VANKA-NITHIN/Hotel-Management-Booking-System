@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { parseNaturalLanguageSearch } from '../utils/searchParser';
-import { useSearchHotels } from '../hooks/useApi';
+import { useSearchHotels, useAmenities } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
 import { HotelMap } from '../components/ui/HotelMap';
 import { CardSkeleton } from '../components/ui/Skeleton';
@@ -12,6 +12,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import type { Hotel } from '../types';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { useTranslation } from 'react-i18next';
 
 const starOptions = [5, 4, 3, 2, 1];
 const sortOptions = [
@@ -21,32 +22,11 @@ const sortOptions = [
   { value: 'name', label: 'Name: A-Z' },
 ];
 
-const AMENITY_GROUPS = [
-  {
-    title: 'Popular',
-    amenities: ['Free Breakfast', 'Swimming Pool', 'Spa', 'Parking', 'Fast Wi-Fi']
-  },
-  {
-    title: 'Room Features',
-    amenities: ['Kitchen', 'Balcony', 'Jacuzzi', 'Family Rooms']
-  },
-  {
-    title: 'Property Themes',
-    amenities: ['Pet Friendly', 'Couples Friendly', 'Business Hotel']
-  },
-  {
-    title: 'Views',
-    amenities: ['Beach View', 'Mountain View', 'Lake View']
-  },
-  {
-    title: 'Facilities',
-    amenities: ['Wheelchair Accessible', 'EV Charging', 'Conference Hall']
-  }
-];
-
+// Groups are built dynamically from API data
 
 export default function HotelsPage() {
-  usePageTitle('Hotels');
+  const { t } = useTranslation(['hotels', 'common']);
+  usePageTitle(t('hotels:pageTitle', 'Explore Hotels'));
 
   const [view, setView] = useState<'grid' | 'list' | 'map'>('grid');
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -64,6 +44,29 @@ export default function HotelsPage() {
     minPrice, maxPrice, minRating,
     sort, page, size: 12,
   });
+
+  const { data: amenitiesData } = useAmenities();
+  
+  // Group amenities by their category if possible, or provide a default group
+  const groupedAmenities = amenitiesData?.reduce((acc: any, amenity: any) => {
+    // Assuming amenities might not have a category in the API, we default to 'All Amenities'
+    // If they do have a category, use it. For now, fallback to a single group if no category exists.
+    const groupName = amenity.category || 'All Amenities';
+    if (!acc[groupName]) {
+      acc[groupName] = [];
+    }
+    acc[groupName].push(amenity.name);
+    return acc;
+  }, {}) || {};
+
+  const dynamicAmenityGroups = Object.keys(groupedAmenities).map(key => ({
+    title: key,
+    amenities: groupedAmenities[key]
+  }));
+
+  const AMENITY_GROUPS = dynamicAmenityGroups.length > 0 ? dynamicAmenityGroups : [
+    { title: 'All Amenities', amenities: [] }
+  ];
 
   const fetchedHotels = data?.data?.content || [];
   
@@ -193,9 +196,9 @@ export default function HotelsPage() {
         <div className="container-safe py-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-serif font-bold text-text-base">Explore Properties</h1>
+              <h1 className="text-3xl font-serif font-bold text-text-base">{t('hotels:pageTitle', 'Explore Properties')}</h1>
               <p className="text-sm text-text-muted mt-1">
-                {isLoading ? 'Searching...' : `${totalElements} premium properties available`}
+                {isLoading ? t('common:loading', 'Searching...') : t('hotels:resultsFound', { count: totalElements })}
               </p>
             </div>
             
@@ -230,15 +233,15 @@ export default function HotelsPage() {
               <Input
                 fullWidth
                 icon={<Search className="w-4 h-4" />}
-                placeholder="Search by city, hotel name... Try voice search!"
+                placeholder={t('hotels:searchPlaceholder', 'Search by city, hotel name...')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-bg-surface-hover border-transparent hover:border-border-base pr-12"
+                className="bg-bg-surface-hover border-transparent hover:border-border-base pe-12"
               />
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className={`absolute right-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-text-muted hover:text-primary hover:bg-primary/10'}`}
+                className={`absolute end-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-text-muted hover:text-primary hover:bg-primary/10'}`}
                 aria-label="Voice Search"
               >
                 <Mic className="w-4 h-4" />
@@ -252,9 +255,9 @@ export default function HotelsPage() {
                 icon={<SlidersHorizontal className="w-4 h-4" />}
                 className={hasActiveFilters ? 'bg-secondary hover:bg-secondary-light border-secondary text-primary font-semibold' : ''}
               >
-                Filters
+                {t('common:filters', 'Filters')}
                 {hasActiveFilters && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary ml-1" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary ms-1" />
                 )}
               </Button>
 
@@ -262,13 +265,13 @@ export default function HotelsPage() {
                 <select
                   value={sort}
                   onChange={(e) => { setSort(e.target.value); setPage(0); }}
-                  className="appearance-none w-full bg-bg-surface-hover border border-transparent hover:border-border-base rounded-lg px-4 py-2.5 text-sm text-text-base font-medium focus:outline-none focus:ring-2 focus:ring-border-focus transition-all pr-10"
+                  className="appearance-none w-full bg-bg-surface-hover border border-transparent hover:border-border-base rounded-lg px-4 py-2.5 text-sm text-text-base font-medium focus:outline-none focus:ring-2 focus:ring-border-focus transition-all pe-10"
                 >
                   {sortOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>{t(`hotels:sortOptions.${opt.value.replace('_asc', 'Low').replace('_desc', 'High')}`, opt.label)}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
               </div>
             </div>
           </div>
@@ -286,10 +289,10 @@ export default function HotelsPage() {
           >
             <div className="container-safe py-6">
               <div className="flex items-center justify-between mb-5">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">Refine Search</h3>
+                <h3 className="text-sm font-bold uppercase tracking-wider text-text-muted">{t('common:refineSearch', 'Refine Search')}</h3>
                 {hasActiveFilters && (
                   <button onClick={clearFilters} className="text-xs font-semibold text-secondary hover:underline flex items-center gap-1">
-                    <X className="w-3.5 h-3.5" /> Clear all
+                    <X className="w-3.5 h-3.5" /> {t('hotels:clearFilters', 'Clear all')}
                   </button>
                 )}
               </div>
@@ -342,7 +345,7 @@ export default function HotelsPage() {
                       <div key={group.title}>
                         <h4 className="text-[13px] font-bold text-text-base mb-3 border-b border-border-base pb-2">{group.title}</h4>
                         <div className="flex flex-col gap-2.5">
-                          {group.amenities.map((amenity) => (
+                          {group.amenities.map((amenity: string) => (
                             <label key={amenity} className="flex items-center gap-3 cursor-pointer group">
                               <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${selectedAmenities.includes(amenity) ? 'bg-primary border-primary text-white' : 'bg-bg-surface border-border-strong group-hover:border-primary text-transparent'}`}>
                                 <Check className="w-3 h-3" strokeWidth={3} />
@@ -465,9 +468,9 @@ export default function HotelsPage() {
           </>
         ) : (
           <EmptyState
-            title="No properties found"
-            description="Try adjusting your filters or search for a different destination."
-            action={{ label: 'Clear Filters', onClick: clearFilters }}
+            title={t('hotels:noHotelsFound', 'No properties found')}
+            description={t('hotels:noHotelsDescription', 'Try adjusting your filters or search for a different destination.')}
+            action={{ label: t('hotels:clearFilters', 'Clear Filters'), onClick: clearFilters }}
           />
         )}
       </div>

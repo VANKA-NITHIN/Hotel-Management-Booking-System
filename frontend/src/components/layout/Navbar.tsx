@@ -8,6 +8,7 @@ import ThemeToggle from '../ui/ThemeToggle';
 import { CurrencySelector } from '../ui/CurrencySelector';
 import { Drawer } from '../ui/Drawer';
 import { NotificationPanel, type NotificationItem } from '../ui/NotificationPanel';
+import { useTranslation } from 'react-i18next';
 
 const destinations = [
   { name: 'New York', count: 124 },
@@ -25,6 +26,7 @@ const hotelTypes = [
 // Removed mock notifications
 
 export default function Navbar() {
+  const { t } = useTranslation(['nav', 'common']);
   const { isSignedIn } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -74,7 +76,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-40 ${navBg}`}>
+      <header className={`fixed top-0 start-0 end-0 z-40 ${navBg}`}>
         <div className="container-section">
           <div className="flex items-center justify-between h-16 lg:h-[72px]">
             {/* Logo */}
@@ -98,7 +100,7 @@ export default function Navbar() {
                     location.pathname === '/hotels' ? 'bg-secondary/10 text-secondary font-semibold' : textColor
                   }`}
                 >
-                  Hotels <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showMegaMenu ? 'rotate-180' : ''}`} />
+                  {t('hotels', { ns: 'nav' })} <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showMegaMenu ? 'rotate-180' : ''}`} />
                 </Link>
 
                 <AnimatePresence>
@@ -108,10 +110,10 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10, transition: { duration: 0.1 } }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-bg-surface border border-border-base rounded-xl shadow-dropdown z-50 overflow-hidden flex"
+                      className="absolute top-full start-1/2 -translate-x-1/2 mt-2 w-[600px] bg-bg-surface border border-border-base rounded-xl shadow-dropdown z-50 overflow-hidden flex"
                     >
-                      <div className="flex-1 p-6 border-r border-border-base bg-bg-surface-hover/30">
-                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">Top Destinations</h4>
+                      <div className="flex-1 p-6 border-e border-border-base bg-bg-surface-hover/30">
+                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('topDestinations', { ns: 'nav' })}</h4>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                           {destinations.map(dest => (
                             <Link key={dest.name} to={`/hotels?dest=${dest.name.toLowerCase()}`} className="group flex items-center justify-between">
@@ -121,11 +123,11 @@ export default function Navbar() {
                           ))}
                         </div>
                         <Link to="/hotels" className="inline-block mt-5 text-sm font-semibold text-secondary hover:underline underline-offset-2">
-                          Explore all destinations →
+                          {t('exploreAllDestinations', { ns: 'nav' })} →
                         </Link>
                       </div>
                       <div className="w-64 p-6 bg-bg-surface">
-                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">Curated Collections</h4>
+                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('curatedCollections', { ns: 'nav' })}</h4>
                         <div className="space-y-4">
                           {hotelTypes.map(type => (
                             <Link key={type.name} to={`/hotels?type=${type.name.toLowerCase()}`} className="flex items-start gap-3 group">
@@ -150,7 +152,7 @@ export default function Navbar() {
                   location.pathname === '/about' ? 'bg-secondary/10 text-secondary font-semibold' : textColor
                 }`}
               >
-                About
+                {t('about', { ns: 'nav' })}
               </Link>
               <Link
                 to="/contact"
@@ -158,7 +160,7 @@ export default function Navbar() {
                   location.pathname === '/contact' ? 'bg-secondary/10 text-secondary font-semibold' : textColor
                 }`}
               >
-                Contact
+                {t('contact', { ns: 'nav' })}
               </Link>
             </nav>
 
@@ -191,7 +193,7 @@ export default function Navbar() {
                     >
                       <Bell className="w-5 h-5" />
                       {(notifications.filter(n => !n.isRead).length > 0 || apiUnreadCount > 0) && (
-                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full" />
+                        <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-danger rounded-full" />
                       )}
                     </button>
                     
@@ -215,7 +217,7 @@ export default function Navbar() {
                   >
                     <LayoutDashboard className="w-5 h-5" />
                   </Link>
-                  <div className="ml-2 pl-2 border-l border-border-base">
+                  <div className="ms-2 ps-2 border-s border-border-base">
                     <UserButton
                       afterSignOutUrl="/"
                       appearance={{
@@ -228,15 +230,15 @@ export default function Navbar() {
                   </div>
                 </>
               ) : (
-                <div className="flex items-center gap-2 ml-2 pl-2 border-l border-border-base">
+                <div className="flex items-center gap-2 ms-2 ps-2 border-s border-border-base">
                   <SignInButton mode="redirect">
                     <button className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${textColor}`}>
-                      Log in
+                      {t('logIn', { ns: 'nav' })}
                     </button>
                   </SignInButton>
                   <SignUpButton mode="redirect">
                     <button className="btn-primary py-2 px-4 shadow-none">
-                      Sign up
+                      {t('signUp', { ns: 'nav' })}
                     </button>
                   </SignUpButton>
                 </div>
@@ -264,24 +266,24 @@ export default function Navbar() {
         onClose={() => setMobileOpen(false)}
         position="right"
         size="sm"
-        title="Menu"
+        title={t('menu', { ns: 'nav' })}
         className="lg:hidden"
         footer={
           isSignedIn ? (
             <div className="flex items-center gap-3">
               <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-10 h-10 rounded-lg' } }} />
               <div>
-                <p className="text-sm font-bold text-text-base">My Account</p>
-                <p className="text-xs text-text-muted">Manage settings</p>
+                <p className="text-sm font-bold text-text-base">{t('myAccount', { ns: 'nav' })}</p>
+                <p className="text-xs text-text-muted">{t('manageSettings', { ns: 'nav' })}</p>
               </div>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
               <SignInButton mode="redirect">
-                <button className="btn-outline w-full justify-center">Log in</button>
+                <button className="btn-outline w-full justify-center">{t('logIn', { ns: 'nav' })}</button>
               </SignInButton>
               <SignUpButton mode="redirect">
-                <button className="btn-primary w-full justify-center">Sign up</button>
+                <button className="btn-primary w-full justify-center">{t('signUp', { ns: 'nav' })}</button>
               </SignUpButton>
             </div>
           )
@@ -289,13 +291,13 @@ export default function Navbar() {
       >
         <div className="space-y-6">
           <div>
-            <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Navigation</h4>
+            <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('navigation', { ns: 'nav' })}</h4>
             <div className="space-y-1">
               {[
-                { to: '/', label: 'Home' },
-                { to: '/hotels', label: 'All Hotels' },
-                { to: '/about', label: 'About Us' },
-                { to: '/contact', label: 'Contact' },
+                { to: '/', label: t('home', { ns: 'common' }) },
+                { to: '/hotels', label: t('hotels', { ns: 'nav' }) },
+                { to: '/about', label: t('about', { ns: 'nav' }) },
+                { to: '/contact', label: t('contact', { ns: 'nav' }) },
               ].map((link) => (
                 <Link
                   key={link.to}
@@ -314,18 +316,18 @@ export default function Navbar() {
 
           {isSignedIn && (
             <div>
-              <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">My LuxuryStay</h4>
+              <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('myLuxuryStay', { ns: 'nav' })}</h4>
               <div className="space-y-1">
                 <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-base hover:bg-bg-surface-hover">
-                  <LayoutDashboard className="w-4 h-4 text-text-muted" /> Dashboard
+                  <LayoutDashboard className="w-4 h-4 text-text-muted" /> {t('dashboard', { ns: 'nav' })}
                 </Link>
                 <Link to="/wishlist" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-base hover:bg-bg-surface-hover">
-                  <Heart className="w-4 h-4 text-text-muted" /> Wishlist
+                  <Heart className="w-4 h-4 text-text-muted" /> {t('wishlist', { ns: 'nav' })}
                 </Link>
                 <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-base hover:bg-bg-surface-hover">
-                  <Bell className="w-4 h-4 text-text-muted" /> Notifications
+                  <Bell className="w-4 h-4 text-text-muted" /> {t('notifications', { ns: 'nav' })}
                   {(notifications.filter(n => !n.isRead).length > 0 || apiUnreadCount > 0) && (
-                    <span className="ml-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
+                    <span className="ms-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{t('new', { ns: 'nav' })}</span>
                   )}
                 </Link>
               </div>

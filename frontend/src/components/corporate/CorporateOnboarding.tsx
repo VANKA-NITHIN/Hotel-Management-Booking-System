@@ -63,8 +63,8 @@ export default function CorporateOnboarding({ onSuccess }: { onSuccess: () => vo
         <form onSubmit={handleSubmit}>
           {/* Progress Bar */}
           <div className="flex justify-between mb-8 relative">
-            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 -z-10 -translate-y-1/2 rounded-full"></div>
-            <div className="absolute top-1/2 left-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
+            <div className="absolute top-1/2 start-0 w-full h-1 bg-gray-200 dark:bg-gray-700 -z-10 -translate-y-1/2 rounded-full"></div>
+            <div className="absolute top-1/2 start-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
             
             {[1, 2, 3].map((s) => (
               <div key={s} className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 font-semibold transition-colors duration-300 ${step >= s ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>

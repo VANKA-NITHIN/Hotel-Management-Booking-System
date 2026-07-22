@@ -1,0 +1,19 @@
+﻿{
+    "dashboard":  "Manager Dashboard",
+    "overview":  "Overview",
+    "myHotels":  "My Hotels",
+    "myRooms":  "My Rooms",
+    "staffManagement":  "Staff Management",
+    "bookings":  "Bookings",
+    "revenue":  "Revenue",
+    "occupancy":  "Occupancy",
+    "reviews":  "Reviews",
+    "reports":  "Reports",
+    "analytics":  "Analytics",
+    "hotelPerformance":  "Hotel Performance",
+    "recentBookings":  "Recent Bookings",
+    "monthlyStats":  "Monthly Stats",
+    "quickStats":  "Quick Stats",
+    "manageStaff":  "Manage Staff",
+    "viewAll":  "View All"
+}

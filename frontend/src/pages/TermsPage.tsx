@@ -19,7 +19,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">2. Booking and Reservations</h2>
-              <ul className="list-disc pl-5 space-y-2">
+              <ul className="list-disc ps-5 space-y-2">
                 <li>All bookings are subject to availability and acceptance.</li>
                 <li>You must be at least 18 years of age to make a reservation.</li>
                 <li>Valid payment information is required to secure a reservation.</li>

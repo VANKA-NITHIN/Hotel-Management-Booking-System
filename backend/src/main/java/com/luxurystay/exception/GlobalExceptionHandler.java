@@ -18,14 +18,30 @@ import java.util.Map;
 import org.springframework.http.ProblemDetail;
 import java.net.URI;
 
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import lombok.RequiredArgsConstructor;
+
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageSource messageSource;
+
+    private String getMessage(String code, String defaultMessage) {
+        try {
+            return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
+        } catch (Exception e) {
+            return defaultMessage;
+        }
+    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ProblemDetail handleResourceNotFound(ResourceNotFoundException ex) {
         log.error("Resource not found: {}", ex.getMessage());
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        String detail = getMessage("api.error.not_found", ex.getMessage());
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, detail);
         problemDetail.setTitle("Resource Not Found");
         return problemDetail;
     }
@@ -49,7 +65,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ProblemDetail handleBadCredentials(BadCredentialsException ex) {
         log.error("Bad credentials: {}", ex.getMessage());
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+        String detail = getMessage("api.error.bad_credentials", "Invalid email or password");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, detail);
         problemDetail.setTitle("Bad Credentials");
         return problemDetail;
     }
@@ -57,7 +74,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDenied(AccessDeniedException ex) {
         log.error("Access denied: {}", ex.getMessage());
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "You don't have permission to access this resource");
+        String detail = getMessage("api.error.access_denied", "You don't have permission to access this resource");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, detail);
         problemDetail.setTitle("Access Denied");
         return problemDetail;
     }
@@ -71,7 +89,8 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Validation failed");
+        String detail = getMessage("api.error.validation", "Validation failed");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
         problemDetail.setTitle("Validation Error");
         problemDetail.setProperty("errors", errors);
         return problemDetail;
@@ -79,7 +98,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ProblemDetail handleMaxUploadSize(MaxUploadSizeExceededException ex) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "File size exceeds maximum limit of 10MB");
+        String detail = getMessage("api.error.payload_too_large", "File size exceeds maximum limit of 10MB");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, detail);
         problemDetail.setTitle("Payload Too Large");
         return problemDetail;
     }
@@ -96,7 +116,8 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleGeneral(Exception ex) {
         String correlationId = java.util.UUID.randomUUID().toString();
         log.error("Unexpected error (Correlation ID: {}): ", correlationId, ex);
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.");
+        String detail = getMessage("api.error.internal_error", "An unexpected error occurred. Please try again later.");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, detail);
         problemDetail.setTitle("Internal Server Error");
         problemDetail.setProperty("correlationId", correlationId);
         return problemDetail;

@@ -19,9 +19,15 @@ export function setAuthTokenGetter(fn: () => Promise<string | null>) {
   getTokenFn = fn;
 }
 
-// Request interceptor to add Clerk JWT token
+// Request interceptor to add Clerk JWT token and Accept-Language header
 api.interceptors.request.use(
   async (config) => {
+    // Add Accept-Language header
+    const lang = localStorage.getItem('luxurystay_language');
+    if (lang) {
+      config.headers['Accept-Language'] = lang;
+    }
+
     if (getTokenFn) {
       try {
         const token = await getTokenFn();

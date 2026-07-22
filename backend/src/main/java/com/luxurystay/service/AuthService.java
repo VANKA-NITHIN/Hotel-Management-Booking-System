@@ -23,4 +23,6 @@ public interface AuthService {
     void unlockUser(Long id);
 
     UserDTO updatePreferences(Long userId, UpdatePreferencesRequest request);
+
+    void updateLanguagePreference(Long userId, String language);
 }

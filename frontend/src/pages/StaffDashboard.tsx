@@ -8,10 +8,12 @@ import {
   useHotels, useAdminBookings, useUpdateBookingStatus, 
   useHousekeeping, useUpdateHousekeepingStatus, useAllRooms 
 } from '../hooks/useApi';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 export default function StaffDashboard() {
-  usePageTitle('Staff Dashboard');
+  const { t } = useTranslation(['staff', 'common']);
+  usePageTitle(t('staff:dashboard', 'Staff Dashboard'));
   const [activeTab, setActiveTab] = usePersistentState('staff_active_tab', 'front-desk');
   
   const { data: hotelsData } = useHotels(0, 50);
@@ -59,17 +61,17 @@ export default function StaffDashboard() {
   return (
     <div className="min-h-screen bg-bg-surface-hover flex pt-[72px]">
       {/* Sidebar */}
-      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
+        <div className="absolute top-0 end-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="mb-10 px-4 py-4">
-          <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Staff Portal</span>
+          <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">{t('staff:dashboard', 'Staff Portal')}</span>
           <span className="block text-xs font-bold text-secondary uppercase tracking-widest mt-2">Operations & Service</span>
         </div>
         <nav className="space-y-2 flex-1 relative z-10">
           {[
-            { id: 'front-desk', label: 'Front Desk', icon: Key },
-            { id: 'housekeeping', label: 'Housekeeping', icon: ClipboardList },
-            { id: 'guests', label: 'In-House Guests', icon: Users },
+            { id: 'front-desk', label: t('staff:reception', 'Front Desk'), icon: Key },
+            { id: 'housekeeping', label: t('staff:housekeeping', 'Housekeeping'), icon: ClipboardList },
+            { id: 'guests', label: t('staff:guestRequests', 'In-House Guests'), icon: Users },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -90,9 +92,9 @@ export default function StaffDashboard() {
       <div className="lg:hidden sticky top-[72px] z-20 bg-bg-surface border-b border-border-base px-4 py-2 overflow-x-auto no-scrollbar">
         <div className="flex gap-1">
           {[
-            { id: 'front-desk', label: 'Front Desk', icon: Key },
-            { id: 'housekeeping', label: 'Housekeeping', icon: ClipboardList },
-            { id: 'guests', label: 'In-House', icon: Users },
+            { id: 'front-desk', label: t('staff:reception', 'Front Desk'), icon: Key },
+            { id: 'housekeeping', label: t('staff:housekeeping', 'Housekeeping'), icon: ClipboardList },
+            { id: 'guests', label: t('staff:guestRequests', 'In-House'), icon: Users },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -124,7 +126,7 @@ export default function StaffDashboard() {
               <option value="">Select a property...</option>
               {hotels.map((h: any) => <option key={h.id} value={h.id}>{h.name}</option>)}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+            <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
           </div>
         </div>
 
@@ -145,7 +147,7 @@ export default function StaffDashboard() {
                 {/* Arrivals */}
                 <div className="bg-bg-surface rounded-2xl shadow-sm border border-border-base p-6 sm:p-8">
                   <h3 className="text-xl font-serif font-bold text-text-base mb-6 flex items-center gap-3">
-                    <Clock className="w-6 h-6 text-secondary" /> Today's Arrivals <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full">{arrivals.length}</span>
+                    <Clock className="w-6 h-6 text-secondary" /> {t('staff:checkIns', "Today's Arrivals")} <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full">{arrivals.length}</span>
                   </h3>
                   <div className="space-y-4">
                     {arrivals.map((arr: any) => (
@@ -174,7 +176,7 @@ export default function StaffDashboard() {
                 {/* Departures */}
                 <div className="bg-bg-surface rounded-2xl shadow-sm border border-border-base p-6 sm:p-8">
                   <h3 className="text-xl font-serif font-bold text-text-base mb-6 flex items-center gap-3">
-                    <Clock className="w-6 h-6 text-secondary" /> Today's Departures <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full">{departures.length}</span>
+                    <Clock className="w-6 h-6 text-secondary" /> {t('staff:checkOuts', "Today's Departures")} <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full">{departures.length}</span>
                   </h3>
                   <div className="space-y-4">
                     {departures.map((dep: any) => (
@@ -241,7 +243,7 @@ export default function StaffDashboard() {
                              <option value="DIRTY">Mark as Dirty</option>
                              <option value="MAINTENANCE">Maintenance Req.</option>
                            </select>
-                           <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+                           <div className="absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
                         </div>
                       </div>
                     );
@@ -253,15 +255,15 @@ export default function StaffDashboard() {
 
             {activeTab === 'guests' && (
               <div className="bg-bg-surface rounded-2xl shadow-sm border border-border-base p-6 sm:p-8">
-                <h3 className="text-xl font-serif font-bold text-text-base mb-6">In-House Guests <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full font-sans ml-2">{inHouse.length}</span></h3>
+                <h3 className="text-xl font-serif font-bold text-text-base mb-6">In-House Guests <span className="bg-secondary/10 text-secondary text-sm px-2.5 py-0.5 rounded-full font-sans ms-2">{inHouse.length}</span></h3>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-border-strong">
-                        <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
-                        <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-in Date</th>
-                        <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-out Date</th>
-                        <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Guests</th>
+                        <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
+                        <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-in Date</th>
+                        <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-out Date</th>
+                        <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Guests</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border-base">

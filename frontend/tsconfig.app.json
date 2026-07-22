@@ -21,6 +21,8 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
 
     /* Path Aliases */
     "ignoreDeprecations": "6.0",

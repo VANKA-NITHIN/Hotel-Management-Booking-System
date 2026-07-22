@@ -65,7 +65,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted flex items-center pointer-events-none">
+            <div className="absolute start-3 top-1/2 -translate-y-1/2 text-text-muted flex items-center pointer-events-none">
               {icon}
             </div>
           )}
@@ -80,8 +80,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={[errorId, helperId].filter(Boolean).join(' ') || undefined}
             className={`
               input-field 
-              ${icon ? 'pl-10' : ''} 
-              ${(isPassword || rightIcon || success || error || loading) ? 'pr-10' : ''} 
+              ${icon ? 'ps-10' : ''} 
+              ${(isPassword || rightIcon || success || error || loading) ? 'pe-10' : ''} 
               ${error ? 'input-error' : ''} 
               ${success && !error ? 'border-success focus:border-success focus:ring-success/20' : ''}
               ${className}
@@ -89,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
 
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+          <div className="absolute end-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
             {loading && <Loader2 className="w-4 h-4 text-text-muted animate-spin" />}
             
             {error && !loading && (

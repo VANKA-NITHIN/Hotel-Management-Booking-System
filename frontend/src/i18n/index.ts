@@ -6,12 +6,7 @@ import { DEFAULT_LANGUAGE, type LanguageCode } from './config';
 
 const STORAGE_KEY = 'luxurystay_language';
 
-function getSavedLanguage(): LanguageCode {
-  const saved = localStorage.getItem(STORAGE_KEY) as LanguageCode;
-  if (saved) return saved;
-  const browserLang = navigator.language.split('-')[0] as LanguageCode;
-  return browserLang;
-}
+
 
 i18n
   .use(HttpBackend)
@@ -24,8 +19,16 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+    ns: [
+      'about', 'admin', 'aiChat', 'auth', 'booking', 'common', 'contact', 'corporate', 
+      'corporatePortal', 'dashboard', 'digitalCheckIn', 'digitalPass', 'email', 'errors', 
+      'forms', 'help', 'hotels', 'landing', 'nav', 'notFound', 'notifications', 'owner', 
+      'pdf', 'privacy', 'profile', 'referral', 'reports', 'reviews', 'settings', 'staff', 
+      'tables', 'terms', 'wallet', 'wishlist'
+    ],
+    defaultNS: 'common',
     backend: {
-      loadPath: '/locales/{{lng}}/translation.json',
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
     detection: {
       order: ['localStorage', 'navigator'],
@@ -33,7 +36,13 @@ i18n
       caches: ['localStorage'],
     },
     react: {
-      useSuspense: false,
+      useSuspense: true,
+    },
+    saveMissing: import.meta.env.DEV,
+    missingKeyHandler: (lngs, ns, key, _fallbackValue) => {
+      if (import.meta.env.DEV) {
+        console.warn(`[i18n] Missing key: ${ns}:${key} (Language: ${lngs.join(', ')})`);
+      }
     },
   });
 

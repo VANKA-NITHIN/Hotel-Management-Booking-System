@@ -30,7 +30,7 @@ export function CurrencySelector({ className = '' }: { className?: string }) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-44 bg-bg-surface border border-border-base rounded-xl shadow-xl z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute end-0 mt-2 w-44 bg-bg-surface border border-border-base rounded-xl shadow-xl z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-text-muted border-b border-border-base">
             Select Currency
           </div>

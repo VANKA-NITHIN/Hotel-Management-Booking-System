@@ -36,6 +36,11 @@ public class PromptBuilderService {
         prompt.append("- Tailor recommendations based on the user's loyalty points and wallet balance if they ask.\n");
         prompt.append("- If they are a corporate user, prioritize business-friendly amenities.\n");
         
+        String locale = (String) userContext.get("locale");
+        if (locale != null) {
+            prompt.append("- IMPORTANT: The user's current frontend locale is '").append(locale).append("'. You MUST respond in the language appropriate for this locale (e.g., 'zh' = Chinese, 'es' = Spanish, 'en' = English, 'ar' = Arabic, 'hi' = Hindi). Do NOT respond in English unless the locale is 'en'.\n");
+        }
+        
         return prompt.toString();
     }
 }

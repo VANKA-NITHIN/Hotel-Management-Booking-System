@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import api from '../../api/client';
 
 
@@ -15,12 +16,13 @@ interface Message {
 }
 
 export default function AIChat() {
+  const { t, i18n } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'greeting',
       role: 'assistant',
-      content: "Hello! Welcome to LuxuryStay! 🏨 I'm your secure AI hotel agent. How can I assist you with your travels today?",
+      content: t('aiWelcome', "Hello! Welcome to LuxuryStay! 🏨 I'm your secure AI hotel agent. How can I assist you with your travels today?"),
     },
   ]);
   const [sessionId] = useState(() => Math.random().toString(36).substring(7));
@@ -43,6 +45,10 @@ export default function AIChat() {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   }, [isOpen]);
+  
+  useEffect(() => {
+    setMessages(prev => prev.map(m => m.id === 'greeting' ? { ...m, content: t('aiWelcome', "Hello! Welcome to LuxuryStay! 🏨 I'm your secure AI hotel agent. How can I assist you with your travels today?") } : m));
+  }, [i18n.language, t]);
 
   // Secure backend AI call
   const handleAgenticChat = async (userMessageContent: string) => {
@@ -51,7 +57,8 @@ export default function AIChat() {
       // We will send the latest user message and the session ID.
       const response = await api.post('/v1/ai/chat', {
         sessionId: sessionId,
-        userMessage: userMessageContent
+        userMessage: userMessageContent,
+        locale: i18n.language
       });
 
       const data = response.data;
@@ -59,7 +66,7 @@ export default function AIChat() {
       const newAssistantMsg: Message = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: data.content || "I'm sorry, I couldn't formulate a response.",
+        content: data.content || t('aiErrorNoResponse', "I'm sorry, I couldn't formulate a response."),
       };
       
       setMessages((prev) => [...prev, newAssistantMsg]);
@@ -70,7 +77,7 @@ export default function AIChat() {
       setMessages((prev) => [...prev, {
         id: Date.now().toString(),
         role: 'assistant',
-        content: "I'm sorry, I'm having trouble connecting to my secure brain right now. Please try again in a moment.",
+        content: t('aiErrorConnection', "I'm sorry, I'm having trouble connecting to my secure brain right now. Please try again in a moment."),
       }]);
       setIsLoading(false);
     }
@@ -106,9 +113,9 @@ export default function AIChat() {
   };
 
   const quickQuestions = [
-    'Book a hotel in Dubai',
-    'What rooms are available in Paris?',
-    'Find a cheap hotel',
+    t('aiQuickQ1', 'Book a hotel in Dubai'),
+    t('aiQuickQ2', 'What rooms are available in Paris?'),
+    t('aiQuickQ3', 'Find a cheap hotel'),
   ];
 
   const visibleMessages = messages.filter(m => m.role !== 'system' && m.role !== 'tool' && !(m.role === 'assistant' && !m.content));
@@ -117,7 +124,7 @@ export default function AIChat() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 lg:bottom-6 right-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed bottom-24 lg:bottom-6 end-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -141,7 +148,7 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-100 w-[380px] max-w-[calc(100vw-3rem)] bg-bg-surface rounded-2xl shadow-2xl border border-border-base overflow-hidden flex flex-col"
+            className="fixed bottom-24 end-6 z-100 w-[380px] max-w-[calc(100vw-3rem)] bg-bg-surface rounded-2xl shadow-2xl border border-border-base overflow-hidden flex flex-col"
             style={{ height: '500px', maxHeight: 'calc(100vh - 8rem)' }}
           >
             <div className="gradient-bg p-4 text-white">
@@ -150,8 +157,8 @@ export default function AIChat() {
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold">LuxuryStay Agent</h3>
-                  <p className="text-xs text-white/70">AI capable of booking your stay</p>
+                  <h3 className="font-bold">{t('aiAgentName', 'LuxuryStay Agent')}</h3>
+                  <p className="text-xs text-white/70">{t('aiAgentRole', 'AI capable of booking your stay')}</p>
                 </div>
               </div>
             </div>
@@ -175,8 +182,8 @@ export default function AIChat() {
                   </div>
                   <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
                     message.role === 'user'
-                      ? 'bg-primary text-white rounded-tr-sm'
-                      : 'bg-bg-surface-hover text-text-base rounded-tl-sm'
+                      ? 'bg-primary text-white rounded-se-sm'
+                      : 'bg-bg-surface-hover text-text-base rounded-ss-sm'
                   }`}>
                     {message.content}
                   </div>
@@ -188,7 +195,7 @@ export default function AIChat() {
                   <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center shrink-0">
                     <Bot className="w-4 h-4 text-secondary" />
                   </div>
-                  <div className="bg-bg-surface-hover rounded-2xl rounded-tl-sm px-4 py-3">
+                  <div className="bg-bg-surface-hover rounded-2xl rounded-ss-sm px-4 py-3">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <span className="w-2 h-2 bg-text-muted rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -233,7 +240,7 @@ export default function AIChat() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask me to book a hotel..."
+                  placeholder={t('aiPlaceholder', 'Ask me to book a hotel...')}
                   className="flex-1 px-4 py-2.5 bg-bg-surface-hover rounded-xl text-sm text-text-base placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-secondary/30 border border-border-base"
                   disabled={isLoading}
                 />

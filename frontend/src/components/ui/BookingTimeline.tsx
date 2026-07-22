@@ -38,17 +38,17 @@ export function BookingTimeline({ status, className = '' }: BookingTimelineProps
   return (
     <div className={`relative ${className}`}>
       {/* Connecting Line */}
-      <div className="absolute top-5 left-6 right-6 h-0.5 bg-border-base hidden sm:block" />
+      <div className="absolute top-5 start-6 end-6 h-0.5 bg-border-base hidden sm:block" />
       
       <div className="flex flex-col sm:flex-row justify-between gap-6 sm:gap-4 relative z-10">
         {activeSteps.map((step, index) => {
           const stepStatus = getStepStatus(step.id, status);
           
           return (
-            <div key={step.id} className="flex sm:flex-col items-center gap-4 sm:gap-3 flex-1 text-left sm:text-center group">
+            <div key={step.id} className="flex sm:flex-col items-center gap-4 sm:gap-3 flex-1 text-start sm:text-center group">
               {/* Vertical line for mobile */}
               {index !== activeSteps.length - 1 && (
-                <div className="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-0.5 bg-border-base sm:hidden -z-10" />
+                <div className="absolute start-[1.125rem] top-10 bottom-[-1.5rem] w-0.5 bg-border-base sm:hidden -z-10" />
               )}
               
               <div className={`

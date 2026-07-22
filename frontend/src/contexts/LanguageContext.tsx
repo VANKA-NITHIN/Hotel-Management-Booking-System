@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { changeLanguage, getCurrentLanguage } from '../i18n';
-import { SUPPORTED_LANGUAGES, type LanguageCode, isRTL, getLanguageConfig } from '../i18n/config';
+import { SUPPORTED_LANGUAGES, type LanguageCode, isRTL } from '../i18n/config';
+import api from '../api/client';
+import { useAuth } from '@clerk/clerk-react';
 
 interface LanguageContextType {
   language: LanguageCode;
@@ -27,15 +28,25 @@ const CURRENCY_MAP: Record<string, string> = {
 };
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const { i18n } = useTranslation();
   const lang = getCurrentLanguage();
   const rtl = isRTL(lang);
-  const config = getLanguageConfig(lang);
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? 'rtl' : 'ltr';
   }, [lang, rtl]);
+
+  const handleLanguageChange = async (newLang: LanguageCode) => {
+    changeLanguage(newLang);
+    if (isSignedIn) {
+      try {
+        await api.put('/auth/language', { language: newLang });
+      } catch {
+        // Ignore API sync errors for language
+      }
+    }
+  };
 
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
@@ -49,7 +60,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const ctx = useMemo<LanguageContextType>(() => ({
     language: lang,
-    setLanguage: changeLanguage,
+    setLanguage: handleLanguageChange,
     isRTL: rtl,
     dir: rtl ? 'rtl' : 'ltr',
     languages: SUPPORTED_LANGUAGES,
@@ -85,7 +96,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     formatPercent: (num: number) => {
       return new Intl.NumberFormat(lang, { style: 'percent', minimumFractionDigits: 1 }).format(num / 100);
     },
-  }), [lang, rtl]);
+  }), [lang, rtl, handleLanguageChange]);
 
   return (
     <LanguageContext.Provider value={ctx}>
@@ -94,6 +105,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) throw new Error('useLanguage must be used within a LanguageProvider');

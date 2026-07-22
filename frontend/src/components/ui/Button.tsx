@@ -62,10 +62,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && iconPosition === 'left' && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin shrink-0" aria-hidden="true" />
+          <Loader2 className="w-4 h-4 me-2 animate-spin shrink-0" aria-hidden="true" />
         )}
         {!loading && icon && iconPosition === 'left' && (
-          <span className="w-4 h-4 mr-2 shrink-0 flex items-center justify-center" aria-hidden="true">
+          <span className="w-4 h-4 me-2 shrink-0 flex items-center justify-center" aria-hidden="true">
             {icon}
           </span>
         )}
@@ -73,10 +73,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         <span>{loading && loadingText ? loadingText : children}</span>
 
         {loading && iconPosition === 'right' && (
-          <Loader2 className="w-4 h-4 ml-2 animate-spin shrink-0" aria-hidden="true" />
+          <Loader2 className="w-4 h-4 ms-2 animate-spin shrink-0" aria-hidden="true" />
         )}
         {!loading && icon && iconPosition === 'right' && (
-          <span className="w-4 h-4 ml-2 shrink-0 flex items-center justify-center" aria-hidden="true">
+          <span className="w-4 h-4 ms-2 shrink-0 flex items-center justify-center" aria-hidden="true">
             {icon}
           </span>
         )}

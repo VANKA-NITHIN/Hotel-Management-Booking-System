@@ -127,7 +127,7 @@ export default function SettingsPage() {
 
           {/* Danger Zone */}
           <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-bg-surface rounded-2xl border border-danger/20 p-6 sm:p-8 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-danger/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            <div className="absolute top-0 end-0 w-32 h-32 bg-danger/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
             <div className="flex items-center gap-3 mb-6 pb-6 border-b border-border-base relative z-10">
               <div className="w-10 h-10 rounded-full bg-danger/10 flex items-center justify-center">
                 <Shield className="w-5 h-5 text-danger" />

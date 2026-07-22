@@ -39,20 +39,20 @@ export function parseNaturalLanguageSearch(query: string): ParsedSearch {
   // 1. Extract Price
   // Matches "under 3000", "below 500", "< 200", "max 1000", "cheaper than 400"
   const maxPriceMatch = lowerQuery.match(/(?:under|below|<|max|cheaper than|less than)[\s$₹€£]*(\d+)/);
-  if (maxPriceMatch) {
+  if (maxPriceMatch && maxPriceMatch[1]) {
     result.maxPrice = parseInt(maxPriceMatch[1], 10);
   }
 
   // Matches "above 100", "more than 50", "> 200", "min 100"
   const minPriceMatch = lowerQuery.match(/(?:above|over|>|min|more than)[\s$₹€£]*(\d+)/);
-  if (minPriceMatch) {
+  if (minPriceMatch && minPriceMatch[1]) {
     result.minPrice = parseInt(minPriceMatch[1], 10);
   }
 
   // 2. Extract City
   // Look for "in [City]", "near [City]", "around [City]"
   const cityMatch = lowerQuery.match(/(?:in|near|around|at)\s+([a-z\s]+)(?:\b|$)/);
-  if (cityMatch) {
+  if (cityMatch && cityMatch[1]) {
     const potentialCity = cityMatch[1].trim();
     // Verify if it's a known city (rudimentary check to avoid false positives like "near airport")
     const foundCity = COMMON_CITIES.find(c => potentialCity.includes(c.toLowerCase()));
@@ -62,7 +62,7 @@ export function parseNaturalLanguageSearch(query: string): ParsedSearch {
       // If no match in list but pattern matched, we can still use it (e.g. "near airport" -> we might just search "airport")
       result.city = potentialCity.split(/\s+/)[0]; // take just the first word to be safe, or just the whole thing
       // Better: just take the whole thing and let the backend search
-      result.city = potentialCity.split(/(?:with|under|above|below)/)[0].trim();
+      result.city = potentialCity.split(/(?:with|under|above|below)/)[0]!.trim();
     }
   } else {
     // If no preposition, just check if any common city is mentioned

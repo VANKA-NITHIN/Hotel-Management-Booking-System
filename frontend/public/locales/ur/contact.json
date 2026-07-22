@@ -1,0 +1,29 @@
+{
+    "pageTitle": "Contact Us",
+    "subtitle": "Have questions? We'd love to hear from you.",
+    "getInTouch": "Get in Touch",
+    "sendMessage": "Send us a Message",
+    "fullName": "Full Name",
+    "emailAddress": "Email Address",
+    "subject": "Subject",
+    "message": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "sendMessageButton": "Send Message",
+    "sending": "Sending...",
+    "messageSent": "Message sent successfully! We'll get back to you soon.",
+    "messageFailed": "Failed to send message. Please try again.",
+    "contactInfo": "Contact Information",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "workingHours": "Working Hours",
+    "hoursDetail": "Monday - Friday: 9:00 AM - 6:00 PM",
+    "weekends": "Saturday: 10:00 AM - 4:00 PM",
+    "subjects": {
+        "general": "General Inquiry",
+        "booking": "Booking Support",
+        "billing": "Billing Question",
+        "feedback": "Feedback",
+        "partnership": "Partnership"
+    }
+}

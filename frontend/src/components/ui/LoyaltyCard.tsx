@@ -47,7 +47,7 @@ export function LoyaltyCard({ points }: LoyaltyCardProps) {
       className={`rounded-2xl p-6 bg-linear-to-br ${colors} shadow-xl relative overflow-hidden`}
     >
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 -mr-16 -mt-16 opacity-10 pointer-events-none">
+      <div className="absolute top-0 end-0 -mr-16 -mt-16 opacity-10 pointer-events-none">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-64 h-64">
           <path fill="currentColor" d="M42.7,-73.4C55.9,-67.5,67.6,-56.9,76.5,-44.5C85.4,-32.1,91.5,-17.8,91.1,-3.8C90.7,10.2,83.9,23.8,74.7,35.7C65.5,47.6,54,57.7,40.8,63.9C27.6,70.1,13.8,72.4,-0.2,72.7C-14.2,73,-28.4,71.3,-41.4,65.1C-54.4,58.9,-66.2,48.2,-74.6,35.1C-83,22,-88.1,6.5,-87.3,-8.6C-86.5,-23.7,-79.8,-38.4,-70.2,-50.2C-60.6,-62,-48.1,-70.9,-34.7,-76.3C-21.3,-81.7,-7.1,-83.6,6.3,-79.3C19.7,-75,30,-67.2,42.7,-73.4Z" transform="translate(100 100)" />
         </svg>
@@ -74,7 +74,7 @@ export function LoyaltyCard({ points }: LoyaltyCardProps) {
               </p>
             </div>
             {tier !== 'Diamond' && (
-              <p className="text-sm opacity-90 text-right">
+              <p className="text-sm opacity-90 text-end">
                 <span className="font-bold">{pointsNeeded.toLocaleString()}</span> pts to {nextTier}
               </p>
             )}

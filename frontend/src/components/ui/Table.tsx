@@ -59,13 +59,13 @@ export function Table<T extends Record<string, any>>({
 
   return (
     <div className={`w-full ${responsiveMode === 'scroll' ? 'overflow-x-auto' : ''} ${className}`}>
-      <table className="w-full text-left border-collapse">
+      <table className="w-full text-start border-collapse">
         <thead className={responsiveMode === 'cards' ? 'hidden md:table-header-group' : ''}>
           <tr className="border-b border-border-base">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`text-xs font-semibold text-text-muted uppercase tracking-wider py-3 px-4 first:pl-4 last:pr-4 md:first:pl-0 md:last:pr-0 ${col.className || ''} ${col.sortable ? 'cursor-pointer select-none hover:text-text-base transition-colors' : ''} sticky top-0 bg-bg-surface z-10`}
+                className={`text-xs font-semibold text-text-muted uppercase tracking-wider py-3 px-4 first:ps-4 last:pe-4 md:first:ps-0 md:last:pe-0 ${col.className || ''} ${col.sortable ? 'cursor-pointer select-none hover:text-text-base transition-colors' : ''} sticky top-0 bg-bg-surface z-10`}
                 onClick={() => col.sortable && handleSort(col.key)}
               >
                 <div className="flex items-center gap-1.5">
@@ -84,7 +84,7 @@ export function Table<T extends Record<string, any>>({
               </td>
             </tr>
           ) : (
-            sortedData.map((item, index) => (
+            sortedData.map((item, _index) => (
               <tr
                 key={keyExtractor(item)}
                 onClick={() => onRowClick?.(item)}
@@ -95,23 +95,23 @@ export function Table<T extends Record<string, any>>({
                     : ''}
                 `}
               >
-                {columns.map((col, colIndex) => (
+                {columns.map((col, _colIndex) => (
                   <td 
                     key={col.key} 
                     className={`
                       ${responsiveMode === 'cards'
                         ? 'flex md:table-cell justify-between items-center p-3 md:py-3.5 md:px-4 border-b border-border-base md:border-b-0 last:border-b-0'
                         : 'py-3.5 px-4'} 
-                      text-sm md:first:pl-0 md:last:pr-0
+                      text-sm md:first:ps-0 md:last:pe-0
                       ${col.className || ''}
                     `}
                   >
                     {responsiveMode === 'cards' && (
-                      <span className="md:hidden font-medium text-xs text-text-muted uppercase tracking-wider pr-4 whitespace-nowrap">
+                      <span className="md:hidden font-medium text-xs text-text-muted uppercase tracking-wider pe-4 whitespace-nowrap">
                         {col.header}
                       </span>
                     )}
-                    <div className={responsiveMode === 'cards' ? 'text-right md:text-left wrap-break-word max-w-[60%]' : ''}>
+                    <div className={responsiveMode === 'cards' ? 'text-end md:text-start wrap-break-word max-w-[60%]' : ''}>
                       {col.render ? col.render(item) : item[col.key]}
                     </div>
                   </td>

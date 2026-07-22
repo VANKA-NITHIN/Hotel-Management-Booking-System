@@ -202,9 +202,20 @@ public class AuthServiceImpl implements AuthService {
         if (request.getPushPromotions() != null) {
             user.setPushPromotions(request.getPushPromotions());
         }
+        if (request.getLanguagePreference() != null) {
+            user.setLanguagePreference(request.getLanguagePreference());
+        }
 
         user = userRepository.save(user);
         return userMapper.toDTO(user);
+    }
+
+    @Override
+    public void updateLanguagePreference(Long userId, String language) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        user.setLanguagePreference(language);
+        userRepository.save(user);
     }
 
     private String getValidName(String name, String fallback) {

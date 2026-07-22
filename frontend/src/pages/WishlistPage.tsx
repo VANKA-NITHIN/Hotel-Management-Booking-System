@@ -22,7 +22,7 @@ export default function WishlistPage() {
     <div className="min-h-screen bg-bg-surface-hover pt-28 pb-20">
       <div className="container-section">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
-          <div className="text-center sm:text-left">
+          <div className="text-center sm:text-start">
             <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base mb-2">My Wishlist</h1>
             <p className="text-text-muted font-medium">
               {isLoading ? 'Loading your saved properties...' : `You have ${hotels.length} saved properties`}

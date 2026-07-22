@@ -1,0 +1,28 @@
+{
+    "bookingConfirmation": {
+        "subject": "Booking Confirmed - {{reference}}",
+        "greeting": "Dear {{name}},",
+        "body": "Thank you for booking with LuxuryStay. Your reservation has been confirmed.",
+        "bookingReference": "Booking Reference",
+        "hotel": "Hotel",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "guests": "Guests",
+        "total": "Total",
+        "footer": "If you have any questions, please don't hesitate to contact us.",
+        "automated": "This is an automated email from LuxuryStay."
+    },
+    "bookingCancellation": {
+        "subject": "Booking Cancelled - {{reference}}",
+        "title": "Booking Cancelled",
+        "body": "Your booking {{reference}} has been cancelled.",
+        "mistake": "If this was a mistake, please contact us."
+    },
+    "passwordReset": {
+        "subject": "Password Reset - LuxuryStay",
+        "title": "Password Reset",
+        "body": "You requested a password reset. Click the link below to reset your password:",
+        "buttonText": "Reset Password",
+        "expiry": "This link expires in 24 hours. If you didn't request this, ignore this email."
+    }
+}

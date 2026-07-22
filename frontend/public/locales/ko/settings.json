@@ -1,0 +1,22 @@
+{
+    "pageTitle": "Preferences",
+    "subtitle": "Manage your app appearance and notification settings.",
+    "appearance": "Appearance",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "systemTheme": "System Theme",
+    "notifications": "Notifications",
+    "emailNotifications": "Email Notifications",
+    "pushNotifications": "Push Notifications",
+    "bookingUpdates": "Booking Updates",
+    "bookingUpdatesDesc": "Confirmations, cancellations, and reminders",
+    "promotions": "Promotions & Offers",
+    "promotionsDesc": "Exclusive deals and personalized recommendations",
+    "preferencesUpdated": "Preferences updated successfully",
+    "updateFailed": "Failed to update preferences",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete Account",
+    "deleteAccountDesc": "Once you delete your account, there is no going back. Please be certain.",
+    "language": "Language",
+    "selectLanguage": "Select your language"
+}

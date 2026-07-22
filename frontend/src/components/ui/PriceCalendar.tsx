@@ -48,7 +48,7 @@ export function PriceCalendar({
     }
 
     const price = Math.round(basePrice * multiplier);
-    const dateStr = dateObj.toISOString().split('T')[0];
+    const dateStr = dateObj.toISOString().split('T')[0] || '';
 
     return {
       day: dayNum,
@@ -160,8 +160,8 @@ export function PriceCalendar({
           const isInRange =
             selectedCheckIn &&
             selectedCheckOut &&
-            new Date(dateStr) >= new Date(selectedCheckIn) &&
-            new Date(dateStr) <= new Date(selectedCheckOut);
+            new Date(dateStr) >= new Date(selectedCheckIn as string) &&
+            new Date(dateStr) <= new Date(selectedCheckOut as string);
 
           let bgClass = 'bg-bg-surface-hover border-border-base hover:border-primary/50';
           if (isSelected) {
@@ -178,7 +178,7 @@ export function PriceCalendar({
             <button
               key={dateStr}
               onClick={() => handleDayClick(dateStr)}
-              className={`h-14 p-1.5 rounded-xl border flex flex-col justify-between transition-all text-left relative overflow-hidden group ${bgClass}`}
+              className={`h-14 p-1.5 rounded-xl border flex flex-col justify-between transition-all text-start relative overflow-hidden group ${bgClass}`}
             >
               <div className="flex items-center justify-between w-full">
                 <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-text-base'}`}>{day}</span>

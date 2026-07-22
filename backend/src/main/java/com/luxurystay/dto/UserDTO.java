@@ -32,6 +32,7 @@ public class UserDTO {
     private String companyRole;
     private String department;
     private String jobTitle;
+    private String languagePreference;
 
     private LocalDateTime createdAt;
 }

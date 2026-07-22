@@ -30,7 +30,7 @@ export function RoomComparisonModal({ isOpen, onClose, rooms, onSelectRoom }: Ro
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Compare Room Types" size="xl">
       <div className="p-4 sm:p-6 overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[600px]">
+        <table className="w-full text-start border-collapse min-w-[600px]">
           <thead>
             <tr>
               <th className="p-3 bg-bg-surface-hover border border-border-base text-xs font-bold text-text-muted uppercase w-1/4">

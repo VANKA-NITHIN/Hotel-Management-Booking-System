@@ -118,12 +118,12 @@ export function ReferralDashboard() {
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-text-muted mb-2 block">Referral Code</label>
                   <div className="flex items-center">
-                    <div className="bg-bg-surface-hover border border-border-base border-r-0 rounded-l-xl px-4 py-2.5 font-mono font-bold text-primary text-lg flex-1 text-center">
+                    <div className="bg-bg-surface-hover border border-border-base border-e-0 rounded-s-xl px-4 py-2.5 font-mono font-bold text-primary text-lg flex-1 text-center">
                       {referralCode}
                     </div>
                     <button
                       onClick={() => handleCopy(referralCode || '')}
-                      className="bg-bg-surface-hover border border-border-base rounded-r-xl px-4 py-3 text-text-muted hover:text-primary transition-colors flex items-center justify-center shrink-0"
+                      className="bg-bg-surface-hover border border-border-base rounded-e-xl px-4 py-3 text-text-muted hover:text-primary transition-colors flex items-center justify-center shrink-0"
                     >
                       {copied ? <CopyCheck className="w-5 h-5 text-emerald-500" /> : <Copy className="w-5 h-5" />}
                     </button>
@@ -156,19 +156,19 @@ export function ReferralDashboard() {
             <h3 className="text-lg font-serif font-bold text-text-base mb-4">Referral History</h3>
             {history.length > 0 ? (
               <div className="overflow-x-auto -mx-6 px-6">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-start border-collapse">
                   <thead>
                     <tr className="border-b border-border-base text-xs font-bold uppercase tracking-wider text-text-muted">
-                      <th className="pb-3 pr-4 font-medium">Friend</th>
+                      <th className="pb-3 pe-4 font-medium">Friend</th>
                       <th className="pb-3 px-4 font-medium">Status</th>
                       <th className="pb-3 px-4 font-medium">Points</th>
-                      <th className="pb-3 pl-4 font-medium">Date</th>
+                      <th className="pb-3 ps-4 font-medium">Date</th>
                     </tr>
                   </thead>
                   <tbody className="text-sm">
                     {history.map((ref, idx) => (
                       <tr key={idx} className="border-b border-border-base last:border-0 hover:bg-bg-surface-hover/50 transition-colors">
-                        <td className="py-3 pr-4 font-bold text-text-base whitespace-nowrap">
+                        <td className="py-3 pe-4 font-bold text-text-base whitespace-nowrap">
                           {ref.referredUserName}
                         </td>
                         <td className="py-3 px-4">
@@ -183,7 +183,7 @@ export function ReferralDashboard() {
                         <td className="py-3 px-4 text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">
                           +{ref.rewardPoints}
                         </td>
-                        <td className="py-3 pl-4 text-text-muted whitespace-nowrap">
+                        <td className="py-3 ps-4 text-text-muted whitespace-nowrap">
                           {new Date(ref.createdAt).toLocaleDateString()}
                         </td>
                       </tr>

@@ -15,10 +15,10 @@ const icons = {
 };
 
 const borderStyles = {
-  success: 'border-l-4 border-l-success',
-  error: 'border-l-4 border-l-danger',
-  warning: 'border-l-4 border-l-warning',
-  info: 'border-l-4 border-l-info',
+  success: 'border-s-4 border-s-success',
+  error: 'border-s-4 border-s-danger',
+  warning: 'border-s-4 border-s-warning',
+  info: 'border-s-4 border-s-info',
   blank: 'border border-border-base',
   custom: 'border border-border-base',
   loading: 'border border-border-base',

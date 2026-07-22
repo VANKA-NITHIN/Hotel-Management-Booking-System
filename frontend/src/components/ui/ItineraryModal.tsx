@@ -46,7 +46,7 @@ export function ItineraryModal({ isOpen, onClose, cityName = 'Maldives', hotelNa
     ],
   };
 
-  const currentItems = itineraries[vibe];
+  const currentItems = itineraries[vibe as keyof typeof itineraries] || [];
 
   const handleSave = () => {
     toast.success(`Saved your ${vibe} itinerary for ${cityName} to your profile!`);

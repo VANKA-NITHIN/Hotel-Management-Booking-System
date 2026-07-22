@@ -356,10 +356,13 @@ export interface Employee {
   active: boolean;
 }
 
-export interface ApiResponse {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
-  data?: unknown;
+  data?: T;
+  timestamp?: string;
+  pagination?: any;
+  metadata?: Record<string, any>;
 }
 
 export interface Housekeeping {
@@ -373,4 +376,62 @@ export interface Housekeeping {
   inspectionRequired: boolean;
   inspectionPassed: boolean;
   inspectionNotes?: string;
+}
+
+// CMS Types
+export interface Banner {
+  id: number;
+  title: string;
+  subtitle?: string;
+  imageUrl: string;
+  linkUrl?: string;
+  buttonText?: string;
+  active: boolean;
+  displayOrder: number;
+}
+
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+  category?: string;
+  active: boolean;
+  displayOrder: number;
+}
+
+export interface Destination {
+  id: number;
+  name: string;
+  country: string;
+  imageUrl: string;
+  description?: string;
+  featured: boolean;
+  hotelCount: number;
+  averagePrice: number;
+  rating: number;
+}
+
+export interface SocialLink {
+  id: number;
+  platform: string;
+  url: string;
+  iconClass?: string;
+  displayOrder: number;
+}
+
+export interface ContactInformation {
+  id: number;
+  type: string;
+  value: string;
+  label?: string;
+}
+
+export interface CompanyInfo {
+  id: number;
+  name: string;
+  description?: string;
+  logoUrl?: string;
+  copyrightText?: string;
+  socialLinks?: SocialLink[];
+  contacts?: ContactInformation[];
 }

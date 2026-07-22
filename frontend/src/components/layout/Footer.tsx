@@ -3,7 +3,7 @@ import { Mail, Phone, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from '../ui/Toast';
 import { Button } from '../ui/Button';
-import { useSubscribeNewsletter } from '../../hooks/useApi';
+import { useSubscribeNewsletter, useCompanyInfo } from '../../hooks/useApi';
 
 const footerLinks = {
   company: [
@@ -72,6 +72,8 @@ export default function Footer() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { data: companyInfoResponse } = useCompanyInfo();
+  const companyInfo = companyInfoResponse;
   const subscribeNewsletter = useSubscribeNewsletter();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -134,7 +136,7 @@ export default function Footer() {
       <div className="container-section py-16 lg:py-20">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
           {/* Brand Column */}
-          <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pr-8">
+          <div className="col-span-2 md:col-span-3 lg:col-span-2 lg:pe-8">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <div className="flex items-center gap-3">
                 <img src="/favicon.svg" alt="LuxuryStay Logo" className="w-10 h-10 rounded-xl" />
@@ -147,29 +149,53 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="space-y-4 text-sm mb-8">
-              <a href="mailto:concierge@luxurystay.com" className="flex items-center gap-3 hover:text-white transition-colors group">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <Mail className="w-4 h-4 text-neutral-300" />
+              {companyInfo?.contacts?.map(contact => (
+                <div key={contact.id} className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                    {contact.type.toLowerCase().includes('email') ? <Mail className="w-4 h-4 text-neutral-300" /> :
+                     contact.type.toLowerCase().includes('phone') ? <Phone className="w-4 h-4 text-neutral-300" /> :
+                     <MapPin className="w-4 h-4 text-neutral-300" />}
+                  </div>
+                  <span>{contact.value}</span>
                 </div>
-                concierge@luxurystay.com
-              </a>
-              <a href="tel:+18005550199" className="flex items-center gap-3 hover:text-white transition-colors group">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <Phone className="w-4 h-4 text-neutral-300" />
-                </div>
-                +1 (800) 555-0199
-              </a>
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                  <MapPin className="w-4 h-4 text-neutral-300" />
-                </div>
-                <span>One World Trade Center<br/>Suite 4500, NY 10007</span>
-              </div>
+              )) || (
+                <>
+                  <a href="mailto:concierge@luxurystay.com" className="flex items-center gap-3 hover:text-white transition-colors group">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                      <Mail className="w-4 h-4 text-neutral-300" />
+                    </div>
+                    concierge@luxurystay.com
+                  </a>
+                  <a href="tel:+18005550199" className="flex items-center gap-3 hover:text-white transition-colors group">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                      <Phone className="w-4 h-4 text-neutral-300" />
+                    </div>
+                    +1 (800) 555-0199
+                  </a>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                      <MapPin className="w-4 h-4 text-neutral-300" />
+                    </div>
+                    <span>One World Trade Center<br/>Suite 4500, NY 10007</span>
+                  </div>
+                </>
+              )}
             </div>
             
             {/* Social Links */}
             <div className="flex gap-3">
-              {socialLinks.map((social) => (
+              {companyInfo?.socialLinks?.map((social) => (
+                <a 
+                  key={social.id} 
+                  href={social.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-secondary hover:text-white transition-all hover:-translate-y-1"
+                  aria-label={social.platform}
+                >
+                  <SocialIcon type={(social.platform.toLowerCase() as any)} />
+                </a>
+              )) || socialLinks.map((social) => (
                 <a 
                   key={social.label} 
                   href={social.href} 
@@ -232,7 +258,7 @@ export default function Footer() {
       <div className="border-t border-white/10 bg-black/20">
         <div className="container-section py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-xs text-neutral-500 font-medium">
-            <span>© {new Date().getFullYear()} LuxuryStay Inc. All rights reserved.</span>
+            <span>{companyInfo?.copyrightText || `© ${new Date().getFullYear()} LuxuryStay Inc. All rights reserved.`}</span>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center gap-6 lg:gap-8">

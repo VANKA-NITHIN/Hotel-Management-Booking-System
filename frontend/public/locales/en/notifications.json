@@ -1,0 +1,12 @@
+﻿{
+    "title":  "Notifications",
+    "markAllRead":  "Mark all as read",
+    "noNotifications":  "No notifications yet",
+    "clearAll":  "Clear all",
+    "bookingConfirmation":  "Booking Confirmed",
+    "bookingCancellation":  "Booking Cancelled",
+    "paymentReceived":  "Payment Received",
+    "reviewReminder":  "Review Reminder",
+    "loyaltyUpdate":  "Loyalty Points Updated",
+    "promotional":  "Special Offer"
+}

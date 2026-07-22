@@ -63,12 +63,12 @@ interface ResortActivityModalProps {
 export function ResortActivityModal({ isOpen, onClose, hotelName }: ResortActivityModalProps) {
   const { formatPrice } = useCurrency();
   const [selectedId, setSelectedId] = useState<string>('beach_dinner');
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0] || '');
   const [time, setTime] = useState<string>('19:00');
   const [guests, setGuests] = useState<number>(2);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const selectedActivity = RESORT_ACTIVITIES.find(a => a.id === selectedId) || RESORT_ACTIVITIES[0];
+  const selectedActivity = RESORT_ACTIVITIES.find(a => a.id === selectedId) || RESORT_ACTIVITIES[0]!;
 
   const handleBooking = (e: React.FormEvent) => {
     e.preventDefault();

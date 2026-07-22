@@ -41,8 +41,12 @@ interface LoyaltyTierModalProps {
   currentPoints?: number;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export function LoyaltyTierModal({ isOpen, onClose, currentPoints = 1250 }: LoyaltyTierModalProps) {
-  const currentTier = LOYALTY_TIERS.slice().reverse().find(t => currentPoints >= t.minPoints) || LOYALTY_TIERS[0];
+  const { t } = useTranslation(['wallet', 'common']);
+  
+  const currentTier = LOYALTY_TIERS.slice().reverse().find(t => currentPoints >= t.minPoints) || LOYALTY_TIERS[0]!;
   const nextTier = LOYALTY_TIERS.find(t => t.minPoints > currentPoints);
 
   const pointsToNext = nextTier ? nextTier.minPoints - currentPoints : 0;
@@ -64,15 +68,15 @@ export function LoyaltyTierModal({ isOpen, onClose, currentPoints = 1250 }: Loya
                 {currentTier.name}
               </span>
               <h4 className="text-lg font-bold text-text-base mt-1 flex items-center gap-2">
-                {currentPoints.toLocaleString()} <span className="text-xs font-normal text-text-muted">Loyalty Points</span>
+                {currentPoints.toLocaleString()} <span className="text-xs font-normal text-text-muted">{t('wallet:loyaltyPoints', 'Loyalty Points')}</span>
               </h4>
             </div>
           </div>
 
           {nextTier && (
-            <div className="sm:text-right w-full sm:w-auto">
+            <div className="sm:text-end w-full sm:w-auto">
               <p className="text-xs text-text-muted">
-                <span className="font-bold text-primary">{pointsToNext} points</span> to {nextTier.name}
+                {t('wallet:pointsToNextLevel', { points: pointsToNext, level: nextTier.name })}
               </p>
               <div className="w-full sm:w-36 h-2 bg-bg-surface-hover rounded-full overflow-hidden mt-1.5 border border-border-base">
                 <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />

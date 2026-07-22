@@ -49,7 +49,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
               }
               toggleWishlist.mutate(hotel.id); 
             }}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
+            className="absolute top-3 end-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
             aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
           >
             <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
@@ -78,7 +78,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             {Array.from({ length: hotel.starRating || 5 }).map((_, i) => (
               <Star key={i} className="w-3 h-3 text-secondary fill-secondary" />
             ))}
-            <span className="text-xs text-text-muted ml-1">({hotel.totalReviews || 0} reviews)</span>
+            <span className="text-xs text-text-muted ms-1">({hotel.totalReviews || 0} reviews)</span>
           </div>
 
           <div className="flex items-end justify-between pt-4 mt-4 border-t border-border-base/50">
@@ -117,7 +117,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
           />
         </div>
         {hotel.starRating && hotel.starRating >= 5 && (
-          <span className="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">
+          <span className="absolute top-3 start-3 bg-primary/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">
             Luxury
           </span>
         )}
@@ -131,7 +131,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             }
             toggleWishlist.mutate(hotel.id); 
           }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
+          className="absolute top-3 end-3 w-8 h-8 rounded-full bg-bg-surface/90 backdrop-blur-sm flex items-center justify-center hover:bg-bg-surface transition-all hover:scale-110"
           aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
         >
           <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'text-red-500 fill-red-500' : 'text-text-muted'}`} />
@@ -158,7 +158,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             <span className="text-[11px] text-text-muted block">From</span>
             <span className="text-base font-bold text-text-base">
               {formatPrice(hotel.startingPrice || 199)}
-              <span className="text-xs text-text-muted font-normal ml-0.5">/night</span>
+              <span className="text-xs text-text-muted font-normal ms-0.5">/night</span>
             </span>
           </div>
           <Link

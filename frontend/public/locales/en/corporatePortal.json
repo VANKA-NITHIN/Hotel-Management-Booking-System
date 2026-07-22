@@ -1,0 +1,11 @@
+﻿{
+    "title":  "Corporate Portal",
+    "dashboard":  "Corporate Dashboard",
+    "companyProfile":  "Company Profile",
+    "travelPolicy":  "Travel Policy",
+    "budgetManagement":  "Budget Management",
+    "employeeDirectory":  "Employee Directory",
+    "travelRequests":  "Travel Requests",
+    "approvals":  "Approvals",
+    "reports":  "Reports"
+}

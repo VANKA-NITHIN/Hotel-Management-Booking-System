@@ -75,7 +75,7 @@ export function InvoiceModal({ isOpen, onClose, booking }: InvoiceModalProps) {
             </div>
             <p className="text-xs text-text-muted">Enterprise Hospitality & Luxury Booking</p>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-xs inline-flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5" /> PAID & CONFIRMED
             </span>
@@ -121,21 +121,21 @@ export function InvoiceModal({ isOpen, onClose, booking }: InvoiceModalProps) {
           <div className="grid grid-cols-4 bg-bg-surface-hover p-3 font-bold text-text-muted border-b border-border-base uppercase tracking-wider">
             <span className="col-span-2">Description</span>
             <span className="text-center">Rate / Night</span>
-            <span className="text-right">Amount</span>
+            <span className="text-end">Amount</span>
           </div>
           <div className="grid grid-cols-4 p-3.5 border-b border-border-base/50 text-text-base">
             <span className="col-span-2 font-semibold">{booking.roomName} ({nights} nights)</span>
             <span className="text-center text-text-muted">{formatPrice(Math.round(roomSubtotal / nights))}</span>
-            <span className="text-right font-bold">{formatPrice(roomSubtotal)}</span>
+            <span className="text-end font-bold">{formatPrice(roomSubtotal)}</span>
           </div>
           <div className="grid grid-cols-4 p-3.5 border-b border-border-base/50 text-text-base">
             <span className="col-span-2 text-text-muted">Taxes & Service Fees (12%)</span>
             <span className="text-center text-text-muted">—</span>
-            <span className="text-right font-bold text-text-muted">{formatPrice(taxAmount)}</span>
+            <span className="text-end font-bold text-text-muted">{formatPrice(taxAmount)}</span>
           </div>
           <div className="grid grid-cols-4 p-4 bg-primary/5 font-bold text-sm text-text-base">
-            <span className="col-span-3 text-right">Total Paid:</span>
-            <span className="text-right text-primary text-base font-extrabold">{formatPrice(booking.totalAmount)}</span>
+            <span className="col-span-3 text-end">Total Paid:</span>
+            <span className="text-end text-primary text-base font-extrabold">{formatPrice(booking.totalAmount)}</span>
           </div>
         </div>
 

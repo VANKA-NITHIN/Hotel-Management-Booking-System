@@ -68,7 +68,7 @@ export function GuestReviewHighlights({ className = '' }: GuestReviewHighlightsP
             <h3 className="text-lg font-serif font-bold text-text-base flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-primary" /> Review Analytics
             </h3>
-            <div className="text-right">
+            <div className="text-end">
               <span className="text-2xl font-bold text-text-base">{analytics.averageRating.toFixed(1)}</span>
               <span className="text-sm text-text-muted"> / 5</span>
               <p className="text-xs text-text-muted">Based on {analytics.totalReviews} reviews</p>
@@ -143,7 +143,7 @@ export function GuestReviewHighlights({ className = '' }: GuestReviewHighlightsP
                 </div>
 
                 {/* Quote */}
-                <div className="relative pl-4 border-l-2 border-primary/20">
+                <div className="relative ps-4 border-s-2 border-primary/20">
                   <Quote className="w-3 h-3 text-primary/40 absolute -left-1.5 -top-0.5 bg-bg-surface" />
                   <p className="text-xs text-text-muted leading-relaxed line-clamp-3">{review.comment}</p>
                 </div>

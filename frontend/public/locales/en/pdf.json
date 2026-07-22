@@ -1,0 +1,22 @@
+﻿{
+    "invoice":  "INVOICE",
+    "invoiceNumber":  "Invoice #",
+    "date":  "Date",
+    "billTo":  "BILL TO",
+    "hotel":  "HOTEL",
+    "description":  "Description",
+    "details":  "Details",
+    "amount":  "Amount",
+    "checkInDate":  "Check-in Date",
+    "checkOutDate":  "Check-out Date",
+    "roomCharges":  "Room Charges",
+    "nights":  "{{count}} night(s)",
+    "guests":  "{{count}} adults",
+    "guestsChildren":  "{{adults}} adults, {{children}} children",
+    "discount":  "Discount",
+    "tax":  "Tax (10%)",
+    "serviceCharge":  "Service Charge",
+    "total":  "TOTAL",
+    "thankYou":  "Thank you for choosing LuxuryStay!",
+    "contact":  "For questions, contact support@luxurystay.com"
+}

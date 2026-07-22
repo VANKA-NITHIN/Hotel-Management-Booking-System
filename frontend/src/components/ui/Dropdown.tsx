@@ -40,7 +40,7 @@ export function Dropdown({ trigger, items, align = 'right' }: DropdownProps) {
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.15 }}
             className={`absolute top-full mt-1 z-50 min-w-[200px] bg-white dark:bg-surface-dark rounded-xl shadow-modal border border-gray-100 dark:border-gray-700 py-1 ${
-              align === 'right' ? 'right-0' : 'left-0'
+              align === 'right' ? 'end-0' : 'start-0'
             }`}
           >
             {items.map((item, i) => (

@@ -52,7 +52,7 @@ public class AiOrchestratorService {
         long startTime = System.currentTimeMillis();
 
         // Hydrate context and build system prompt
-        Map<String, Object> userContext = hydrationService.hydrateUserContext(authentication);
+        Map<String, Object> userContext = hydrationService.hydrateUserContext(authentication, request.getLocale());
         String systemPrompt = promptBuilderService.buildSystemPrompt(userContext);
 
         // Fetch history or use provided messages

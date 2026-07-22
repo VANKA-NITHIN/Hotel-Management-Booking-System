@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { Globe, ChevronDown, Check, Search, X } from 'lucide-react';
+import { ChevronDown, Check, Search, X } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { SUPPORTED_LANGUAGES, type LanguageCode } from '../../i18n/config';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -51,13 +51,13 @@ export function LanguageSwitcher({ className = '', variant = 'navbar' }: Languag
             <button
               key={lang.code}
               onClick={() => setLanguage(lang.code as LanguageCode)}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-3 rounded-xl border text-start transition-all ${
                 language === lang.code
                   ? 'border-primary bg-primary/5 ring-1 ring-primary shadow-sm'
                   : 'border-border-base hover:border-border-strong hover:bg-bg-surface-hover'
               }`}
             >
-              <span className="text-lg mr-2">{lang.flag}</span>
+              <span className="text-lg me-2">{lang.flag}</span>
               <div className="mt-1">
                 <span className="block text-sm font-bold text-text-base">{lang.nativeName}</span>
                 <span className="block text-xs text-text-muted">{lang.name}</span>
@@ -88,23 +88,23 @@ export function LanguageSwitcher({ className = '', variant = 'navbar' }: Languag
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-72 bg-bg-surface border border-border-base rounded-xl shadow-xl z-50 overflow-hidden"
+            className="absolute end-0 mt-2 w-72 bg-bg-surface border border-border-base rounded-xl shadow-xl z-50 overflow-hidden"
           >
             <div className="p-2 border-b border-border-base">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+                <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
                 <input
                   ref={searchRef}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search languages..."
-                  className="w-full pl-9 pr-8 py-2 bg-bg-surface-hover rounded-lg text-xs text-text-base placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  className="w-full ps-9 pe-8 py-2 bg-bg-surface-hover rounded-lg text-xs text-text-base placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-primary/30"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-bg-surface-active"
+                    className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-bg-surface-active"
                   >
                     <X className="w-3 h-3 text-text-muted" />
                   </button>
@@ -123,7 +123,7 @@ export function LanguageSwitcher({ className = '', variant = 'navbar' }: Languag
                       setIsOpen(false);
                       setSearch('');
                     }}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-start transition-colors ${
                       isSelected
                         ? 'bg-primary/10 text-primary'
                         : 'text-text-base hover:bg-bg-surface-hover'

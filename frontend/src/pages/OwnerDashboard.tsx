@@ -81,8 +81,8 @@ export default function OwnerDashboard() {
   return (
     <div className="min-h-screen bg-bg-surface-hover flex pt-[72px]">
       {/* Sidebar */}
-      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
+        <div className="absolute top-0 end-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="mb-10 px-4 py-4">
           <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Owner Portal</span>
           <span className="block text-xs font-bold text-secondary uppercase tracking-widest mt-2">Property Management</span>
@@ -152,14 +152,14 @@ export default function OwnerDashboard() {
                 <option value="">Select a property...</option>
                 {hotels.map((h: any) => <option key={h.id} value={h.id}>{h.name}</option>)}
               </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+              <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
             </div>
           )}
         </div>
         
         {selectedHotelId && activeTab === 'hotels' && (
           <AIInsightsWidget 
-            hotel={hotels.find((h: any) => h.id === selectedHotelId) || hotels[0]} 
+            hotel={hotels.find((h: any) => h.id === selectedHotelId) || hotels[0]!} 
             bookings={bookings} 
             reviews={reviews} 
           />
@@ -169,17 +169,17 @@ export default function OwnerDashboard() {
           <div className="bg-bg-surface rounded-2xl shadow-sm border border-border-base overflow-hidden">
             <div className="p-6 border-b border-border-base flex items-center justify-between">
               <div className="relative w-full max-w-md">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input type="text" placeholder="Search properties..." className="w-full bg-bg-surface-hover border border-border-base hover:border-border-strong rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium text-text-base focus:outline-none focus:ring-2 focus:ring-primary transition-all" />
+                <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                <input type="text" placeholder="Search properties..." className="w-full bg-bg-surface-hover border border-border-base hover:border-border-strong rounded-xl ps-10 pe-4 py-2.5 text-sm font-medium text-text-base focus:outline-none focus:ring-2 focus:ring-primary transition-all" />
               </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-bg-surface-hover">
                   <tr>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider">Property Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider">Location</th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-text-muted uppercase tracking-wider">Rating</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-text-muted uppercase tracking-wider">Property Name</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-text-muted uppercase tracking-wider">Location</th>
+                    <th className="px-6 py-4 text-start text-xs font-bold text-text-muted uppercase tracking-wider">Rating</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-base">
@@ -219,11 +219,11 @@ export default function OwnerDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border-strong">
-                    <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Room Name</th>
-                    <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Type</th>
-                    <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Capacity</th>
-                    <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Price/Night</th>
-                    <th className="text-right text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
+                    <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Room Name</th>
+                    <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Type</th>
+                    <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Capacity</th>
+                    <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Price/Night</th>
+                    <th className="text-end text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border-base">
@@ -233,7 +233,7 @@ export default function OwnerDashboard() {
                       <td className="py-4 px-2"><span className="px-2.5 py-1 rounded-md bg-bg-surface-active text-xs font-bold text-text-base">{room.roomType?.replace('_', ' ')}</span></td>
                       <td className="py-4 px-2 text-sm font-medium text-text-muted">{room.maxGuests} Guests</td>
                       <td className="py-4 px-2 font-bold text-text-base">${room.pricePerNight}</td>
-                      <td className="py-4 px-2 text-right">
+                      <td className="py-4 px-2 text-end">
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => openRoomModal(room)} className="p-2 rounded-lg text-text-muted hover:text-primary hover:bg-primary/10 transition-colors"><Edit className="w-4 h-4" /></button>
                           <button onClick={() => deleteRoom.mutate({ hotelId: selectedHotelId, roomId: room.id })} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-4 h-4" /></button>
@@ -254,10 +254,10 @@ export default function OwnerDashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border-strong">
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Employee ID</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Position</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Department</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Employee ID</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Position</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Department</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-base">
@@ -307,10 +307,10 @@ export default function OwnerDashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border-strong">
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Dates</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Guests</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Dates</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Guests</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-base">

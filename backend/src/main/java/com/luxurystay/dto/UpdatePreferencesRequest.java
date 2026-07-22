@@ -23,4 +23,6 @@ public class UpdatePreferencesRequest {
 
     @NotNull
     private Boolean pushPromotions;
+    
+    private String languagePreference;
 }

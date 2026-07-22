@@ -30,19 +30,19 @@ export default function HelpCenterPage() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       {/* Search Header */}
       <div className="bg-primary pt-20 pb-28 px-4 text-center relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div className="absolute top-0 end-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="relative z-10 max-w-3xl mx-auto">
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-5xl font-serif font-bold text-white mb-8">
             How can we help you today?
           </motion.h1>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="relative">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted" />
+            <Search className="absolute start-5 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted" />
             <input
               type="text"
               placeholder="Search for articles, questions, or topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-14 pr-6 py-4 rounded-2xl bg-bg-surface border-none shadow-xl outline-none focus:ring-2 focus:ring-primary text-lg font-medium text-text-base transition-all"
+              className="w-full ps-14 pe-6 py-4 rounded-2xl bg-bg-surface border-none shadow-xl outline-none focus:ring-2 focus:ring-primary text-lg font-medium text-text-base transition-all"
             />
           </motion.div>
         </div>

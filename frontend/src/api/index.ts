@@ -1,8 +1,18 @@
 import api from './client';
 import type {
   AuthResponse, User, Hotel, Room, Booking, PagedResponse,
-  ChartDataPoint, DashboardStats, Notification, Coupon, Employee, Review, Housekeeping, CheckIn, Wallet, WalletTransaction, ReviewAnalytics, Referral, ReferralMetrics, Company, CompanyInvitation, CorporateAnalytics
+  ChartDataPoint, DashboardStats, Notification, Coupon, Employee, Review, Housekeeping, CheckIn, Wallet, WalletTransaction, ReviewAnalytics, Referral, ReferralMetrics, Company, CompanyInvitation, CorporateAnalytics,
+  Banner, Faq, Destination, CompanyInfo
 } from '../types';
+
+// Public CMS API
+export const publicApi = {
+  getBanners: () => api.get<Banner[]>('/public/banners'),
+  getFaqs: () => api.get<Faq[]>('/public/faqs'),
+  getFeaturedDestinations: () => api.get<Destination[]>('/public/destinations/featured'),
+  getCompanyInfo: () => api.get<CompanyInfo>('/public/company-info'),
+  getStatistics: () => api.get<Record<string, number>>('/public/statistics'),
+};
 
 // Auth API
 export const authApi = {

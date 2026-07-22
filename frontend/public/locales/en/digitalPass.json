@@ -1,0 +1,15 @@
+﻿{
+    "title":  "Digital Room Pass",
+    "roomNumber":  "Room {{number}}",
+    "floor":  "Floor {{number}}",
+    "validFrom":  "Valid From",
+    "validUntil":  "Valid Until",
+    "guestName":  "Guest Name",
+    "status":  "Status",
+    "active":  "Active",
+    "expired":  "Expired",
+    "cancelled":  "Cancelled",
+    "showAtDesk":  "Show this pass at the front desk",
+    "qrInformation":  "Scan QR for room access",
+    "addWallet":  "Add to Wallet"
+}

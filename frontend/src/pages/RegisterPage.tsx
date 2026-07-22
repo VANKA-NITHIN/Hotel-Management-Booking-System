@@ -30,8 +30,8 @@ export default function RegisterPage() {
 
       {/* Right side - Clerk SignUp */}
       <div className="flex-1 flex flex-col justify-center p-8 md:p-16 lg:p-24 bg-bg-surface relative overflow-y-auto min-h-screen">
-         <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
-         <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+         <div className="absolute top-0 end-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+         <div className="absolute bottom-0 start-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
          <div className="w-full max-w-md mx-auto relative z-10">
           {/* Logo */}

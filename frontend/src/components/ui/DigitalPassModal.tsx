@@ -74,7 +74,7 @@ export function DigitalPassModal({ isOpen, onClose, bookingRef, hotelName, qrTok
             )}
             
             {/* Security overlays */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none rounded-2xl ring-1 ring-inset ring-black/5" />
+            <div className="absolute top-0 start-0 w-full h-full pointer-events-none rounded-2xl ring-1 ring-inset ring-black/5" />
           </div>
 
           <div className="w-full space-y-4">

@@ -54,7 +54,7 @@ export function VirtualTourModal({ isOpen, onClose, hotelName }: VirtualTourModa
   const [activeSpotId, setActiveSpotId] = useState('suite');
   const [activeHotspot, setActiveHotspot] = useState<string | null>(null);
 
-  const spot = TOUR_SPOTS.find(s => s.id === activeSpotId) || TOUR_SPOTS[0];
+  const spot = TOUR_SPOTS.find(s => s.id === activeSpotId) || TOUR_SPOTS[0]!;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Interactive 360° Tour — ${hotelName || 'LuxuryStay'}`} size="xl">
@@ -93,7 +93,7 @@ export function VirtualTourModal({ isOpen, onClose, hotelName }: VirtualTourModa
           />
 
           {/* Overlay info banner */}
-          <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl text-white max-w-sm">
+          <div className="absolute top-4 start-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl text-white max-w-sm">
             <h4 className="font-bold text-sm">{spot.name}</h4>
             <p className="text-xs text-white/80 mt-0.5">{spot.description}</p>
           </div>
@@ -113,7 +113,7 @@ export function VirtualTourModal({ isOpen, onClose, hotelName }: VirtualTourModa
                 </span>
               </div>
               {activeHotspot === hs.title && (
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-bg-surface text-text-base border border-border-base px-3 py-1.5 rounded-lg text-xs font-bold shadow-xl whitespace-nowrap z-20">
+                <div className="absolute bottom-8 start-1/2 -translate-x-1/2 bg-bg-surface text-text-base border border-border-base px-3 py-1.5 rounded-lg text-xs font-bold shadow-xl whitespace-nowrap z-20">
                   {hs.title}
                 </div>
               )}

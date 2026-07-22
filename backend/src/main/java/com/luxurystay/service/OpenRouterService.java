@@ -27,6 +27,7 @@ public class OpenRouterService {
 
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
+    private final com.luxurystay.repository.BookingRepository bookingRepository;
     private final RestTemplate restTemplate = new RestTemplate();
 
     private static final String OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
@@ -35,13 +36,13 @@ public class OpenRouterService {
         return apiKey != null && !apiKey.isBlank();
     }
 
-    public String chat(String userMessage, List<Map<String, String>> history) {
+    public String chat(String userMessage, List<Map<String, String>> history, com.luxurystay.entity.User user) {
         if (!isAvailable()) {
             return null; // Fallback to keyword-based
         }
 
         try {
-            String systemPrompt = buildSystemPrompt();
+            String systemPrompt = buildSystemPrompt(user);
 
             List<Map<String, String>> messages = new ArrayList<>();
             messages.add(Map.of("role", "system", "content", systemPrompt));
@@ -88,11 +89,32 @@ public class OpenRouterService {
         }
     }
 
-    private String buildSystemPrompt() {
+    private String buildSystemPrompt(com.luxurystay.entity.User user) {
         StringBuilder sb = new StringBuilder();
         sb.append("You are LuxuryStay's AI hotel concierge assistant. You help guests find hotels, ");
         sb.append("recommend rooms, answer questions about policies, amenities, pricing, and bookings.\n\n");
         sb.append("Be warm, professional, and concise. Use emojis sparingly. Format responses with line breaks for readability.\n\n");
+
+        if (user != null) {
+            sb.append("GUEST CONTEXT:\n");
+            sb.append(String.format("- Name: %s %s\n", user.getFirstName(), user.getLastName()));
+            
+            try {
+                List<com.luxurystay.entity.Booking> bookings = bookingRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+                if (!bookings.isEmpty()) {
+                    com.luxurystay.entity.Booking latest = bookings.get(0);
+                    String roomType = latest.getBookingRooms() != null && !latest.getBookingRooms().isEmpty() ? 
+                                      latest.getBookingRooms().get(0).getRoom().getRoomType().name() : "Room";
+                    sb.append(String.format("- Latest Booking: %s at %s (%s)\n", 
+                        roomType, 
+                        latest.getHotel().getName(), 
+                        latest.getStatus()));
+                }
+            } catch (Exception e) {
+                log.warn("Could not fetch bookings for AI context: {}", e.getMessage());
+            }
+            sb.append("\nUse this information to personalize your responses. If they have an upcoming booking, mention it if relevant.\n\n");
+        }
 
         // Inject live hotel data
         try {

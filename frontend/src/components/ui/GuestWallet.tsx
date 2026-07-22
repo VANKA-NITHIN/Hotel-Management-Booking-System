@@ -6,8 +6,10 @@ import { Input } from './Input';
 import { Card } from './Card';
 import { Spinner } from './Spinner';
 import type { WalletTransaction } from '../../types';
+import { useTranslation } from 'react-i18next';
 
 export function GuestWallet() {
+  const { t } = useTranslation(['wallet', 'common']);
   const { data: walletResponse, isLoading: walletLoading } = useMyWallet();
   const { data: transactionsResponse, isLoading: txLoading } = useWalletTransactions(0, 50);
   
@@ -63,7 +65,7 @@ export function GuestWallet() {
         <Card className="p-6 bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800/30">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-primary-700 dark:text-primary-400">Current Balance</p>
+              <p className="text-sm font-medium text-primary-700 dark:text-primary-400">{t('wallet:balance', 'Current Balance')}</p>
               <h3 className="text-3xl font-bold text-primary-900 dark:text-primary-100 mt-1">
                 ${wallet.balance.toFixed(2)}
               </h3>
@@ -77,7 +79,7 @@ export function GuestWallet() {
         <Card className="p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-sm font-medium text-text-muted">Reward Points</p>
+              <p className="text-sm font-medium text-text-muted">{t('wallet:loyaltyPoints', 'Reward Points')}</p>
               <h3 className="text-3xl font-bold text-text-base mt-1">
                 {wallet.rewardPoints.toLocaleString()}
               </h3>
@@ -91,7 +93,7 @@ export function GuestWallet() {
         <Card className="p-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <p className="text-sm font-medium text-text-muted">Loyalty Tier</p>
+              <p className="text-sm font-medium text-text-muted">{t('wallet:membershipLevel', 'Loyalty Tier')}</p>
               <h3 className="text-xl font-bold text-text-base mt-1">{wallet.loyaltyTier}</h3>
             </div>
             <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl text-yellow-600 dark:text-yellow-400">
@@ -100,7 +102,7 @@ export function GuestWallet() {
           </div>
           <div>
             <div className="flex justify-between text-xs mb-1.5 text-text-muted">
-              <span>Tier Progress</span>
+              <span>{t('wallet:nextLevel', 'Tier Progress')}</span>
               <span>{wallet.tierProgress}%</span>
             </div>
             <div className="h-2 w-full bg-bg-surface-hover rounded-full overflow-hidden">
@@ -118,7 +120,7 @@ export function GuestWallet() {
         <div className="space-y-6">
           <Card className="p-6">
             <h4 className="font-semibold text-text-base mb-4 flex items-center gap-2">
-              <Tag className="w-5 h-5 text-text-muted" /> Apply Coupon
+              <Tag className="w-5 h-5 text-text-muted" /> {t('common:applyPromo', 'Apply Coupon')}
             </h4>
             <form onSubmit={handleApplyCoupon} className="space-y-3">
               <Input 
@@ -134,10 +136,10 @@ export function GuestWallet() {
 
           <Card className="p-6">
             <h4 className="font-semibold text-text-base mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-text-muted" /> Redeem Points
+              <TrendingUp className="w-5 h-5 text-text-muted" /> {t('wallet:redeemPoints', 'Redeem Points')}
             </h4>
             <form onSubmit={handleRedeem} className="space-y-3">
-              <p className="text-sm text-text-muted mb-2">100 points = $1.00</p>
+              <p className="text-sm text-text-muted mb-2">{t('wallet:redeemDescription', '100 points = $1.00')}</p>
               <Input 
                 type="number"
                 placeholder="Points to redeem" 
@@ -156,14 +158,14 @@ export function GuestWallet() {
         <Card className="lg:col-span-2">
           <div className="flex items-center justify-between p-6 border-b border-border-base bg-primary-600 rounded-t-xl text-white">
             <h4 className="font-semibold text-white flex items-center gap-2">
-              <History className="w-5 h-5" /> Transaction Ledger
+              <History className="w-5 h-5" /> {t('wallet:transactionHistory', 'Transaction Ledger')}
             </h4>
           </div>
           <div className="divide-y divide-border-base max-h-[500px] overflow-y-auto">
             {txLoading ? (
               <div className="p-8 flex justify-center"><Spinner /></div>
             ) : transactionsData?.content?.length === 0 ? (
-              <div className="p-8 text-center text-text-muted">No transactions found.</div>
+              <div className="p-8 text-center text-text-muted">{t('wallet:noTransactions', 'No transactions found.')}</div>
             ) : (
               transactionsData?.content.map((tx: WalletTransaction) => (
                 <div key={tx.id} className="p-4 sm:p-6 flex items-center justify-between hover:bg-bg-surface-hover transition-colors">
@@ -180,7 +182,7 @@ export function GuestWallet() {
                       </div>
                     </div>
                   </div>
-                  <div className={`text-right font-bold ${tx.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-text-base'}`}>
+                  <div className={`text-end font-bold ${tx.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-text-base'}`}>
                     {tx.amount > 0 ? '+' : ''}${tx.amount.toFixed(2)}
                   </div>
                 </div>

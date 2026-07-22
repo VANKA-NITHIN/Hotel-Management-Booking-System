@@ -1,0 +1,14 @@
+﻿{
+    "title":  "LuxuryStay Agent",
+    "subtitle":  "AI capable of booking your stay",
+    "greeting":  "Hello! Welcome to LuxuryStay! I\u0027m your secure AI hotel agent. How can I assist you with your travels today?",
+    "placeholder":  "Ask me to book a hotel...",
+    "thinking":  "Thinking...",
+    "error":  "I\u0027m sorry, I\u0027m having trouble connecting to my secure brain right now. Please try again in a moment.",
+    "noResponse":  "I\u0027m sorry, I couldn\u0027t formulate a response.",
+    "quickQuestions":  {
+                           "bookHotel":  "Book a hotel in Dubai",
+                           "roomsAvailable":  "What rooms are available in Paris?",
+                           "cheapHotel":  "Find a cheap hotel"
+                       }
+}

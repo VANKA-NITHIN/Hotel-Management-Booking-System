@@ -106,7 +106,7 @@ describe('AIChat', () => {
       expect(screen.getByText('LuxuryStay Assistant')).toBeInTheDocument();
     });
 
-    const closeButton = screen.getAllByRole('button')[0];
+    const closeButton = screen.getAllByRole('button')[0]!;
     fireEvent.click(closeButton);
 
     await waitFor(() => {

@@ -29,14 +29,14 @@ export function AccordionItem({ title, children, isOpen = false, onToggle, class
       <button
         type="button"
         onClick={handleToggle}
-        className="w-full py-4 flex items-center justify-between text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded-md"
+        className="w-full py-4 flex items-center justify-between text-start focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded-md"
         aria-expanded={isExpanded}
       >
         <span className="font-semibold text-text-base">{title}</span>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          className="text-text-muted shrink-0 ml-4"
+          className="text-text-muted shrink-0 ms-4"
         >
           <ChevronDown className="w-5 h-5" />
         </motion.div>

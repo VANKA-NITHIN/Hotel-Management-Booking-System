@@ -45,7 +45,7 @@ export function BookingConfirmationModal({ isOpen, onClose, booking }: BookingCo
           {showConfetti && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <PartyPopper className="w-8 h-8 text-amber-500 absolute -top-2 -left-4 animate-bounce" />
-              <PartyPopper className="w-6 h-6 text-primary absolute -top-4 right-0 animate-bounce delay-100" />
+              <PartyPopper className="w-6 h-6 text-primary absolute -top-4 end-0 animate-bounce delay-100" />
             </div>
           )}
           <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4 ring-4 ring-success/20">
@@ -71,7 +71,7 @@ export function BookingConfirmationModal({ isOpen, onClose, booking }: BookingCo
         </div>
 
         {/* Booking Summary */}
-        <div className="bg-bg-surface rounded-2xl p-5 border border-border-base text-left space-y-4">
+        <div className="bg-bg-surface rounded-2xl p-5 border border-border-base text-start space-y-4">
           <div className="flex items-start gap-3">
             <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div>

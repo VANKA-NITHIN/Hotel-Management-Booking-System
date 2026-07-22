@@ -107,15 +107,15 @@ export function HotelMap({ hotels, center = [20, 0], zoom = 2, className = "h-[5
                 <div className="p-3">
                   <h3 className="font-bold text-gray-900 leading-tight mb-1 line-clamp-1">{hotel.name}</h3>
                   <div className="flex items-center text-xs text-gray-500 mb-2">
-                    <MapPin className="w-3 h-3 mr-1" />
+                    <MapPin className="w-3 h-3 me-1" />
                     <span className="line-clamp-1">{hotel.city}, {hotel.country}</span>
                   </div>
                   
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center">
                       <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs font-medium ml-1">{hotel.rating}</span>
-                      <span className="text-xs text-gray-400 ml-1">({hotel.totalReviews})</span>
+                      <span className="text-xs font-medium ms-1">{hotel.rating}</span>
+                      <span className="text-xs text-gray-400 ms-1">({hotel.totalReviews})</span>
                     </div>
                     <div className="font-bold text-blue-600 text-sm">
                       ${hotel.startingPrice.toFixed(0)}<span className="text-xs text-gray-400 font-normal">/nt</span>

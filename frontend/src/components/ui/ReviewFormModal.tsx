@@ -30,7 +30,7 @@ export function ReviewFormModal({ isOpen, onClose, hotelId, hotelName }: ReviewF
       'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=300&h=300&fit=crop',
       'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=300&h=300&fit=crop'
     ];
-    setPhotos([...photos, mockPhotos[Math.floor(Math.random() * mockPhotos.length)]]);
+    setPhotos([...photos, mockPhotos[Math.floor(Math.random() * mockPhotos.length)]!]);
   };
 
   const createReviewMutation = useCreateReview();
@@ -176,7 +176,7 @@ export function ReviewFormModal({ isOpen, onClose, hotelId, hotelName }: ReviewF
                 <button
                   type="button"
                   onClick={() => setPhotos(photos.filter((_, i) => i !== idx))}
-                  className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-0.5 hover:bg-red-500"
+                  className="absolute top-1 end-1 bg-black/50 text-white rounded-full p-0.5 hover:bg-red-500"
                 >
                   <X className="w-3 h-3" />
                 </button>

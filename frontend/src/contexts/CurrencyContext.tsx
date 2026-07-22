@@ -9,6 +9,7 @@ export interface CurrencyDetails {
   label: string;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const CURRENCIES: Record<CurrencyCode, CurrencyDetails> = {
   USD: { code: 'USD', symbol: '$', rate: 1.0, label: 'USD ($)' },
   EUR: { code: 'EUR', symbol: '€', rate: 0.92, label: 'EUR (€)' },
@@ -70,6 +71,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useCurrency() {
   const context = useContext(CurrencyContext);
   if (!context) {

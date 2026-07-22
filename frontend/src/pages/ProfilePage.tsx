@@ -38,7 +38,7 @@ export default function ProfilePage() {
               <div className="w-full bg-secondary/20 h-2 rounded-full overflow-hidden">
                 <div className="bg-secondary h-full w-[70%] rounded-full"></div>
               </div>
-              <p className="text-xs font-bold text-secondary-dark mt-2 text-right">7,500 / 10,000 pts</p>
+              <p className="text-xs font-bold text-secondary-dark mt-2 text-end">7,500 / 10,000 pts</p>
             </div>
           </motion.div>
 

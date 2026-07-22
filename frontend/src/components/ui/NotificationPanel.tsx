@@ -46,7 +46,7 @@ export function NotificationPanel({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.15 }}
-      className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-bg-surface border border-border-base rounded-xl shadow-dropdown z-50 overflow-hidden flex flex-col"
+      className="absolute end-0 top-full mt-2 w-80 sm:w-96 bg-bg-surface border border-border-base rounded-xl shadow-dropdown z-50 overflow-hidden flex flex-col"
     >
       <div className="p-4 border-b border-border-base flex items-center justify-between bg-bg-surface-hover/30 shrink-0">
         <div className="flex items-center gap-2">

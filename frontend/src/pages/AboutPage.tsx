@@ -93,7 +93,7 @@ export default function AboutPage() {
 
       {/* Stats Section */}
       <section className="bg-primary py-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div className="absolute top-0 end-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="container-section relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-white/10">
             {stats.map((stat, i) => (

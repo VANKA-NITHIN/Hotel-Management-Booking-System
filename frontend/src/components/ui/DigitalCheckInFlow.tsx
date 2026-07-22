@@ -257,7 +257,7 @@ export function DigitalCheckInFlow({ isOpen, onClose, bookingId, bookingRef, hot
               variant="outline"
               onClick={step === 1 ? onClose : handlePrev}
             >
-              {step === 1 ? 'Cancel' : <><ChevronLeft className="w-4 h-4 mr-2" /> Back</>}
+              {step === 1 ? 'Cancel' : <><ChevronLeft className="w-4 h-4 me-2" /> Back</>}
             </Button>
             
             {step === totalSteps ? (
@@ -265,12 +265,12 @@ export function DigitalCheckInFlow({ isOpen, onClose, bookingId, bookingRef, hot
                 onClick={handleSubmit} 
                 disabled={isNextDisabled() || submitCheckIn.isPending}
               >
-                {submitCheckIn.isPending ? <Spinner size="sm" className="mr-2" /> : null}
+                {submitCheckIn.isPending ? <Spinner size="sm" className="me-2" /> : null}
                 Complete Check-In
               </Button>
             ) : (
               <Button onClick={handleNext} disabled={isNextDisabled()}>
-                Next <ChevronRight className="w-4 h-4 ml-2" />
+                Next <ChevronRight className="w-4 h-4 ms-2" />
               </Button>
             )}
           </div>

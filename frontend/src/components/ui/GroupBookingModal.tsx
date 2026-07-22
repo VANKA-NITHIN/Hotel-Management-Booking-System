@@ -95,7 +95,7 @@ export function GroupBookingModal({ isOpen, onClose, hotelName }: GroupBookingMo
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-bg-surface rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
+            className="fixed start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl bg-bg-surface rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
           >
             <div className="flex items-center justify-between p-6 border-b border-border-base">
               <div>
@@ -112,8 +112,8 @@ export function GroupBookingModal({ isOpen, onClose, hotelName }: GroupBookingMo
 
             <div className="overflow-y-auto p-6">
               <div className="flex items-center justify-between mb-8 relative">
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: step === 1 ? '0%' : '100%' }}></div>
+                <div className="absolute start-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
+                <div className="absolute start-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: step === 1 ? '0%' : '100%' }}></div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 1 ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>1</div>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 2 ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>2</div>
               </div>

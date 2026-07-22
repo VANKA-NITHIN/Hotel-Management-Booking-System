@@ -1,0 +1,9 @@
+{
+    "noData": "No data available",
+    "showing": "Showing {{from}} to {{to}} of {{total}}",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "rowsPerPage": "Rows per page",
+    "selectAll": "Select all",
+    "selectedCount": "{{count}} selected"
+}

@@ -21,8 +21,10 @@ public class ContextHydrationService {
     private final BookingRepository bookingRepository;
     private final WalletRepository walletRepository;
 
-    public Map<String, Object> hydrateUserContext(Authentication authentication) {
+    public Map<String, Object> hydrateUserContext(Authentication authentication, String locale) {
         Map<String, Object> context = new HashMap<>();
+        
+        context.put("locale", locale != null ? locale : "en");
         
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
             context.put("isAuthenticated", false);

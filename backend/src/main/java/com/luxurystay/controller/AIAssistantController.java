@@ -22,15 +22,23 @@ public class AIAssistantController {
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
     private final OpenRouterService openRouterService;
+    private final com.luxurystay.repository.UserRepository userRepository;
 
     @SuppressWarnings("unchecked")
     @PostMapping("/chat")
-    public ResponseEntity<Map<String, String>> chat(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<Map<String, String>> chat(@RequestBody Map<String, Object> request,
+            org.springframework.security.core.Authentication authentication) {
         String message = ((String) request.getOrDefault("message", "")).trim();
         List<Map<String, String>> history = (List<Map<String, String>>) request.get("history");
 
+        com.luxurystay.entity.User user = null;
+        if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails) {
+            org.springframework.security.core.userdetails.UserDetails userDetails = (org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal();
+            user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+        }
+
         // Try OpenRouter AI first
-        String aiResponse = openRouterService.chat(message, history);
+        String aiResponse = openRouterService.chat(message, history, user);
         String response = aiResponse != null ? aiResponse : generateResponse(message.toLowerCase());
 
         return ResponseEntity.ok(Map.of("response", response, "timestamp", String.valueOf(System.currentTimeMillis())));

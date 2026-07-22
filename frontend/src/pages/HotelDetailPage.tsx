@@ -28,6 +28,7 @@ import { GuestReviewHighlights } from '../components/ui/GuestReviewHighlights';
 import { OptimizedImage } from '../components/ui/Image';
 import { useAuth } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const amenityIcons: Record<string, typeof Wifi> = {
   'Free Wi-Fi': Wifi, 'Parking': Car, 'Restaurant': UtensilsCrossed,
@@ -41,7 +42,8 @@ const defaultAmenities = [
 ];
 
 export default function HotelDetailPage() {
-  usePageTitle('Hotel Details');
+  const { t } = useTranslation(['hotels', 'common']);
+  usePageTitle(t('hotels:aboutHotel', 'Hotel Details'));
   const { id } = useParams();
   const navigate = useNavigate();
   const hotelId = Number(id) || 1;
@@ -62,7 +64,7 @@ export default function HotelDetailPage() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const hotel = hotelData?.data as Hotel | undefined;
-  const rooms = (roomsData?.data?.content || []) as Room[];
+  const rooms = useMemo(() => (roomsData?.data?.content || []) as Room[], [roomsData?.data?.content]);
   const reviews = (reviewsData?.data || []) as Review[];
   const isWishlisted = wishlistHotels.some((h: Hotel) => h.id === hotelId);
 
@@ -144,7 +146,7 @@ export default function HotelDetailPage() {
         .then(data => setPois(data))
         .catch(err => console.error('Failed to fetch POIs', err));
     }
-  }, [activeTab, hotel?.id, selectedCategory]);
+  }, [activeTab, hotel?.id, hotel?.latitude, hotel?.longitude, selectedCategory]);
 
   const nights = checkIn && checkOut
     ? Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000))
@@ -211,8 +213,8 @@ export default function HotelDetailPage() {
             className="fixed inset-0 z-50 bg-black flex items-center justify-center" 
             onClick={() => setLightboxOpen(false)}
           >
-            <button onClick={() => setLightboxOpen(false)} className="absolute top-6 right-6 p-2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><X className="w-6 h-6" /></button>
-            <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + displayImages.length) % displayImages.length); }} className="absolute left-6 p-3 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><ChevronLeft className="w-6 h-6" /></button>
+            <button onClick={() => setLightboxOpen(false)} className="absolute top-6 end-6 p-2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><X className="w-6 h-6" /></button>
+            <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + displayImages.length) % displayImages.length); }} className="absolute start-6 p-3 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><ChevronLeft className="w-6 h-6" /></button>
             <motion.img 
               key={lightboxIndex}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -223,7 +225,7 @@ export default function HotelDetailPage() {
               className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg" 
               onClick={(e) => e.stopPropagation()} 
             />
-            <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % displayImages.length); }} className="absolute right-6 p-3 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><ChevronRight className="w-6 h-6" /></button>
+            <button onClick={(e) => { e.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % displayImages.length); }} className="absolute end-6 p-3 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"><ChevronRight className="w-6 h-6" /></button>
             <div className="absolute bottom-6 text-white font-medium bg-black/50 px-4 py-1.5 rounded-full">{lightboxIndex + 1} / {displayImages.length}</div>
           </motion.div>
         )}
@@ -324,7 +326,7 @@ export default function HotelDetailPage() {
                       activeTab === tab ? 'border-primary text-primary bg-bg-surface' : 'border-transparent text-text-muted hover:text-text-base hover:bg-bg-surface/50'
                     }`}
                   >
-                    {tab}
+                    {t(`hotels:${tab}`, tab)}
                   </button>
                 ))}
               </div>
@@ -334,7 +336,7 @@ export default function HotelDetailPage() {
             {activeTab === 'overview' && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }} className="space-y-6">
                 <div className="bg-bg-surface rounded-2xl p-6 sm:p-8 border border-border-base shadow-sm">
-                  <h3 className="text-xl font-serif font-bold text-text-base mb-4">About this property</h3>
+                  <h3 className="text-xl font-serif font-bold text-text-base mb-4">{t('hotels:aboutHotel', 'About this property')}</h3>
                   <p className="text-base text-text-muted leading-relaxed">{hotel.description || 'Experience world-class luxury and impeccable service at this stunning property. Featuring spacious rooms, exceptional dining, and state-of-the-art amenities designed for the discerning traveler.'}</p>
                 </div>
 
@@ -349,7 +351,7 @@ export default function HotelDetailPage() {
                 />
 
                 <div className="bg-bg-surface rounded-2xl p-6 sm:p-8 border border-border-base shadow-sm">
-                  <h3 className="text-xl font-serif font-bold text-text-base mb-6">Premium Amenities</h3>
+                  <h3 className="text-xl font-serif font-bold text-text-base mb-6">{t('hotels:hotelAmenities', 'Premium Amenities')}</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {(hotel.amenities && hotel.amenities.length > 0
                       ? hotel.amenities.map(a => ({ icon: amenityIcons[a.name] || Shield, name: a.name }))
@@ -370,8 +372,8 @@ export default function HotelDetailPage() {
                 {rooms.length > 1 && (
                   <div className="flex items-center justify-between bg-bg-surface p-4 rounded-2xl border border-border-base shadow-sm">
                     <div>
-                      <h3 className="font-bold text-sm text-text-base">Available Accommodations</h3>
-                      <p className="text-xs text-text-muted">{rooms.length} room types available for your stay</p>
+                      <h3 className="font-bold text-sm text-text-base">{t('hotels:availableRooms', 'Available Accommodations')}</h3>
+                      <p className="text-xs text-text-muted">{rooms.length} {t('common:options', 'room types available for your stay')}</p>
                     </div>
                     <Button variant="outline" size="sm" onClick={() => setIsCompareOpen(true)}>
                       Compare Room Types
@@ -397,7 +399,7 @@ export default function HotelDetailPage() {
                           <h4 className="text-lg font-bold text-text-base">{room.name}</h4>
                           <p className="text-xs font-bold text-primary uppercase tracking-wider mt-1">{room.roomType?.replace('_', ' ')}</p>
                         </div>
-                        <div className="text-right shrink-0">
+                        <div className="text-end shrink-0">
                           <span className="text-2xl font-bold text-text-base">${room.pricePerNight}</span>
                           <span className="text-xs font-medium text-text-muted block">/ night</span>
                         </div>
@@ -449,13 +451,13 @@ export default function HotelDetailPage() {
                       initial={{ y: 100, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       exit={{ y: 100, opacity: 0 }}
-                      className="fixed bottom-0 left-0 right-0 p-4 bg-bg-surface border-t border-border-base shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 flex items-center justify-between lg:px-[15%] 2xl:px-[25%]"
+                      className="fixed bottom-0 start-0 end-0 p-4 bg-bg-surface border-t border-border-base shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-40 flex items-center justify-between lg:px-[15%] 2xl:px-[25%]"
                     >
                       <div>
-                        <p className="text-lg font-bold text-text-base">{selectedRooms.length} Room{selectedRooms.length > 1 ? 's' : ''} Selected</p>
+                        <p className="text-lg font-bold text-text-base">{selectedRooms.length} {t('hotels:roomDetails', 'Room')}{selectedRooms.length > 1 ? 's' : ''} {t('common:selected', 'Selected')}</p>
                       </div>
                       <Button onClick={() => navigate(`/booking?hotelId=${hotel.id}&roomId=${selectedRooms.join(',')}&checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`)}>
-                        Continue to Checkout
+                        {t('hotels:bookNow', 'Continue to Checkout')}
                       </Button>
                     </motion.div>
                   )}
@@ -556,7 +558,7 @@ export default function HotelDetailPage() {
             {activeTab === 'policies' && (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
                 <div className="bg-bg-surface rounded-2xl border border-border-base p-6 sm:p-8 space-y-6 shadow-sm">
-                  <h3 className="text-xl font-serif font-bold text-text-base">Hotel Policies</h3>
+                  <h3 className="text-xl font-serif font-bold text-text-base">{t('hotels:policies', 'Hotel Policies')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                     <div className="space-y-4">
                       <div className="flex items-start gap-3">
@@ -730,7 +732,7 @@ export default function HotelDetailPage() {
       </div>
 
       {/* Mobile Sticky Booking Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-bg-surface border-t border-border-base p-4 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] flex items-center justify-between">
+      <div className="lg:hidden fixed bottom-0 start-0 end-0 bg-bg-surface border-t border-border-base p-4 z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] flex items-center justify-between">
         <div>
           <div className="flex items-baseline gap-1">
             <span className="text-xl font-bold text-text-base">${hotel.startingPrice || 199}</span>
@@ -748,7 +750,7 @@ export default function HotelDetailPage() {
             }
           }}
         >
-          {checkIn && checkOut ? 'Reserve' : 'Select Dates'}
+          {checkIn && checkOut ? t('hotels:bookNow', 'Reserve') : t('hotels:selectDates', 'Select Dates')}
         </Button>
       </div>
 

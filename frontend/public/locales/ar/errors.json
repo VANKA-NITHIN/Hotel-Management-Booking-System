@@ -1,0 +1,13 @@
+{
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection or wait for the server to wake up.",
+    "server": "Server error. Please try again later.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "You don't have permission to access this resource.",
+    "notFound": "The requested resource was not found.",
+    "timeout": "Request timed out. Please try again.",
+    "validation": "Please check your input and try again.",
+    "fileTooLarge": "File size exceeds maximum limit of 10MB",
+    "somethingWentWrong": "somethingWentWrong",
+    "unexpectedError": "unexpectedError"
+}

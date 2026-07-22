@@ -20,9 +20,11 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { DatePicker } from '../components/ui/DatePicker';
 import { OptimizedImage } from '../components/ui/Image';
+import { useTranslation } from 'react-i18next';
 
 export default function BookingPage() {
-  usePageTitle('Secure Checkout');
+  const { t } = useTranslation(['booking', 'common']);
+  usePageTitle(t('booking:pageTitle', 'Secure Checkout'));
   const [searchParams] = useSearchParams();
   const hotelId = Number(searchParams.get('hotelId')) || 1;
   const navigate = useNavigate();
@@ -212,11 +214,11 @@ export default function BookingPage() {
           <div className="w-24 h-24 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-12 h-12 text-success" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base mb-3">Booking Confirmed!</h1>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base mb-3">{t('booking:bookingConfirmed', 'Booking Confirmed!')}</h1>
           <p className="text-text-muted mb-8 text-lg">
-            Thank you for choosing LuxuryStay. Your booking reference has been sent to your email.
+            {t('booking:confirmationMessage', 'Thank you for choosing LuxuryStay. Your booking reference has been sent to your email.')}
           </p>
-          <div className="bg-bg-surface-hover rounded-2xl p-6 text-left mb-10 space-y-3 border border-border-base">
+          <div className="bg-bg-surface-hover rounded-2xl p-6 text-start mb-10 space-y-3 border border-border-base">
             <p className="text-sm"><span className="text-text-muted inline-block w-20">Hotel:</span> <span className="font-bold text-text-base">{hotel?.name}</span></p>
             <p className="text-sm"><span className="text-text-muted inline-block w-20">Dates:</span> <span className="font-bold text-text-base">{watchCheckIn} to {watchCheckOut}</span></p>
             <p className="text-sm"><span className="text-text-muted inline-block w-20">Guests:</span> <span className="font-bold text-text-base">{watch('guests')} Adults</span></p>
@@ -236,8 +238,8 @@ export default function BookingPage() {
         {/* Step Indicator */}
         <div className="max-w-2xl mx-auto mb-12 mt-8">
           <div className="flex items-center justify-between relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
+            <div className="absolute start-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
+            <div className="absolute start-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
             
             {[1, 2, 3].map((num) => (
               <div key={num} className="flex flex-col items-center gap-3">
@@ -247,7 +249,7 @@ export default function BookingPage() {
                   {step > num ? <Check className="w-6 h-6" /> : num}
                 </div>
                 <span className={`hidden sm:block text-xs font-bold uppercase tracking-wider ${step >= num ? 'text-text-base' : 'text-text-muted'}`}>
-                  {num === 1 ? 'Dates' : num === 2 ? 'Details' : 'Payment'}
+                  {num === 1 ? t('booking:step1', 'Dates') : num === 2 ? t('booking:step2', 'Details') : t('booking:step3', 'Payment')}
                 </span>
               </div>
             ))}
@@ -287,8 +289,8 @@ export default function BookingPage() {
                     <div>
                       <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Adults</label>
                       <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                        <select {...register('guests', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg pl-10 pr-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
+                        <Users className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                        <select {...register('guests', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
                           {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
@@ -296,8 +298,8 @@ export default function BookingPage() {
                     <div>
                       <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Children</label>
                       <div className="relative">
-                        <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                        <select {...register('children', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg pl-10 pr-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
+                        <Users className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                        <select {...register('children', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
                           {[0,1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
@@ -366,9 +368,9 @@ export default function BookingPage() {
                   </div>
 
                   <div className="mt-10 flex items-center justify-between">
-                    <Button variant="outline" size="lg" onClick={() => setStep(1)}>Back</Button>
+                    <Button variant="outline" size="lg" onClick={() => setStep(1)}>{t('common:back', 'Back')}</Button>
                     <Button size="lg" onClick={handleNext} icon={<ArrowRight className="w-4 h-4" />} iconPosition="right">
-                      Proceed to Payment
+                      {t('booking:continueToPayment', 'Proceed to Payment')}
                     </Button>
                   </div>
                 </motion.div>
@@ -391,24 +393,24 @@ export default function BookingPage() {
 
                   <div className="space-y-4">
                     <div className="border-2 border-primary bg-primary/5 rounded-xl p-5 cursor-pointer relative overflow-hidden transition-all shadow-sm">
-                      <div className="absolute top-5 right-5"><div className="w-5 h-5 rounded-full border-[5px] border-primary bg-white"></div></div>
+                      <div className="absolute top-5 end-5"><div className="w-5 h-5 rounded-full border-[5px] border-primary bg-white"></div></div>
                       <div className="flex items-center gap-3 mb-2">
                         <CreditCard className="w-6 h-6 text-primary" />
                         <span className="font-bold text-text-base text-lg">Pay with Razorpay</span>
                       </div>
-                      <p className="text-sm text-text-muted font-medium ml-9">Credit Card, Debit Card, Netbanking, UPI</p>
+                      <p className="text-sm text-text-muted font-medium ms-9">Credit Card, Debit Card, Netbanking, UPI</p>
                     </div>
                   </div>
 
                   <div className="mt-10 flex items-center justify-between">
-                    <Button variant="outline" size="lg" onClick={() => setStep(2)}>Back</Button>
+                    <Button variant="outline" size="lg" onClick={() => setStep(2)}>{t('common:back', 'Back')}</Button>
                     <Button 
                       size="lg" 
                       onClick={handlePayment} 
                       className="bg-[#22c55e] hover:bg-[#16a34a] text-white border-none shadow-lg shadow-green-500/20"
                       icon={<Lock className="w-4 h-4" />}
                     >
-                      Pay ${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                      {t('booking:payNow', 'Pay')} ${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                     </Button>
                   </div>
                 </motion.div>
@@ -419,7 +421,7 @@ export default function BookingPage() {
           {/* Sticky Order Summary Sidebar */}
           <div className="lg:w-[400px] 3xl:w-[500px] 4xl:w-[600px] shrink-0">
             <div className="bg-bg-surface rounded-2xl border border-border-base p-6 lg:p-8 sticky top-24 shadow-sm">
-              <h3 className="text-xl font-serif font-bold text-text-base mb-6 pb-6 border-b border-border-base">Order Summary</h3>
+              <h3 className="text-xl font-serif font-bold text-text-base mb-6 pb-6 border-b border-border-base">{t('booking:bookingSummary', 'Order Summary')}</h3>
               
               <div className="flex gap-4 mb-8">
                 <OptimizedImage src={hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop'} alt="" className="w-24 h-24 rounded-xl object-cover" containerClassName="w-24 h-24 rounded-xl shrink-0" />
@@ -452,7 +454,7 @@ export default function BookingPage() {
                     <div className="space-y-1.5">
                       {selectedRooms.map((r, i) => (
                         <div key={`${r.id}-${i}`} className="flex justify-between text-sm">
-                          <span className="text-text-base">{r.name} <span className="text-xs text-text-muted ml-1">({r.roomType?.replace('_', ' ')})</span></span>
+                          <span className="text-text-base">{r.name} <span className="text-xs text-text-muted ms-1">({r.roomType?.replace('_', ' ')})</span></span>
                           <span className="font-bold text-text-base">${r.pricePerNight}</span>
                         </div>
                       ))}
@@ -513,8 +515,8 @@ export default function BookingPage() {
 
               <div className="pt-6 border-t border-border-strong flex items-end justify-between">
                 <div>
-                  <span className="text-base font-bold text-text-base block">Total Amount</span>
-                  <span className="text-xs font-medium text-text-muted mt-1 block">Includes all taxes and fees</span>
+                  <span className="text-base font-bold text-text-base block">{t('booking:totalAmount', 'Total Amount')}</span>
+                  <span className="text-xs font-medium text-text-muted mt-1 block">{t('booking:taxIncluded', 'Includes all taxes and fees')}</span>
                 </div>
                 <span className="text-3xl font-bold text-text-base">{formatPrice(total)}</span>
               </div>

@@ -1,13 +1,19 @@
 package com.luxurystay.controller;
 
-import com.luxurystay.service.ImageService;
+import com.luxurystay.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class ImageController {
 
-    private final ImageService imageService;
+    private final StorageService storageService;
 
     /**
      * Upload a single image
@@ -42,7 +48,7 @@ public class ImageController {
             return ResponseEntity.badRequest().body(Map.of("error", "File size must be less than 10MB"));
         }
 
-        Map<String, Object> result = imageService.uploadImage(file, folder);
+        Map<String, Object> result = storageService.uploadImage(file, folder);
         return ResponseEntity.ok(result);
     }
 
@@ -60,7 +66,7 @@ public class ImageController {
             return ResponseEntity.badRequest().body(List.of(Map.of("error", "Maximum 10 files allowed")));
         }
 
-        List<Map<String, Object>> results = imageService.uploadImages(files, folder);
+        List<Map<String, Object>> results = storageService.uploadImages(files, folder);
         return ResponseEntity.ok(results);
     }
 
@@ -71,7 +77,7 @@ public class ImageController {
     @DeleteMapping("/{publicId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> deleteImage(@PathVariable String publicId) {
-        boolean deleted = imageService.deleteImage(publicId);
+        boolean deleted = storageService.deleteImage(publicId);
         if (deleted) {
             return ResponseEntity.ok(Map.of("message", "Image deleted successfully"));
         }
@@ -88,7 +94,33 @@ public class ImageController {
             @RequestParam(defaultValue = "400") int width,
             @RequestParam(defaultValue = "300") int height) {
 
-        String url = imageService.getTransformedUrl(publicId, width, height);
+        String url = storageService.getTransformedUrl(publicId, width, height);
         return ResponseEntity.ok(Map.of("url", url));
+    }
+
+    /**
+     * Serve local images
+     * GET /api/images/{filename:.+}
+     */
+    @GetMapping("/{filename:.+}")
+    public ResponseEntity<Resource> serveLocalImage(@PathVariable String filename) {
+        try {
+            Path file = Paths.get("uploads/").resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                String contentType = "image/jpeg";
+                if (filename.toLowerCase().endsWith(".png")) contentType = "image/png";
+                if (filename.toLowerCase().endsWith(".webp")) contentType = "image/webp";
+                if (filename.toLowerCase().endsWith(".gif")) contentType = "image/gif";
+                
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, contentType)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

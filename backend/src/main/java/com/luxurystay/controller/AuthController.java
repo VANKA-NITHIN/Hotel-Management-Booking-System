@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -64,6 +65,20 @@ public class AuthController {
         User user = authService.getCurrentUser(authentication);
         UserDTO dto = authService.updatePreferences(user.getId(), request);
         return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/language")
+    public ResponseEntity<ApiResponse> updateLanguage(Authentication authentication,
+                                                     @RequestBody Map<String, String> request) {
+        User user = authService.getCurrentUser(authentication);
+        String lang = request.get("language");
+        if (lang != null) {
+            authService.updateLanguagePreference(user.getId(), lang);
+        }
+        return ResponseEntity.ok(ApiResponse.builder()
+                .success(true)
+                .message("Language updated successfully")
+                .build());
     }
 
     // Admin endpoints

@@ -13,4 +13,8 @@
         <sqlFile path="changes/002-seed-data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="3" author="luxurystay-dev">
+        <sqlFile path="changes/003-add-language-preference.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

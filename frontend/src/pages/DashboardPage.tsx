@@ -22,6 +22,7 @@ import { DigitalPassModal } from '../components/ui/DigitalPassModal';
 import { authApi } from '../api';
 import { useQuery } from '@tanstack/react-query';
 import { useDigitalPass } from '../hooks/useApi';
+import { useTranslation } from 'react-i18next';
 
 import { Gift } from 'lucide-react';
 import { ReferralDashboard } from '../components/ui/ReferralDashboard';
@@ -37,7 +38,8 @@ const tabs = [
 ];
 
 export default function DashboardPage() {
-  usePageTitle('My Dashboard');
+  const { t } = useTranslation(['dashboard', 'common']);
+  usePageTitle(t('common:dashboard', 'My Dashboard'));
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
   const [activeTab, setActiveTab] = usePersistentState('dashboard_active_tab', 'overview');
@@ -78,9 +80,9 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-1 text-center md:text-start">
             <h1 className="text-2xl font-serif font-bold text-text-base mb-1">
-              Welcome back, {user?.firstName || 'Guest'}
+              {t('dashboard:welcome', { name: user?.firstName || 'Guest' })}
             </h1>
             <p className="text-text-muted mb-4 font-medium">{user?.primaryEmailAddress?.emailAddress || user?.email}</p>
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
@@ -89,19 +91,19 @@ export default function DashboardPage() {
                 className="bg-secondary/10 px-5 py-2.5 rounded-xl border border-secondary/20 cursor-pointer hover:bg-secondary/20 transition-all group"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">Loyalty Points</p>
+                  <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">{t('dashboard:loyaltyPoints', 'Loyalty Points')}</p>
                   <span className="text-[10px] font-bold text-secondary underline group-hover:opacity-100 opacity-80">View Tiers</span>
                 </div>
                 <p className="text-2xl font-bold text-secondary-dark">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
               </div>
               <div className="bg-bg-surface-hover px-5 py-2.5 rounded-xl border border-border-base">
-                <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-0.5">Total Trips</p>
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-0.5">{t('dashboard:totalBookings', 'Total Trips')}</p>
                 <p className="text-2xl font-bold text-text-base">{bookings.length}</p>
               </div>
             </div>
           </div>
           <div className="shrink-0 flex gap-3 mt-4 md:mt-0">
-             <Button onClick={() => navigate('/hotels')} size="lg">Book a stay</Button>
+             <Button onClick={() => navigate('/hotels')} size="lg">{t('dashboard:bookHotel', 'Book a stay')}</Button>
           </div>
         </div>
 
@@ -109,7 +111,7 @@ export default function DashboardPage() {
           {/* Sidebar Navigation */}
           <div className="lg:w-64 3xl:w-80 shrink-0">
             <div className="bg-bg-surface rounded-2xl border border-border-base p-2 shadow-sm sticky top-24">
-              <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pr-20 lg:pr-0">
+              <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pe-20 lg:pe-0">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
@@ -121,7 +123,7 @@ export default function DashboardPage() {
                     }`}
                   >
                     <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-white' : 'text-text-muted'}`} />
-                    {tab.label}
+                    {t(`common:${tab.id}`, tab.label)}
                   </button>
                 ))}
               </nav>
@@ -161,7 +163,7 @@ export default function DashboardPage() {
                                 <h3 className="text-xl font-bold text-text-base line-clamp-1">Luxury Resort & Spa</h3>
                                 <p className="text-sm font-medium text-text-muted flex items-center gap-1.5 mt-1"><MapPin className="w-3.5 h-3.5" /> Paris, France</p>
                               </div>
-                              <div className="text-right">
+                              <div className="text-end">
                                 <span className="text-xl font-bold text-text-base">${booking.totalAmount.toLocaleString()}</span>
                                 <span className="text-xs font-bold text-text-muted block uppercase tracking-wider">Total</span>
                               </div>
@@ -207,13 +209,13 @@ export default function DashboardPage() {
                       <div className="w-20 h-20 rounded-full bg-bg-surface-hover flex items-center justify-center mx-auto mb-5">
                         <Calendar className="w-10 h-10 text-text-muted" />
                       </div>
-                      <h3 className="text-xl font-bold text-text-base mb-2">No upcoming trips</h3>
+                      <h3 className="text-xl font-bold text-text-base mb-2">{t('dashboard:noUpcoming', 'No upcoming trips')}</h3>
                       <p className="text-text-muted font-medium mb-8 max-w-md mx-auto">You don't have any upcoming reservations. Ready to plan your next getaway?</p>
-                      <Button onClick={() => navigate('/hotels')} size="lg">Explore Hotels</Button>
+                      <Button onClick={() => navigate('/hotels')} size="lg">{t('dashboard:bookHotel', 'Explore Hotels')}</Button>
                     </div>
                   )}
 
-                  <h2 className="text-2xl font-serif font-bold text-text-base mb-6 mt-12">Quick Actions</h2>
+                  <h2 className="text-2xl font-serif font-bold text-text-base mb-6 mt-12">{t('dashboard:quickActions', 'Quick Actions')}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <button onClick={() => navigate('/settings')} className="bg-bg-surface p-6 rounded-2xl border border-border-base text-center hover:border-border-strong hover:shadow-md transition-all group">
                       <Settings className="w-7 h-7 text-text-muted mx-auto mb-3 group-hover:text-primary transition-colors" />
@@ -229,7 +231,7 @@ export default function DashboardPage() {
 
               {activeTab === 'bookings' && (
                 <motion.div key="bookings" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                  <h2 className="text-2xl font-serif font-bold text-text-base mb-6">Booking History</h2>
+                  <h2 className="text-2xl font-serif font-bold text-text-base mb-6">{t('dashboard:manageBookings', 'Booking History')}</h2>
                   {bookings.length > 0 ? (
                     <div className="space-y-4">
                       {bookings.map((booking: any) => (
@@ -246,7 +248,7 @@ export default function DashboardPage() {
                             </p>
                           </div>
                           <div className="flex items-center gap-4 self-end sm:self-auto">
-                            <div className="text-right">
+                            <div className="text-end">
                               <p className="font-bold text-xl text-text-base">{formatPrice(booking.totalAmount)}</p>
                             </div>
                             <Button
@@ -292,7 +294,7 @@ export default function DashboardPage() {
                   <section>
                     <div className="flex items-center justify-between mb-6">
                       <h2 className="text-2xl font-serif font-bold text-text-base flex items-center gap-2">
-                        <Wallet className="w-6 h-6 text-primary" /> Guest Wallet
+                        <Wallet className="w-6 h-6 text-primary" /> {t('dashboard:walletBalance', 'Guest Wallet')}
                       </h2>
                     </div>
                     <GuestWallet />

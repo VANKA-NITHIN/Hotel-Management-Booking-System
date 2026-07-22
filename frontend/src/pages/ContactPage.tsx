@@ -54,7 +54,7 @@ export default function ContactPage() {
           {/* Contact Info */}
           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-1 space-y-6">
             <div className="bg-primary rounded-3xl p-8 lg:p-10 text-white h-full flex flex-col justify-between shadow-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+              <div className="absolute top-0 end-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
               <div className="relative z-10">
                 <h3 className="text-2xl font-serif font-bold mb-8 text-white">Contact Information</h3>
                 <div className="space-y-8">
@@ -124,7 +124,7 @@ export default function ContactPage() {
                          <option value="partnership">Partnership Opportunity</option>
                          <option value="other">Other</option>
                        </select>
-                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+                       <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
                     </div>
                   </div>
                 </div>

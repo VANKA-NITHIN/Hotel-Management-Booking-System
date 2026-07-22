@@ -28,6 +28,7 @@ import { Modal } from '../components/ui/Modal';
 import { OptimizedImage } from '../components/ui/Image';
 import { reportApi } from '../api';
 import { useExport } from '../hooks/useExport';
+import { useTranslation } from 'react-i18next';
 
 const roomTypeData = [
   { name: 'Luxury Suite', value: 35, color: '#c9a84c' },
@@ -82,7 +83,8 @@ const employeeSchema = z.object({
 });
 
 export default function AdminDashboard() {
-  usePageTitle('Admin Dashboard');
+  const { t } = useTranslation(['admin', 'common']);
+  usePageTitle(t('admin:dashboard', 'Admin Dashboard'));
   const [activeTab, setActiveTab] = usePersistentState('admin_active_tab', 'overview');
   const { data: statsData, isLoading: statsLoading } = useDashboardStats();
   const { data: monthlyStats } = useMonthlyStats();
@@ -173,10 +175,10 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-r-3xl overflow-hidden border-r border-white/10">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
+          <div className="absolute top-0 end-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
           <div className="mb-10 px-4 py-4">
-            <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">Admin Portal</span>
+            <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">{t('admin:dashboard', 'Admin Portal')}</span>
           </div>
           <nav className="space-y-2 flex-1 relative z-10">
             {adminTabs.map((tab) => (
@@ -189,7 +191,7 @@ export default function AdminDashboard() {
                     : 'text-white/60 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-primary' : 'text-white/60'}`} /> {tab.label}
+                <tab.icon className={`w-5 h-5 ${activeTab === tab.id ? 'text-primary' : 'text-white/60'}`} /> {t(`common:${tab.id}`, tab.label)}
               </button>
             ))}
           </nav>
@@ -209,7 +211,7 @@ export default function AdminDashboard() {
                 }`}
               >
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-white' : 'text-text-muted'}`} />
-                {tab.label}
+                {t(`common:${tab.id}`, tab.label)}
               </button>
             ))}
           </div>
@@ -219,16 +221,16 @@ export default function AdminDashboard() {
         <main className="flex-1 w-full p-6 lg:p-10 max-w-[100rem] 3xl:max-w-[140rem] mx-auto">
           {activeTab === 'overview' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h1 className="text-3xl font-serif font-bold text-text-base">Dashboard Overview</h1>
+              <h1 className="text-3xl font-serif font-bold text-text-base">{t('admin:overview', 'Dashboard Overview')}</h1>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {statsLoading ? (
                   Array.from({ length: 4 }).map((_, i) => <StatsCardSkeleton key={i} />)
                 ) : (
                   [
-                    { label: 'Total Revenue', value: `$${(stats?.totalRevenue || 0).toLocaleString()}`, change: '+12.5%', up: true, icon: DollarSign, color: 'text-success bg-success/10' },
-                    { label: 'Total Bookings', value: (stats?.totalBookings || 0).toLocaleString(), change: '+8.2%', up: true, icon: Package, color: 'text-secondary bg-secondary/10' },
-                    { label: 'Total Customers', value: (stats?.totalCustomers || 0).toLocaleString(), change: '+15.3%', up: true, icon: Users, color: 'text-blue-500 bg-blue-500/10' },
-                    { label: 'Occupancy Rate', value: `${stats?.occupancyRate || 0}%`, change: '+5.1%', up: true, icon: TrendingUp, color: 'text-purple-500 bg-purple-500/10' },
+                    { label: t('admin:totalRevenue', 'Total Revenue'), value: `$${(stats?.totalRevenue || 0).toLocaleString()}`, change: '+12.5%', up: true, icon: DollarSign, color: 'text-success bg-success/10' },
+                    { label: t('admin:totalBookings', 'Total Bookings'), value: (stats?.totalBookings || 0).toLocaleString(), change: '+8.2%', up: true, icon: Package, color: 'text-secondary bg-secondary/10' },
+                    { label: t('admin:totalUsers', 'Total Customers'), value: (stats?.totalCustomers || 0).toLocaleString(), change: '+15.3%', up: true, icon: Users, color: 'text-blue-500 bg-blue-500/10' },
+                    { label: t('admin:occupancyRate', 'Occupancy Rate'), value: `${stats?.occupancyRate || 0}%`, change: '+5.1%', up: true, icon: TrendingUp, color: 'text-purple-500 bg-purple-500/10' },
                   ].map((stat, i) => (
                     <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-bg-surface rounded-2xl p-6 shadow-sm border border-border-base">
                       <div className="flex items-center justify-between mb-4">
@@ -276,17 +278,17 @@ export default function AdminDashboard() {
           {activeTab === 'hotels' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-bg-surface rounded-2xl p-8 shadow-sm border border-border-base">
               <div className="flex items-center justify-between mb-8">
-                <h1 className="text-2xl font-serif font-bold text-text-base">Hotel Management</h1>
-                <Button onClick={() => openModal()} icon={<Plus className="w-4 h-4" />}>Add Hotel</Button>
+                <h1 className="text-2xl font-serif font-bold text-text-base">{t('admin:hotelManagement', 'Hotel Management')}</h1>
+                <Button onClick={() => openModal()} icon={<Plus className="w-4 h-4" />}>{t('admin:addHotel', 'Add Hotel')}</Button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border-strong">
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Property</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Location</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Rating</th>
-                      <th className="text-right text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Property</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Location</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Rating</th>
+                      <th className="text-end text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-base">
@@ -306,7 +308,7 @@ export default function AdminDashboard() {
                               {hotel.starRating} <Star className="w-3.5 h-3.5 fill-current" />
                            </div>
                         </td>
-                        <td className="py-4 px-2 text-right">
+                        <td className="py-4 px-2 text-end">
                           <div className="flex items-center justify-end gap-2">
                              <button onClick={() => openModal(hotel)} className="p-2 rounded-lg text-text-muted hover:text-primary hover:bg-primary/10 transition-colors"><Edit className="w-4 h-4" /></button>
                              <button onClick={() => deleteHotel.mutate(hotel.id)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-4 h-4" /></button>
@@ -334,7 +336,7 @@ export default function AdminDashboard() {
                        <option value="">Select a hotel...</option>
                        {hotels.map((h: any) => <option key={h.id} value={h.id}>{h.name}</option>)}
                      </select>
-                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
+                     <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
                   </div>
                 </div>
                 {selectedHotelId && (
@@ -348,11 +350,11 @@ export default function AdminDashboard() {
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-border-strong">
-                          <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Room Name</th>
-                          <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Type</th>
-                          <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Capacity</th>
-                          <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Price/Night</th>
-                          <th className="text-right text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
+                          <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Room Name</th>
+                          <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Type</th>
+                          <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Capacity</th>
+                          <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Price/Night</th>
+                          <th className="text-end text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border-base">
@@ -362,7 +364,7 @@ export default function AdminDashboard() {
                             <td className="py-4 px-2"><span className="px-2.5 py-1 rounded-md bg-bg-surface-active text-xs font-bold text-text-base">{room.roomType?.replace('_', ' ')}</span></td>
                             <td className="py-4 px-2 text-sm font-medium text-text-muted">{room.maxGuests} Guests</td>
                             <td className="py-4 px-2 font-bold text-text-base">${room.pricePerNight}</td>
-                            <td className="py-4 px-2 text-right">
+                            <td className="py-4 px-2 text-end">
                               <div className="flex items-center justify-end gap-2">
                                  <button onClick={() => { setEditingItem(room); roomForm.reset(room); setIsModalOpen(true); }} className="p-2 rounded-lg text-text-muted hover:text-primary hover:bg-primary/10 transition-colors"><Edit className="w-4 h-4" /></button>
                                  <button onClick={() => deleteRoom.mutate({ hotelId: selectedHotelId, roomId: room.id })} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-4 h-4" /></button>
@@ -381,13 +383,13 @@ export default function AdminDashboard() {
           {activeTab === 'bookings' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-bg-surface rounded-2xl p-8 shadow-sm border border-border-base">
               <div className="flex items-center justify-between mb-8">
-                <h1 className="text-2xl font-serif font-bold text-text-base">All Bookings</h1>
+                <h1 className="text-2xl font-serif font-bold text-text-base">{t('admin:recentBookings', 'All Bookings')}</h1>
                 <div className="flex items-center gap-3">
                   <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminBookings('pdf'), 'pdf', { filenamePrefix: 'Admin_Bookings' })} disabled={isExporting}>
-                    Export PDF
+                    {t('admin:exportPDF', 'Export PDF')}
                   </Button>
                   <Button variant="outline" icon={<Download className="w-4 h-4" />} onClick={() => downloadFile(() => reportApi.exportAdminBookings('csv'), 'csv', { filenamePrefix: 'Admin_Bookings' })} disabled={isExporting}>
-                    Export CSV
+                    {t('admin:exportCSV', 'Export CSV')}
                   </Button>
                 </div>
               </div>
@@ -395,12 +397,12 @@ export default function AdminDashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border-strong">
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Hotel ID</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-in</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-out</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
-                      <th className="text-right text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Amount</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Reference</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Hotel ID</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-in</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Check-out</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
+                      <th className="text-end text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Amount</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-base">
@@ -411,7 +413,7 @@ export default function AdminDashboard() {
                         <td className="py-4 px-2 text-sm font-medium text-text-muted">{booking.checkInDate}</td>
                         <td className="py-4 px-2 text-sm font-medium text-text-muted">{booking.checkOutDate}</td>
                         <td className="py-4 px-2"><Badge {...statusBadge(booking.status)}>{booking.status}</Badge></td>
-                        <td className="py-4 px-2 text-sm font-bold text-right text-text-base">${booking.totalAmount.toLocaleString()}</td>
+                        <td className="py-4 px-2 text-sm font-bold text-end text-text-base">${booking.totalAmount.toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -438,11 +440,11 @@ export default function AdminDashboard() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border-strong">
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Employee ID</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Position</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Department</th>
-                      <th className="text-left text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
-                      <th className="text-right text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Employee ID</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Position</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Department</th>
+                      <th className="text-start text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Status</th>
+                      <th className="text-end text-xs font-bold text-text-muted uppercase tracking-wider pb-4 px-2">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border-base">
@@ -452,7 +454,7 @@ export default function AdminDashboard() {
                         <td className="py-4 px-2 text-sm font-bold text-text-base">{emp.position}</td>
                         <td className="py-4 px-2 text-sm font-medium text-text-muted">{emp.department}</td>
                         <td className="py-4 px-2"><Badge className={emp.status === 'ACTIVE' ? 'bg-success/10 text-success' : 'bg-bg-surface-active text-text-muted'}>{emp.status}</Badge></td>
-                        <td className="py-4 px-2 text-right">
+                        <td className="py-4 px-2 text-end">
                           <div className="flex items-center justify-end gap-2">
                              <button onClick={() => openModal(emp)} className="p-2 rounded-lg text-text-muted hover:text-primary hover:bg-primary/10 transition-colors"><Edit className="w-4 h-4" /></button>
                              <button onClick={() => deleteEmployee.mutate(emp.id)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-4 h-4" /></button>

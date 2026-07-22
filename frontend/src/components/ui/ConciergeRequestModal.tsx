@@ -96,7 +96,7 @@ export function ConciergeRequestModal({ isOpen, onClose, hotelName }: ConciergeR
                       <p className="text-[11px] text-text-muted mt-0.5 line-clamp-2">{service.description}</p>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-end shrink-0">
                     <span className="text-xs font-extrabold text-primary block">{service.price}</span>
                     {isSelected && <CheckCircle2 className="w-4 h-4 text-primary mt-1 inline-block" />}
                   </div>

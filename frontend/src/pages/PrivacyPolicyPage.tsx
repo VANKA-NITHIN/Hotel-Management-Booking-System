@@ -15,7 +15,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">1. Information We Collect</h2>
               <p>We collect information that you provide directly to us, including:</p>
-              <ul className="list-disc pl-5 space-y-2 mt-2">
+              <ul className="list-disc ps-5 space-y-2 mt-2">
                 <li>Name and contact information</li>
                 <li>Payment and billing details (processed securely by our partners)</li>
                 <li>Booking history and preferences</li>
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">2. How We Use Your Information</h2>
               <p>We use the collected information for the following purposes:</p>
-              <ul className="list-disc pl-5 space-y-2 mt-2">
+              <ul className="list-disc ps-5 space-y-2 mt-2">
                 <li>Processing your reservations and payments</li>
                 <li>Providing customer support and concierge services</li>
                 <li>Sending booking confirmations and updates</li>

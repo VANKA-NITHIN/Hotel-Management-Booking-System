@@ -23,6 +23,7 @@ export function Badge({ variant = 'neutral', children, className = '', dot }: Ba
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const statusBadge = (status: string) => {
   const map: Record<string, BadgeProps['variant']> = {
     PENDING: 'warning',

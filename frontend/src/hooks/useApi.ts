@@ -1,6 +1,49 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi, checkInApi, walletApi, referralApi, corporateApi } from '../api';
+import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi, checkInApi, walletApi, referralApi, corporateApi, publicApi, amenityApi } from '../api';
 import type { Hotel, Room } from '../types';
+
+// CMS & Public Data
+export function useBanners() {
+  return useQuery({
+    queryKey: ['banners'],
+    queryFn: () => publicApi.getBanners().then(res => res.data),
+  });
+}
+
+export function useFaqs() {
+  return useQuery({
+    queryKey: ['faqs'],
+    queryFn: () => publicApi.getFaqs().then(res => res.data),
+  });
+}
+
+export function useFeaturedDestinations() {
+  return useQuery({
+    queryKey: ['featuredDestinations'],
+    queryFn: () => publicApi.getFeaturedDestinations().then(res => res.data),
+  });
+}
+
+export function useCompanyInfo() {
+  return useQuery({
+    queryKey: ['companyInfo'],
+    queryFn: () => publicApi.getCompanyInfo().then(res => res.data),
+  });
+}
+
+export function usePublicStats() {
+  return useQuery({
+    queryKey: ['publicStats'],
+    queryFn: () => publicApi.getStatistics().then(res => res.data),
+  });
+}
+
+export function useAmenities() {
+  return useQuery({
+    queryKey: ['amenities'],
+    queryFn: () => amenityApi.getAll().then(res => res.data),
+  });
+}
 
 // Hotels
 export function useHotels(page = 0, size = 12) {

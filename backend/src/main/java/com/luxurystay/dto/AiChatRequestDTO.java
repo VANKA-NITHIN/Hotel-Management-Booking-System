@@ -15,4 +15,5 @@ public class AiChatRequestDTO {
     private String sessionId;
     private List<AiMessageDTO> messages;
     private String userMessage; // Current message if not sending history
+    private String locale; // User's selected language
 }

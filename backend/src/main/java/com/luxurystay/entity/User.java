@@ -88,6 +88,10 @@ public class User {
     @Builder.Default
     private boolean pushPromotions = true;
 
+    @Column(length = 10)
+    @Builder.Default
+    private String languagePreference = "en";
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
