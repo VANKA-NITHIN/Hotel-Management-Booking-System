@@ -20,4 +20,8 @@
         <sqlFile path="changes/004-add-missing-tables.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="5" author="luxurystay-dev">
+        <sqlFile path="changes/005-add-cms-tables.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
