@@ -70,40 +70,47 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px] pb-24">
       <div className="container-safe mt-8 lg:mt-12">
         {/* Header Profile Summary */}
-        <div className="bg-bg-surface rounded-2xl p-6 md:p-8 mb-8 border border-border-base shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
-          <div className="w-24 h-24 rounded-2xl bg-bg-surface-hover overflow-hidden shrink-0 shadow-inner">
+        <div className="bg-white dark:bg-neutral-900 rounded-3xl p-6 md:p-10 mb-8 border border-border-base shadow-card flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+          {/* Decorative background element */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/5 to-transparent rounded-full -mr-32 -mt-32 pointer-events-none" />
+          
+          <div className="w-28 h-28 rounded-3xl bg-bg-surface-hover overflow-hidden shrink-0 shadow-inner border border-border-base relative z-10">
             {user?.imageUrl ? (
               <OptimizedImage src={user.imageUrl} alt="Profile" className="w-full h-full object-cover" priority={true} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-3xl font-serif font-bold text-text-muted">
+              <div className="w-full h-full flex items-center justify-center text-4xl font-serif font-bold text-text-muted">
                 {user?.firstName?.[0] || 'U'}
               </div>
             )}
           </div>
-          <div className="flex-1 text-center md:text-start">
-            <h1 className="text-2xl font-serif font-bold text-text-base mb-1">
+          
+          <div className="flex-1 text-center md:text-start relative z-10">
+            <h1 className="text-3xl font-serif font-bold text-text-base mb-2 tracking-tight">
               {t('dashboard:welcome', { name: user?.firstName || 'Guest' })}
             </h1>
-            <p className="text-text-muted mb-4 font-medium">{user?.primaryEmailAddress?.emailAddress || user?.email}</p>
+            <p className="text-text-muted mb-6 font-medium text-sm md:text-base">{user?.primaryEmailAddress?.emailAddress || user?.email}</p>
+            
             <div className="flex flex-wrap justify-center md:justify-start gap-4">
               <div 
                 onClick={() => setIsLoyaltyOpen(true)}
-                className="bg-secondary/10 px-5 py-2.5 rounded-xl border border-secondary/20 cursor-pointer hover:bg-secondary/20 transition-all group"
+                className="bg-secondary/10 px-6 py-4 rounded-2xl border border-secondary/20 cursor-pointer hover:bg-secondary/15 hover:shadow-md hover:-translate-y-1 transition-all duration-300 group min-w-[160px]"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-xs font-bold text-secondary uppercase tracking-wider mb-0.5">{t('dashboard:loyaltyPoints', 'Loyalty Points')}</p>
-                  <span className="text-[10px] font-bold text-secondary underline group-hover:opacity-100 opacity-80">View Tiers</span>
+                <div className="flex items-center justify-between gap-4 mb-2">
+                  <p className="text-xs font-bold text-secondary uppercase tracking-[0.1em]">{t('dashboard:loyaltyPoints', 'Loyalty Points')}</p>
+                  <span className="text-[10px] font-bold text-secondary underline opacity-0 group-hover:opacity-100 transition-opacity">View Tiers</span>
                 </div>
-                <p className="text-2xl font-bold text-secondary-dark">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
+                <p className="text-3xl font-bold text-secondary-dark font-serif">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
               </div>
-              <div className="bg-bg-surface-hover px-5 py-2.5 rounded-xl border border-border-base">
-                <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-0.5">{t('dashboard:totalBookings', 'Total Trips')}</p>
-                <p className="text-2xl font-bold text-text-base">{bookings.length}</p>
+              
+              <div className="bg-bg-surface-sunken px-6 py-4 rounded-2xl border border-border-base min-w-[140px]">
+                <p className="text-xs font-bold text-text-muted uppercase tracking-[0.1em] mb-2">{t('dashboard:totalBookings', 'Total Trips')}</p>
+                <p className="text-3xl font-bold text-text-base font-serif">{bookings.length}</p>
               </div>
             </div>
           </div>
-          <div className="shrink-0 flex gap-3 mt-4 md:mt-0">
-             <Button onClick={() => navigate('/hotels')} size="lg">{t('dashboard:bookHotel', 'Book a stay')}</Button>
+          
+          <div className="shrink-0 flex gap-3 mt-4 md:mt-0 relative z-10">
+             <Button onClick={() => navigate('/hotels')} className="shadow-md hover:shadow-lg rounded-xl h-12 px-8 font-semibold">{t('dashboard:bookHotel', 'Book a stay')}</Button>
           </div>
         </div>
 
@@ -205,13 +212,14 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-bg-surface rounded-2xl border border-border-base p-12 text-center shadow-sm">
-                      <div className="w-20 h-20 rounded-full bg-bg-surface-hover flex items-center justify-center mx-auto mb-5">
-                        <Calendar className="w-10 h-10 text-text-muted" />
+                    <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-border-base p-14 text-center shadow-card relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
+                      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                        <Calendar className="w-10 h-10 text-primary" />
                       </div>
-                      <h3 className="text-xl font-bold text-text-base mb-2">{t('dashboard:noUpcoming', 'No upcoming trips')}</h3>
-                      <p className="text-text-muted font-medium mb-8 max-w-md mx-auto">You don't have any upcoming reservations. Ready to plan your next getaway?</p>
-                      <Button onClick={() => navigate('/hotels')} size="lg">{t('dashboard:bookHotel', 'Explore Hotels')}</Button>
+                      <h3 className="text-2xl font-serif font-bold text-text-base mb-3">{t('dashboard:noUpcoming', 'No upcoming trips')}</h3>
+                      <p className="text-text-muted font-medium mb-10 max-w-md mx-auto text-lg">You don't have any upcoming reservations. Ready to plan your next getaway?</p>
+                      <Button onClick={() => navigate('/hotels')} size="xl" className="shadow-md hover:shadow-lg rounded-xl px-10">{t('dashboard:bookHotel', 'Explore Hotels')}</Button>
                     </div>
                   )}
 
@@ -325,11 +333,14 @@ export default function DashboardPage() {
                     <h2 className="text-2xl font-serif font-bold text-text-base">Saved Properties</h2>
                     <Button variant="outline" size="sm" onClick={() => navigate('/wishlist')}>View all</Button>
                    </div>
-                   <div className="bg-bg-surface rounded-2xl border border-border-base p-12 text-center shadow-sm">
-                      <Heart className="w-16 h-16 text-text-muted mx-auto mb-5 opacity-50" />
-                      <h3 className="text-xl font-bold text-text-base mb-2">Your wishlist is ready</h3>
-                      <p className="text-text-muted font-medium max-w-sm mx-auto mb-8">Save properties you love by clicking the heart icon while browsing.</p>
-                      <Button onClick={() => navigate('/hotels')}>Explore Properties</Button>
+                   <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-border-base p-14 text-center shadow-card relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
+                      <div className="w-24 h-24 rounded-full bg-rose-500/10 flex items-center justify-center mx-auto mb-6">
+                        <Heart className="w-10 h-10 text-rose-500" />
+                      </div>
+                      <h3 className="text-2xl font-serif font-bold text-text-base mb-3">Your wishlist is ready</h3>
+                      <p className="text-text-muted font-medium max-w-sm mx-auto mb-10 text-lg">Save properties you love by clicking the heart icon while browsing.</p>
+                      <Button onClick={() => navigate('/hotels')} size="xl" className="shadow-md hover:shadow-lg rounded-xl px-10">Explore Properties</Button>
                    </div>
                 </motion.div>
               )}

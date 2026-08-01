@@ -16,5 +16,8 @@
     <changeSet id="3" author="luxurystay-dev">
         <sqlFile path="changes/003-add-language-preference.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="4" author="luxurystay-dev">
+        <sqlFile path="changes/004-add-missing-tables.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
 </databaseChangeLog>

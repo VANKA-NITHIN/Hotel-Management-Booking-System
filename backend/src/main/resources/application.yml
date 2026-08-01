@@ -13,10 +13,16 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
+      maximum-pool-size: 10
+      minimum-idle: 2
       idle-timeout: 30000
-      connection-timeout: 20000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      initialization-fail-timeout: 60000
+      data-source-properties:
+        allowPublicKeyRetrieval: true
+        useSSL: false
+        serverTimezone: UTC
 
   sql:
     init:
@@ -185,10 +191,16 @@ spring:
     password: ${DB_PASSWORD:${MYSQL_PASSWORD:root}}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
+      maximum-pool-size: 10
+      minimum-idle: 2
       idle-timeout: 30000
-      connection-timeout: 20000
+      connection-timeout: 30000
+      validation-timeout: 5000
+      initialization-fail-timeout: 60000
+      data-source-properties:
+        allowPublicKeyRetrieval: true
+        useSSL: false
+        serverTimezone: UTC
 
   jpa:
     show-sql: false
@@ -200,5 +212,7 @@ spring:
 
 logging:
   level:
-    com.luxurystay: INFO
-    org.springframework: WARN
+    com.luxurystay: DEBUG
+    org.springframework: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

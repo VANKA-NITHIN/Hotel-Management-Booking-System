@@ -127,86 +127,88 @@ export default function HotelsPage() {
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       {/* Header & Controls */}
-      <div className="bg-bg-surface border-b border-border-base sticky top-[72px] z-30 shadow-sm">
-        <div className="container-safe py-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+      <div className="bg-bg-surface border-b border-border-base sticky top-[72px] z-30 shadow-sm transition-all duration-300">
+        <div className="container-safe py-5 sm:py-6">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-6">
             <div>
-              <h1 className="text-3xl font-serif font-bold text-text-base">{t('hotels:pageTitle', 'Explore Properties')}</h1>
-              <p className="text-sm text-text-muted mt-1">
-                {isLoading ? t('common:loading', 'Searching...') : t('hotels:resultsFound', { count: totalElements })}
+              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-text-base tracking-tight">{t('hotels:pageTitle', 'Explore Properties')}</h1>
+              <p className="text-sm font-medium text-text-muted mt-2">
+                {isLoading ? t('common:loading', 'Searching properties...') : t('hotels:resultsFound', { count: totalElements })}
               </p>
             </div>
             
-            <div className="hidden sm:flex items-center bg-bg-surface-hover p-1 rounded-lg border border-border-base">
+            <div className="hidden sm:flex items-center bg-neutral-100 dark:bg-neutral-900 p-1 rounded-xl border border-border-base shadow-inner">
               <button
                 onClick={() => setView('grid')}
-                className={`p-2 rounded-md transition-all ${view === 'grid' ? 'bg-bg-surface text-primary shadow-sm' : 'text-text-muted hover:text-text-base'}`}
+                className={`p-2.5 rounded-lg transition-all duration-200 ${view === 'grid' ? 'bg-white dark:bg-neutral-800 text-primary shadow-sm scale-100' : 'text-text-muted hover:text-text-base scale-95 hover:scale-100'}`}
                 aria-label="Grid view"
               >
-                <Grid3X3 className="w-4 h-4" />
+                <Grid3X3 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setView('list')}
-                className={`p-2 rounded-md transition-all ${view === 'list' ? 'bg-bg-surface text-primary shadow-sm' : 'text-text-muted hover:text-text-base'}`}
+                className={`p-2.5 rounded-lg transition-all duration-200 ${view === 'list' ? 'bg-white dark:bg-neutral-800 text-primary shadow-sm scale-100' : 'text-text-muted hover:text-text-base scale-95 hover:scale-100'}`}
                 aria-label="List view"
               >
-                <List className="w-4 h-4" />
+                <List className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setView('map')}
-                className={`p-2 rounded-md transition-all ${view === 'map' ? 'bg-bg-surface text-primary shadow-sm' : 'text-text-muted hover:text-text-base'}`}
+                className={`p-2.5 rounded-lg transition-all duration-200 ${view === 'map' ? 'bg-white dark:bg-neutral-800 text-primary shadow-sm scale-100' : 'text-text-muted hover:text-text-base scale-95 hover:scale-100'}`}
                 aria-label="Map view"
               >
-                <MapIcon className="w-4 h-4" />
+                <MapIcon className="w-5 h-5" />
               </button>
             </div>
           </div>
 
           {/* Search + Filter Bar */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <form onSubmit={handleSearch} className="flex-1 relative flex items-center">
+            <form onSubmit={handleSearch} className="flex-1 relative flex items-center group">
               <Input
                 fullWidth
-                icon={<Search className="w-4 h-4" />}
+                icon={<Search className="w-5 h-5 text-neutral-400 group-focus-within:text-primary transition-colors" />}
                 placeholder={t('hotels:searchPlaceholder', 'Search by city, hotel name...')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-bg-surface-hover border-transparent hover:border-border-base pe-12"
+                className="bg-neutral-50 dark:bg-neutral-900 border-border-base hover:border-border-strong focus:border-secondary h-14 text-base pe-14 rounded-xl transition-all shadow-sm"
               />
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className="absolute end-3 p-1.5 rounded-full transition-colors text-text-muted hover:text-primary hover:bg-primary/10"
+                className="absolute end-3 p-2 rounded-full transition-all duration-200 text-neutral-400 hover:text-primary hover:bg-primary/10 active:scale-95"
                 aria-label="Voice Search"
               >
-                <Mic className="w-4 h-4" />
+                <Mic className="w-5 h-5" />
               </button>
             </form>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button
                 variant={hasActiveFilters ? 'primary' : 'outline'}
                 onClick={() => setFiltersOpen(!filtersOpen)}
-                icon={<SlidersHorizontal className="w-4 h-4" />}
-                className={hasActiveFilters ? 'bg-secondary hover:bg-secondary-light border-secondary text-primary font-semibold' : ''}
+                icon={<SlidersHorizontal className="w-5 h-5" />}
+                className={`h-14 px-6 rounded-xl font-semibold shadow-sm transition-all ${
+                  hasActiveFilters ? 'bg-secondary hover:bg-secondary-light border-secondary text-primary' : 'bg-white dark:bg-neutral-900 border-border-base hover:border-border-strong text-text-base'
+                }`}
               >
                 {t('common:filters', 'Filters')}
                 {hasActiveFilters && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary ms-1" />
+                  <span className="w-2 h-2 rounded-full bg-primary ms-2 animate-pulse" />
                 )}
               </Button>
 
-              <div className="relative w-44">
+              <div className="relative w-48 hidden sm:block">
                 <select
                   value={sort}
                   onChange={(e) => { setSort(e.target.value); setPage(0); }}
-                  className="appearance-none w-full bg-bg-surface-hover border border-transparent hover:border-border-base rounded-lg px-4 py-2.5 text-sm text-text-base font-medium focus:outline-none focus:ring-2 focus:ring-border-focus transition-all pe-10"
+                  className="appearance-none w-full bg-white dark:bg-neutral-900 border border-border-base hover:border-border-strong rounded-xl px-4 h-14 text-sm font-semibold text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all pe-10 shadow-sm cursor-pointer"
                 >
                   {sortOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>{t(`hotels:sortOptions.${opt.value.replace('_asc', 'Low').replace('_desc', 'High')}`, opt.label)}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
               </div>
             </div>
           </div>
@@ -342,7 +344,7 @@ export default function HotelsPage() {
       <div className="container-safe py-8 pb-20">
         {isLoading ? (
           <div className={view === 'grid'
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-6 3xl:gap-8'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8'
             : 'space-y-6'
           }>
             {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
@@ -353,7 +355,7 @@ export default function HotelsPage() {
               <HotelMap hotels={hotels} />
             ) : (
               <div className={view === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 gap-6 3xl:gap-8'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8'
                 : 'space-y-6'
               }>
                 {hotels.map((hotel: Hotel, i: number) => (

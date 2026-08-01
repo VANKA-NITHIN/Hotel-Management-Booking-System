@@ -13,7 +13,7 @@ interface VoiceSearchModalProps {
 }
 
 export const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ isOpen, onClose, onApplyFilters }) => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const [results, setResults] = React.useState<any>(null);
   const [isSearching, setIsSearching] = React.useState(false);

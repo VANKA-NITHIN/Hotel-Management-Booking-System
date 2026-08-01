@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
@@ -15,6 +15,7 @@ import Footer from './components/layout/Footer';
 import AIChat from './components/ui/AIChat';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 import { OptimizedImage } from './components/ui/Image';
+import api from './api/client';
 
 // Lazy-loaded pages for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -99,17 +100,27 @@ function StaffRoute({ children }: { children: React.ReactNode }) {
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-bg-base">
       <Navbar />
-      <main>{children}</main>
+      <main className="flex-1 flex flex-col w-full relative">{children}</main>
       <Footer />
       <AIChat />
-    </>
+    </div>
   );
 }
 
 function RealtimeManager() {
   useRealtimeEvents();
+  return null;
+}
+
+function ServerHealthCheck() {
+  useEffect(() => {
+    // Ping health endpoint on startup to trigger wake-up screen if server is sleeping
+    api.get('/health').catch(() => {
+      // Ignored, handled by interceptor
+    });
+  }, []);
   return null;
 }
 
@@ -177,6 +188,7 @@ export default function App() {
                   <WebSocketProvider>
                     <BrowserRouter>
                       <RealtimeManager />
+                      <ServerHealthCheck />
                       <ErrorBoundary>
                         <Suspense fallback={<PageLoader />}>
                         <Routes>

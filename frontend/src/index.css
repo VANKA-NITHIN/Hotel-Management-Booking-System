@@ -2,6 +2,7 @@
 
 /* ══════════════════════════════════════
    DESIGN TOKENS (Tailwind v4)
+   Enterprise Commercial Edition
    ══════════════════════════════════════ */
 @theme {
   /* Breakpoints */
@@ -9,7 +10,8 @@
   --breakpoint-3xl: 120rem; /* 1920px */
   --breakpoint-4xl: 160rem; /* 2560px */
 
-  /* Neutral Scale */
+  /* Neutral Scale (Slate - Professional & Crisp) */
+  --color-neutral-25: #fcfcfd;
   --color-neutral-50: #f8fafc;
   --color-neutral-100: #f1f5f9;
   --color-neutral-200: #e2e8f0;
@@ -22,37 +24,37 @@
   --color-neutral-900: #0f172a;
   --color-neutral-950: #020617;
 
-  /* Primary (Navy) */
-  --color-primary-50: #f0f4f8;
-  --color-primary-100: #d9e2ec;
-  --color-primary-200: #bcccdc;
-  --color-primary-300: #9fb3c8;
-  --color-primary-400: #829ab1;
-  --color-primary-500: #627d98;
-  --color-primary-600: #486581;
-  --color-primary-700: #334e68;
-  --color-primary-800: #243b53;
-  --color-primary-900: #102a43;
-  --color-primary-950: #0f172a;
+  /* Primary (Rich Navy - Trust, Luxury) */
+  --color-primary-50: #f4f6f8;
+  --color-primary-100: #e3e8ee;
+  --color-primary-200: #c2cdd8;
+  --color-primary-300: #9badbe;
+  --color-primary-400: #7188a1;
+  --color-primary-500: #516983;
+  --color-primary-600: #3d5067;
+  --color-primary-700: #324255;
+  --color-primary-800: #2b3748;
+  --color-primary-900: #27313e;
+  --color-primary-950: #1a202a;
 
-  /* Secondary (Gold) */
-  --color-secondary-50: #fdfce8;
-  --color-secondary-100: #fef9c3;
-  --color-secondary-200: #fef08a;
-  --color-secondary-300: #fde047;
-  --color-secondary-400: #facc15;
-  --color-secondary-500: #eab308;
-  --color-secondary-600: #ca8a04;
-  --color-secondary-700: #a16207;
-  --color-secondary-800: #854d0e;
-  --color-secondary-900: #713f12;
-  --color-secondary-950: #422006;
+  /* Secondary (Champagne Gold - Premium, Accent) */
+  --color-secondary-50: #fcfaf4;
+  --color-secondary-100: #f8f3e5;
+  --color-secondary-200: #efe2c4;
+  --color-secondary-300: #e4cda0;
+  --color-secondary-400: #d6b274;
+  --color-secondary-500: #c99b50;
+  --color-secondary-600: #b58241;
+  --color-secondary-700: #966637;
+  --color-secondary-800: #7c5432;
+  --color-secondary-900: #65452b;
+  --color-secondary-950: #392415;
 
   /* Semantic */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
+  --color-success: #059669; /* Emerald 600 */
+  --color-warning: #d97706; /* Amber 600 */
+  --color-danger: #dc2626;  /* Red 600 */
+  --color-info: #2563eb;    /* Blue 600 */
 
   /* Semantic Theme Mappings */
   --color-bg-base: var(--theme-bg-base);
@@ -60,6 +62,7 @@
   --color-bg-surface-hover: var(--theme-bg-surface-hover);
   --color-bg-surface-active: var(--theme-bg-surface-active);
   --color-bg-surface-elevated: var(--theme-bg-surface-elevated);
+  --color-bg-surface-sunken: var(--theme-bg-surface-sunken);
   
   --color-text-base: var(--theme-text-base);
   --color-text-muted: var(--theme-text-muted);
@@ -76,25 +79,26 @@
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Z-Index Scale */
+  /* Z-Index Scale (Disciplined) */
   --z-base: 1;
-  --z-dropdown: 30;
-  --z-sticky: 35;
-  --z-navbar: 40;
-  --z-modal-backdrop: 45;
-  --z-modal: 50;
-  --z-toast: 60;
-  --z-ai-chat: 100;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-navbar: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+  --z-ai-chat: 999;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-elevated: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-modal: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --shadow-dropdown: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* Shadows (Multi-layered for realism) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.06);
+  --shadow-card: 0 2px 4px 0 rgb(0 0 0 / 0.02), 0 1px 2px -1px rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.02);
+  --shadow-elevated: 0 12px 24px -8px rgb(0 0 0 / 0.08), 0 4px 8px -4px rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.03);
+  --shadow-modal: 0 25px 50px -12px rgb(0 0 0 / 0.15), 0 0 0 1px rgb(0 0 0 / 0.05);
+  --shadow-dropdown: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05);
+  --shadow-focus: 0 0 0 3px var(--theme-focus-ring);
 }
 
 /* ══════════════════════════════════════
@@ -104,9 +108,10 @@
   :root {
     --theme-bg-base: var(--color-neutral-50);
     --theme-bg-surface: #ffffff;
-    --theme-bg-surface-hover: var(--color-neutral-100);
-    --theme-bg-surface-active: var(--color-neutral-200);
+    --theme-bg-surface-hover: var(--color-neutral-50);
+    --theme-bg-surface-active: var(--color-neutral-100);
     --theme-bg-surface-elevated: #ffffff;
+    --theme-bg-surface-sunken: var(--color-neutral-100);
 
     --theme-text-base: var(--color-neutral-900);
     --theme-text-muted: var(--color-neutral-500);
@@ -117,14 +122,17 @@
 
     --theme-primary: var(--color-primary-950);
     --theme-secondary: var(--color-secondary-600);
+    
+    --theme-focus-ring: rgba(201, 155, 80, 0.3); /* Secondary-500 at 30% */
   }
 
   [data-theme="dark"], .dark {
     --theme-bg-base: var(--color-neutral-950);
-    --theme-bg-surface: var(--color-neutral-900);
-    --theme-bg-surface-hover: var(--color-neutral-800);
-    --theme-bg-surface-active: var(--color-neutral-700);
-    --theme-bg-surface-elevated: var(--color-neutral-800);
+    --theme-bg-surface: #0a0f18; /* Deep isolated dark */
+    --theme-bg-surface-hover: var(--color-neutral-900);
+    --theme-bg-surface-active: var(--color-neutral-800);
+    --theme-bg-surface-elevated: var(--color-neutral-900);
+    --theme-bg-surface-sunken: var(--color-neutral-950);
 
     --theme-text-base: var(--color-neutral-50);
     --theme-text-muted: var(--color-neutral-400);
@@ -135,6 +143,8 @@
 
     --theme-primary: var(--color-primary-100);
     --theme-secondary: var(--color-secondary-400);
+    
+    --theme-focus-ring: rgba(214, 178, 116, 0.3); /* Secondary-400 at 30% */
     
     color-scheme: dark;
   }
@@ -167,9 +177,9 @@
   a { color: inherit; text-decoration: none; }
 
   :focus-visible {
-    outline: 2px solid var(--color-secondary);
-    outline-offset: 2px;
-    border-radius: 4px;
+    outline: none;
+    box-shadow: var(--shadow-focus);
+    border-radius: 6px;
   }
 }
 
@@ -177,91 +187,103 @@
    COMPONENT CLASSES
    ══════════════════════════════════════ */
 @layer components {
-  /* Buttons */
+  /* Buttons - Polished, strictly 8px grid aligned */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           bg-secondary text-white px-5 py-2.5 text-sm
-           hover:bg-secondary-700 active:scale-[0.98]
-           shadow-sm hover:shadow-md;
+           bg-secondary text-white px-5 min-h-[40px] text-sm
+           hover:bg-secondary-600 hover:-translate-y-px
+           active:bg-secondary-700 active:translate-y-0 active:scale-[0.98]
+           shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:outline-none;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           bg-bg-surface-active text-text-base px-5 py-2.5 text-sm
-           hover:bg-neutral-300 dark:hover:bg-neutral-600 active:scale-[0.98];
+           bg-bg-surface border border-border-base text-text-base px-5 min-h-[40px] text-sm
+           hover:bg-bg-surface-hover hover:border-border-strong hover:-translate-y-px
+           active:bg-bg-surface-active active:translate-y-0 active:scale-[0.98]
+           shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:outline-none;
   }
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           border border-border-strong text-text-base px-4 py-2 text-sm
-           hover:bg-bg-surface-hover active:bg-bg-surface-active;
+           bg-transparent border border-border-strong text-text-base px-5 min-h-[40px] text-sm
+           hover:bg-bg-surface-hover hover:-translate-y-px
+           active:bg-bg-surface-active active:translate-y-0 active:scale-[0.98]
+           focus-visible:ring-2 focus-visible:ring-border-strong/50 focus-visible:outline-none;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           text-text-base px-4 py-2 text-sm
-           hover:bg-bg-surface-hover active:bg-bg-surface-active;
+           text-text-base px-4 min-h-[40px] text-sm
+           hover:bg-bg-surface-hover active:bg-bg-surface-active active:scale-[0.98]
+           focus-visible:ring-2 focus-visible:ring-neutral-500/30 focus-visible:outline-none;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           bg-danger text-white px-5 py-2.5 text-sm
-           hover:bg-red-600 active:scale-[0.98] shadow-sm;
+           bg-danger text-white px-5 min-h-[40px] text-sm
+           hover:bg-red-700 hover:-translate-y-px
+           active:bg-red-800 active:translate-y-0 active:scale-[0.98] 
+           shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-danger/50 focus-visible:outline-none;
   }
   .btn-link {
     @apply inline-flex items-center gap-1 font-medium text-sm text-secondary
-           hover:underline underline-offset-2 cursor-pointer;
+           hover:text-secondary-700 transition-colors cursor-pointer;
   }
-  .btn-sm { @apply text-xs px-3 py-1.5; }
-  .btn-lg { @apply text-base px-6 py-3; }
+  .btn-sm { @apply text-xs px-3 min-h-[32px]; }
+  .btn-lg { @apply text-base px-6 min-h-[48px]; }
 
-  /* Inputs */
+  /* Inputs - Modern recessed feel */
   .input-field {
-    @apply w-full px-4 py-2.5 min-h-[44px] bg-bg-surface border border-border-base rounded-xl text-sm text-text-base placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply w-full px-4 py-2.5 min-h-[44px] bg-bg-surface border border-border-base rounded-xl text-sm text-text-base placeholder-text-muted 
+           transition-all duration-200
+           hover:border-border-strong
+           focus:outline-none focus:ring-4 focus:ring-secondary/10 focus:border-secondary 
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-bg-surface-sunken;
   }
-  .input-error { @apply border-danger focus:border-danger focus:ring-danger/20; }
+  .input-error { @apply border-danger focus:border-danger focus:ring-danger/10 hover:border-danger; }
 
-  /* Cards */
+  /* Cards - Crisp, subtle borders, intentional shadow depth */
   .card {
-    @apply bg-bg-surface rounded-xl border border-border-base overflow-hidden transition-all duration-200 shadow-card;
+    @apply bg-bg-surface rounded-2xl border border-border-base overflow-hidden transition-all duration-300 shadow-card;
   }
   .card-hover {
-    @apply bg-bg-surface rounded-xl border border-border-base overflow-hidden transition-all duration-200 shadow-card hover:border-border-strong hover:shadow-elevated;
+    @apply bg-bg-surface rounded-2xl border border-border-base overflow-hidden transition-all duration-300 shadow-card hover:border-border-strong hover:shadow-elevated;
   }
   .card-interactive {
-    @apply bg-bg-surface rounded-xl border border-border-base overflow-hidden transition-all duration-200 shadow-card hover:border-border-strong hover:shadow-elevated hover:-translate-y-0.5 cursor-pointer;
+    @apply bg-bg-surface rounded-2xl border border-border-base overflow-hidden transition-all duration-300 shadow-card hover:border-border-strong hover:shadow-elevated hover:-translate-y-1 cursor-pointer;
   }
 
-  /* Badges */
-  .badge { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium; }
-  .badge-success { @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400; }
-  .badge-warning { @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400; }
-  .badge-danger { @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400; }
-  .badge-info { @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400; }
-  .badge-neutral { @apply bg-bg-surface-active text-text-muted; }
-  .badge-secondary { @apply bg-secondary/10 text-secondary; }
+  /* Badges - Softer backgrounds, darker text for contrast */
+  .badge { @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide uppercase; }
+  .badge-success { @apply bg-emerald-50 text-emerald-700 border border-emerald-200/50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800; }
+  .badge-warning { @apply bg-amber-50 text-amber-700 border border-amber-200/50 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800; }
+  .badge-danger { @apply bg-red-50 text-red-700 border border-red-200/50 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800; }
+  .badge-info { @apply bg-blue-50 text-blue-700 border border-blue-200/50 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800; }
+  .badge-neutral { @apply bg-neutral-100 text-neutral-600 border border-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-700; }
+  .badge-secondary { @apply bg-secondary-50 text-secondary-700 border border-secondary-200/50 dark:bg-secondary-950/40 dark:text-secondary-400 dark:border-secondary-800; }
 
-  /* Typography */
+  /* Typography - Strict letter spacing */
   .section-title { 
-    @apply font-serif font-bold text-text-base tracking-tight; 
+    @apply font-serif font-bold text-text-base tracking-normal; 
     font-size: clamp(1.75rem, 4vw, 3rem); 
-    line-height: 1.2; 
+    line-height: 1.15; 
   }
   .section-subtitle { 
-    @apply text-text-muted mt-2 max-w-2xl; 
+    @apply text-text-muted mt-3 max-w-2xl; 
     font-size: clamp(1rem, 1.5vw, 1.125rem); 
     line-height: 1.6; 
   }
   .page-header { 
     @apply font-semibold text-text-base tracking-tight; 
     font-size: clamp(1.5rem, 3vw, 2.25rem); 
-    line-height: 1.3; 
+    line-height: 1.25; 
   }
 
   /* Layout */
@@ -289,13 +311,16 @@
   .text-fluid-h3 { font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.3; }
   .text-fluid-p { font-size: clamp(1rem, 1.5vw, 1.125rem); line-height: 1.6; }
 
-  /* Fluid Spacing */
+  /* Fluid Spacing - Standardized */
   .section-padding {
-    padding-top: clamp(3rem, 6vw, 6rem);
-    padding-bottom: clamp(3rem, 6vw, 6rem);
+    padding-top: clamp(4rem, 8vw, 8rem);
+    padding-bottom: clamp(4rem, 8vw, 8rem);
   }
   .container-safe {
-    @apply w-full max-w-[160rem] mx-auto px-4 sm:px-6 lg:px-8 3xl:px-12 4xl:px-16;
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  .container-safe-wide {
+    @apply w-full max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8;
   }
   
   .text-balance { text-wrap: balance; }

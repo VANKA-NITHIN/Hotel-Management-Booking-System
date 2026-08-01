@@ -97,7 +97,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* ═══════ HERO ═══════ */}
-      <section className="relative h-[85vh] min-h-[650px] max-h-[900px] overflow-hidden flex flex-col justify-end pb-12 sm:pb-20">
+      <section className="relative h-[90vh] min-h-[650px] max-h-[950px] overflow-hidden flex flex-col justify-end pb-16 sm:pb-24">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           {bannersLoading ? (
             <div className="w-full h-full bg-neutral-800 animate-pulse" />
@@ -109,7 +109,8 @@ export default function LandingPage() {
               priority={true}
             />
           )}
-          <div className="absolute inset-0 bg-linear-to-b from-neutral-900/40 via-neutral-900/20 to-neutral-900/80" />
+          {/* Refined gradient overlay for deeper contrast and luxury feel */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/80" />
         </motion.div>
 
         <motion.div
@@ -121,22 +122,22 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-secondary-light text-xs sm:text-sm font-semibold tracking-widest uppercase mb-4"
+              className="text-secondary-300 text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase mb-5"
             >
               {primaryBanner?.subtitle || t('landing:heroSubtitle')}
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-white leading-[1.1] mb-6"
+              transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="text-4xl sm:text-5xl lg:text-7xl font-serif font-bold text-white leading-tight mb-8"
             >
               {primaryBanner ? (
                 primaryBanner.title
               ) : (
                 <>
                   {t('landing:heroTitle1')} <br className="hidden sm:block" />
-                  <span className="text-secondary-light italic">{t('landing:heroTitleHighlight')}</span> {t('landing:heroTitle2')}
+                  <span className="text-secondary-400 italic font-light">{t('landing:heroTitleHighlight')}</span> {t('landing:heroTitle2')}
                 </>
               )}
             </motion.h1>
@@ -144,12 +145,12 @@ export default function LandingPage() {
 
           {/* Premium Search Widget */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mt-10 max-w-5xl bg-white dark:bg-neutral-900 p-2 sm:p-3 rounded-2xl shadow-modal backdrop-blur-md"
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-8 max-w-5xl bg-white/95 dark:bg-neutral-950/90 p-3 sm:p-4 rounded-2xl shadow-modal backdrop-blur-xl border border-white/20 dark:border-white/10"
           >
-            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 relative flex items-center">
                 <Input
                   fullWidth
@@ -157,42 +158,42 @@ export default function LandingPage() {
                   placeholder="Where are you going?"
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
-                  className="bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14 text-base pe-12"
+                  className="bg-neutral-50 dark:bg-neutral-900 border-border-base hover:border-border-strong focus:border-secondary h-[56px] text-base pe-12 rounded-xl transition-all"
                 />
                 <button 
                   type="button"
                   onClick={startVoiceSearch}
-                className="absolute end-3 p-1.5 rounded-full transition-colors text-neutral-400 hover:text-primary hover:bg-primary/10"
-                aria-label="Voice Search"
+                  className="absolute end-3 p-2 rounded-full transition-all text-neutral-400 hover:text-primary hover:bg-primary/10 active:scale-95"
+                  aria-label="Voice Search"
                 >
                   <Mic className="w-5 h-5" />
                 </button>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <DatePicker 
                   minDate={new Date().toISOString().split('T')[0]}
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full sm:w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
+                  className="w-full sm:w-[150px] bg-neutral-50 dark:bg-neutral-900 border-border-base hover:border-border-strong focus:border-secondary h-[56px] rounded-xl transition-all"
                 />
                 <DatePicker 
                   minDate={checkIn || new Date().toISOString().split('T')[0]}
                   value={checkOut}
                   onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full sm:w-36 bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14"
+                  className="w-full sm:w-[150px] bg-neutral-50 dark:bg-neutral-900 border-border-base hover:border-border-strong focus:border-secondary h-[56px] rounded-xl transition-all"
                 />
               </div>
-              <div className="w-full sm:w-40 relative">
+              <div className="w-full sm:w-[160px] relative">
                 <Input
                   fullWidth
                   icon={<Users className="w-5 h-5 text-neutral-400" />}
                   value={guests}
                   onChange={(e) => setGuests(e.target.value)}
-                  className="bg-neutral-50 dark:bg-neutral-800 border-transparent hover:border-border-base h-14 text-base cursor-pointer"
+                  className="bg-neutral-50 dark:bg-neutral-900 border-border-base hover:border-border-strong focus:border-secondary h-[56px] text-base cursor-pointer rounded-xl transition-all"
                   readOnly
                 />
               </div>
-              <Button type="submit" size="xl" className="shrink-0 h-14 px-8 w-full sm:w-auto text-base">
+              <Button type="submit" className="shrink-0 h-[56px] px-8 w-full sm:w-auto text-base rounded-xl font-semibold shadow-md hover:shadow-lg">
                 {t('landing:searchButton')}
               </Button>
             </form>
@@ -202,28 +203,28 @@ export default function LandingPage() {
 
       {/* ═══════ STATS ═══════ */}
       <section className="bg-bg-surface border-b border-border-base">
-        <div className="container-safe py-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="container-safe py-16">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
             {statsData.map((stat, i) => (
               <motion.div
                 key={stat.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center group"
+                transition={{ delay: i * 0.1, ease: "easeOut", duration: 0.6 }}
+                className="text-center group flex flex-col items-center"
               >
-                <div className="w-12 h-12 mx-auto mb-4 bg-primary-50 dark:bg-primary-900/20 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <stat.icon className="w-6 h-6 text-primary" />
+                <div className="w-14 h-14 mb-5 bg-neutral-50 dark:bg-neutral-900 border border-border-base rounded-2xl shadow-sm flex items-center justify-center group-hover:border-secondary group-hover:scale-110 transition-all duration-300">
+                  <stat.icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
                 </div>
                 {statsLoading ? (
-                  <div className="h-9 w-24 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded mx-auto mb-1" />
+                  <div className="h-10 w-24 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded mx-auto mb-2" />
                 ) : (
-                  <div className="text-3xl font-bold text-text-base mb-1 font-serif">
+                  <div className="text-4xl font-bold text-text-base mb-2 font-serif tracking-tight">
                     {liveStats[stat.key] ? `${liveStats[stat.key]}+` : stat.value}
                   </div>
                 )}
-                <div className="text-sm font-medium text-text-muted uppercase tracking-wider">{t(`landing:${stat.key}`)}</div>
+                <div className="text-sm font-semibold text-text-muted uppercase tracking-[0.15em]">{t(`landing:${stat.key}`)}</div>
               </motion.div>
             ))}
           </div>
@@ -231,24 +232,24 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════ FEATURED HOTELS ═══════ */}
-      <section className="section-padding bg-bg-surface-hover">
+      <section className="section-padding bg-bg-surface-sunken">
         <div className="container-safe">
-          <div className="flex items-end justify-between mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div className="max-w-2xl">
               <h2 className="section-title">{t('landing:featuredCollections')}</h2>
-              <p className="section-subtitle mt-4">{t('landing:featuredSubtitle')}</p>
+              <p className="section-subtitle">{t('landing:featuredSubtitle')}</p>
             </div>
-            <Link to="/hotels" className="hidden sm:flex items-center gap-2 text-primary font-semibold hover:text-primary-600 transition-colors">
+            <Link to="/hotels" className="hidden sm:inline-flex items-center gap-2 text-primary font-semibold hover:text-secondary transition-colors underline-offset-4 hover:underline">
               {t('landing:viewAllCollections')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
           {hotelsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : hotels && hotels.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {hotels.slice(0, 4).map((hotel, i) => (
                 <HotelCard key={hotel.id} hotel={hotel} index={i} />
               ))}
@@ -257,8 +258,8 @@ export default function LandingPage() {
             <EmptyState title={t('landing:noHotelsAvailable')} description={t('landing:noHotelsDescription')} action={{ label: t('landing:browseAllHotels'), to: '/hotels' }} />
           )}
 
-          <div className="mt-8 text-center sm:hidden">
-            <Button variant="outline" fullWidth onClick={() => navigate('/hotels')}>
+          <div className="mt-10 text-center sm:hidden">
+            <Button variant="outline" className="w-full" onClick={() => navigate('/hotels')}>
               {t('landing:viewAllHotels')}
             </Button>
           </div>
@@ -268,15 +269,15 @@ export default function LandingPage() {
       {/* ═══════ DESTINATIONS ═══════ */}
       <section className="section-padding bg-bg-surface">
         <div className="container-safe">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="section-title">{t('landing:iconicDestinations')}</h2>
-            <p className="section-subtitle mx-auto mt-4">{t('landing:destinationsSubtitle')}</p>
+            <p className="section-subtitle mx-auto">{t('landing:destinationsSubtitle')}</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {destinationsLoading ? (
               Array.from({ length: 6 }).map((_, i) => (
-                <div key={`skeleton-${i}`} className={`bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-2xl ${i === 0 ? 'md:row-span-2 h-64 md:h-full' : 'h-48 md:h-[220px]'}`} />
+                <div key={`skeleton-${i}`} className={`bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-2xl ${i === 0 ? 'md:row-span-2 h-72 md:h-full' : 'h-52 md:h-[260px]'}`} />
               ))
             ) : (
               (liveDestinations.length > 0 ? liveDestinations : destinations).map((dest, i) => (
@@ -285,21 +286,24 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+                  transition={{ delay: i * 0.08, ease: "easeOut", duration: 0.6 }}
+                  className={`${i === 0 ? 'md:row-span-2 h-72 md:h-full' : 'h-52 md:h-[260px]'}`}
                 >
                   <Link
                     to={`/hotels?city=${dest.name}`}
-                    className={`relative block overflow-hidden rounded-2xl group ${i === 0 ? 'md:row-span-2 h-64 md:h-full' : 'h-48 md:h-[220px]'}`}
+                    className="relative block w-full h-full overflow-hidden rounded-2xl group shadow-card hover:shadow-elevated transition-shadow"
                   >
                     <OptimizedImage
                       src={(dest as any).imageUrl || (dest as any).image}
                       alt={dest.name}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-[0.16,1,0.3,1]"
                     />
-                    <div className="absolute inset-0 bg-linear-to-b from-transparent via-bg-surface/50 to-bg-surface z-10 pointer-events-none" />
-                    <div className="absolute bottom-0 start-0 end-0 p-5 lg:p-6 z-20">
-                      <h3 className="text-white font-serif font-bold text-xl lg:text-2xl">{dest.name}</h3>
-                      <p className="text-white/80 text-sm mt-1">{(dest as any).hotelCount || (dest as any).hotels} {t('landing:premiumProperties')}</p>
+                    {/* Multi-layered gradient for text legibility without muddying the image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 pointer-events-none opacity-80 group-hover:opacity-90 transition-opacity" />
+                    
+                    <div className="absolute bottom-0 start-0 end-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 className="text-white font-serif font-bold text-2xl lg:text-3xl mb-1">{dest.name}</h3>
+                      <p className="text-white/90 text-sm font-medium tracking-wide">{(dest as any).hotelCount || (dest as any).hotels} {t('landing:premiumProperties')}</p>
                     </div>
                   </Link>
                 </motion.div>
@@ -310,21 +314,21 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════ TESTIMONIALS ═══════ */}
-      <section className="section-padding bg-bg-surface-hover">
+      <section className="section-padding bg-bg-surface-sunken">
         <div className="container-safe">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="section-title">{t('landing:guestExperiences')}</h2>
-            <p className="section-subtitle mx-auto mt-4">{t('landing:testimonialsSubtitle')}</p>
+            <p className="section-subtitle mx-auto">{t('landing:testimonialsSubtitle')}</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {testimonialKeys.map((key, i) => (
               <motion.div
                 key={key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.1, ease: "easeOut" }}
               >
                 <ReviewCard
                   id={`review-${i}`}
@@ -401,12 +405,12 @@ export default function LandingPage() {
       {/* Scroll to Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-6 right-6 p-4 rounded-full bg-primary text-white shadow-xl hover:bg-primary-600 hover:-translate-y-1 transition-all z-40 focus:ring-4 focus:ring-primary/30 ${
+        className={`fixed bottom-8 right-8 p-3 rounded-full bg-bg-surface/80 backdrop-blur-md border border-border-base text-text-base shadow-lg hover:shadow-xl hover:border-border-strong hover:-translate-y-1 transition-all z-40 focus:outline-none focus:ring-2 focus:ring-secondary/50 ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
         }`}
         aria-label="Scroll to top"
       >
-        <ArrowUp className="w-6 h-6" />
+        <ArrowUp className="w-5 h-5" />
       </button>
 
       <VoiceSearchModal 
