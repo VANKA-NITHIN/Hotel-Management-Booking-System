@@ -26,7 +26,7 @@ import { ResortActivityModal } from '../components/ui/ResortActivityModal';
 import { ItineraryModal } from '../components/ui/ItineraryModal';
 import { GuestReviewHighlights } from '../components/ui/GuestReviewHighlights';
 import { OptimizedImage } from '../components/ui/Image';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useClerk } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -53,6 +53,7 @@ export default function HotelDetailPage() {
   const { data: reviewsData } = useHotelReviews(hotelId);
   const toggleWishlist = useToggleWishlist();
   const { isSignedIn } = useAuth();
+  const { openSignIn } = useClerk();
   const { data: wishlistData } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistData?.data || [];
 
@@ -255,7 +256,7 @@ export default function HotelDetailPage() {
                   <button
                     onClick={() => {
                       if (!isSignedIn) {
-                        toast.error('Please sign in to add to your wishlist');
+                        openSignIn();
                         return;
                       }
                       toggleWishlist.mutate(hotel.id);

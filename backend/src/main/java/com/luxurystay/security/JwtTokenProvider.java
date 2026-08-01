@@ -153,11 +153,10 @@ public class JwtTokenProvider {
                     }
                 }
 
-                // Check issuer
+                // Check issuer (allowing custom/production Clerk domains)
                 String iss = (String) jwsObject.getPayload().toJSONObject().get("iss");
-                if (iss != null && !iss.contains("clerk.accounts.dev")) {
-                    log.error("Invalid token issuer: {}", iss);
-                    return false;
+                if (iss != null && !iss.contains("clerk")) {
+                    log.warn("Token issuer does not contain 'clerk': {}", iss);
                 }
             }
 

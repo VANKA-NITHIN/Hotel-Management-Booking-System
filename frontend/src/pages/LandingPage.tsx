@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Award, Users, Building2, Bed, ArrowRight, ArrowUp, MapPin, Mic } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,6 +16,7 @@ import { Accordion } from '../components/ui/Accordion';
 import { ReviewCard } from '../components/ui/ReviewCard';
 import { OptimizedImage } from '../components/ui/Image';
 import { useTranslation } from 'react-i18next';
+import { VoiceSearchModal } from '../components/voice/VoiceSearchModal';
 
 const statsData = [
   { value: '500+', key: 'luxuryHotels', icon: Building2 },
@@ -68,81 +69,14 @@ export default function LandingPage() {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guests, setGuests] = useState('2 Guests');
-  const [isListening, setIsListening] = useState(false);
-
-  const recognitionRef = useRef<any>(null);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   const startVoiceSearch = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       toast.error(t('landing:voiceSearchNotSupported'));
       return;
     }
-
-    if (isListening && recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (err) {
-        console.error('Error stopping recognition', err);
-      }
-      setIsListening(false);
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-    
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      toast.success(t('landing:listening'), { icon: '🎙️', duration: 3000 });
-    };
-
-    recognition.onresult = (event: any) => {
-      const speechResult = event.results[0][0].transcript;
-      setSearchCity(speechResult);
-      toast.success(t('landing:searchingFor', { query: speechResult }), { icon: '🔍', duration: 2000 });
-      setTimeout(() => {
-        navigate(`/hotels?city=${encodeURIComponent(speechResult)}`);
-      }, 800);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
-      setIsListening(false);
-
-      if (event.error === 'aborted') {
-        return;
-      }
-      if (event.error === 'no-speech') {
-        toast.error(t('landing:noSpeechDetected'));
-        return;
-      }
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        toast.error(t('landing:micAccessDenied'));
-        return;
-      }
-      if (event.error === 'audio-capture') {
-        toast.error(t('landing:noMicFound'));
-        return;
-      }
-
-      toast.error(t('landing:voiceSearchError'));
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    try {
-      recognition.start();
-    } catch (err) {
-      console.error('Error starting recognition:', err);
-      setIsListening(false);
-    }
+    setIsVoiceModalOpen(true);
   };
 
   useEffect(() => {
@@ -228,8 +162,8 @@ export default function LandingPage() {
                 <button 
                   type="button"
                   onClick={startVoiceSearch}
-                  className={`absolute end-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-neutral-400 hover:text-primary hover:bg-primary/10'}`}
-                  aria-label="Voice Search"
+                className="absolute end-3 p-1.5 rounded-full transition-colors text-neutral-400 hover:text-primary hover:bg-primary/10"
+                aria-label="Voice Search"
                 >
                   <Mic className="w-5 h-5" />
                 </button>
@@ -467,13 +401,26 @@ export default function LandingPage() {
       {/* Scroll to Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-8 end-8 z-40 w-12 h-12 rounded-full bg-primary text-white shadow-elevated flex items-center justify-center hover:-translate-y-1 transition-all duration-300 ${
+        className={`fixed bottom-6 right-6 p-4 rounded-full bg-primary text-white shadow-xl hover:bg-primary-600 hover:-translate-y-1 transition-all z-40 focus:ring-4 focus:ring-primary/30 ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
         }`}
-        aria-label={t('landing:scrollTop')}
+        aria-label="Scroll to top"
       >
-        <ArrowUp className="w-5 h-5" />
+        <ArrowUp className="w-6 h-6" />
       </button>
+
+      <VoiceSearchModal 
+        isOpen={isVoiceModalOpen} 
+        onClose={() => setIsVoiceModalOpen(false)} 
+        onApplyFilters={(voiceCity, voiceAmenities, voiceSearch) => {
+          let url = '/hotels?';
+          const params = new URLSearchParams();
+          if (voiceCity) params.set('city', voiceCity);
+          if (voiceSearch) params.set('search', voiceSearch);
+          if (voiceAmenities.length > 0) params.set('amenities', voiceAmenities.join(','));
+          navigate(url + params.toString());
+        }}
+      />
     </div>
   );
 }

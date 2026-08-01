@@ -32,6 +32,12 @@ CREATE TABLE users (
     email_promotions BOOLEAN NOT NULL DEFAULT FALSE,
     push_bookings BOOLEAN NOT NULL DEFAULT TRUE,
     push_promotions BOOLEAN NOT NULL DEFAULT TRUE,
+    company_id BIGINT,
+    company_role VARCHAR(30),
+    department VARCHAR(100),
+    job_title VARCHAR(100),
+    employee_id VARCHAR(50),
+    travel_budget DECIMAL(19, 4),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

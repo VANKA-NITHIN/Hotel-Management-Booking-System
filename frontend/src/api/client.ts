@@ -78,15 +78,14 @@ api.interceptors.response.use(
       
       // Do not toast for 401s as they are handled by auth state changes typically
       // Do not toast 404s globally if they might be intentional (e.g. checking if something exists)
-      if (status === 500) {
-        toast.error('Server error. Please try again later.');
-      } else if (status === 403) {
+      if (status === 403) {
         if (originalRequest.method !== 'get') {
           toast.error('You do not have permission to perform this action.');
         }
-      } else if (status >= 400 && status < 500 && status !== 401 && status !== 404) {
+      } else if (status >= 400 && status !== 401 && status !== 404) {
         // Show specific error message from backend if available
-        const message = data?.message || 'An error occurred. Please try again.';
+        // data.detail is for Spring ProblemDetail, data.message is for basic error responses
+        const message = data?.detail || data?.message || (status === 500 ? 'Server error. Please try again later.' : 'An error occurred. Please try again.');
         toast.error(message);
       }
     } else if (error.request) {

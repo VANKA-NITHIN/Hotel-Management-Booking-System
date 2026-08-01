@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as MapIcon, Mic, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { parseNaturalLanguageSearch } from '../utils/searchParser';
+import { VoiceSearchModal } from '../components/voice/VoiceSearchModal';
 import { useSearchHotels, useAmenities } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
 import { HotelMap } from '../components/ui/HotelMap';
@@ -76,8 +77,7 @@ export default function HotelsPage() {
     return selectedAmenities.every(amenity => hotel.amenities?.some(a => a.name === amenity));
   });
 
-  const [isListening, setIsListening] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
 
   const totalPages = data?.data?.totalPages || 0;
   const totalElements = hotels.length;
@@ -87,72 +87,7 @@ export default function HotelsPage() {
       toast.error('Voice search is not supported in this browser.');
       return;
     }
-
-    if (isListening && recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (err) {
-        console.error('Error stopping recognition', err);
-      }
-      setIsListening(false);
-      return;
-    }
-
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognitionRef.current = recognition;
-    
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      toast.success('Listening... Speak your hotel or city search', { icon: '🎙️', duration: 3000 });
-    };
-
-    recognition.onresult = (event: any) => {
-      const speechResult = event.results[0][0].transcript;
-      setSearch(speechResult);
-      toast.success(`Searching for "${speechResult}"`, { icon: '🔍', duration: 2000 });
-      setTimeout(() => {
-        processSearchQuery(speechResult);
-      }, 100);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
-      setIsListening(false);
-
-      if (event.error === 'aborted') {
-        return;
-      }
-      if (event.error === 'no-speech') {
-        toast.error('No speech detected. Please speak clearly into your microphone.');
-        return;
-      }
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        toast.error('Microphone access denied. Please allow microphone permissions in browser settings.');
-        return;
-      }
-      if (event.error === 'audio-capture') {
-        toast.error('No microphone found on your device.');
-        return;
-      }
-
-      toast.error('Could not process voice search. Please try typing your search.');
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    try {
-      recognition.start();
-    } catch (err) {
-      console.error('Error starting recognition:', err);
-      setIsListening(false);
-    }
+    setIsVoiceModalOpen(true);
   };
 
   const processSearchQuery = (query: string) => {
@@ -241,7 +176,7 @@ export default function HotelsPage() {
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className={`absolute end-3 p-1.5 rounded-full transition-colors ${isListening ? 'bg-error/10 text-error animate-pulse' : 'text-text-muted hover:text-primary hover:bg-primary/10'}`}
+                className="absolute end-3 p-1.5 rounded-full transition-colors text-text-muted hover:text-primary hover:bg-primary/10"
                 aria-label="Voice Search"
               >
                 <Mic className="w-4 h-4" />
@@ -474,6 +409,19 @@ export default function HotelsPage() {
           />
         )}
       </div>
+
+      <VoiceSearchModal 
+        isOpen={isVoiceModalOpen} 
+        onClose={() => setIsVoiceModalOpen(false)} 
+        onApplyFilters={(voiceCity, voiceAmenities, voiceSearch) => {
+          if (voiceCity) setCity(voiceCity);
+          if (voiceSearch) setSearch(voiceSearch);
+          if (voiceAmenities.length > 0) {
+            setSelectedAmenities(prev => Array.from(new Set([...prev, ...voiceAmenities])));
+          }
+          setPage(0);
+        }}
+      />
     </div>
   );
-}
+};

@@ -6,7 +6,7 @@ import type { Hotel } from '../../types';
 import { useToggleWishlist, useWishlist } from '../../hooks/useApi';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { OptimizedImage } from './Image';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useClerk } from '@clerk/clerk-react';
 import toast from 'react-hot-toast';
 
 interface HotelCardProps {
@@ -18,6 +18,7 @@ interface HotelCardProps {
 const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'grid' }: HotelCardProps) {
   const toggleWishlist = useToggleWishlist();
   const { isSignedIn } = useAuth();
+  const { openSignIn } = useClerk();
   const { formatPrice } = useCurrency();
   const { data: wishlistResponse } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistResponse?.data || [];
@@ -126,7 +127,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
             e.preventDefault(); 
             e.stopPropagation(); 
             if (!isSignedIn) {
-              toast.error('Please sign in to add to your wishlist');
+              openSignIn();
               return;
             }
             toggleWishlist.mutate(hotel.id); 

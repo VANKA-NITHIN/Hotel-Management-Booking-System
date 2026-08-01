@@ -12,6 +12,7 @@ export const publicApi = {
   getFeaturedDestinations: () => api.get<Destination[]>('/public/destinations/featured'),
   getCompanyInfo: () => api.get<CompanyInfo>('/public/company-info'),
   getStatistics: () => api.get<Record<string, number>>('/public/statistics'),
+  searchVoice: (query: string, language?: string) => api.get<any>('/public/search/voice', { params: { query, language } }),
 };
 
 // Auth API

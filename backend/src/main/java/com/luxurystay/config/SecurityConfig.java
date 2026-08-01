@@ -42,6 +42,14 @@ public class SecurityConfig {
                 .xssProtection(xss -> xss.disable())
                 .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'none'; sandbox"))
             )
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                })
+            )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Auth (Clerk handles auth, backend accepts tokens)
                 .requestMatchers("/auth/**").permitAll()
