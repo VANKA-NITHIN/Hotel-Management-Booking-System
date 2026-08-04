@@ -35,24 +35,9 @@ RUN chown -R spring:spring /app
 USER spring:spring
 
 USER root
+COPY backend/wait_for_db.py /app/wait_for_db.py
 RUN echo '#!/bin/bash\n\
-if [ -n "$WAIT_FOR_DB_HOST" ]; then\n\
-  echo "Waiting for database at $WAIT_FOR_DB_HOST:${WAIT_FOR_DB_PORT:-3306}..." >> app.log\n\
-  python3 -c "\n\
-import socket, time, os, sys\n\
-host = os.environ.get('\''WAIT_FOR_DB_HOST'\'')\n\
-port = int(os.environ.get('\''WAIT_FOR_DB_PORT'\'', '\''3306'\''))\n\
-print(f'\''Waiting for {host}:{port}...\\'')\n\
-for _ in range(60):\n\
-    try:\n\
-        with socket.create_connection((host, port), timeout=2):\n\
-            print('\''Connected!\\'')\n\
-            sys.exit(0)\n\
-    except Exception:\n\
-        time.sleep(2)\n\
-print('\''Timeout waiting for DB\\'')\n\
-" >> app.log 2>&1\n\
-fi\n\
+python3 /app/wait_for_db.py >> app.log 2>&1\n\
 java -Xmx300m -jar app.jar >> app.log 2>&1\n\
 EXIT_CODE=$?\n\
 if [ $EXIT_CODE -ne 0 ]; then\n\
