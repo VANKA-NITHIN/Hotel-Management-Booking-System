@@ -36,7 +36,24 @@ USER spring:spring
 
 USER root
 RUN echo '#!/bin/bash\n\
-java -Xmx300m -jar app.jar > app.log 2>&1\n\
+if [ -n "$WAIT_FOR_DB_HOST" ]; then\n\
+  echo "Waiting for database at $WAIT_FOR_DB_HOST:${WAIT_FOR_DB_PORT:-3306}..." >> app.log\n\
+  python3 -c "\n\
+import socket, time, os, sys\n\
+host = os.environ.get('\''WAIT_FOR_DB_HOST'\'')\n\
+port = int(os.environ.get('\''WAIT_FOR_DB_PORT'\'', '\''3306'\''))\n\
+print(f'\''Waiting for {host}:{port}...\\'')\n\
+for _ in range(60):\n\
+    try:\n\
+        with socket.create_connection((host, port), timeout=2):\n\
+            print('\''Connected!\\'')\n\
+            sys.exit(0)\n\
+    except Exception:\n\
+        time.sleep(2)\n\
+print('\''Timeout waiting for DB\\'')\n\
+" >> app.log 2>&1\n\
+fi\n\
+java -Xmx300m -jar app.jar >> app.log 2>&1\n\
 EXIT_CODE=$?\n\
 if [ $EXIT_CODE -ne 0 ]; then\n\
   echo "Spring Boot failed with exit code $EXIT_CODE. Starting Python HTTP Server..." >> app.log\n\

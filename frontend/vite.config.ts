@@ -45,6 +45,18 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    }
+  },
   define: {
     'import.meta.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(process.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_ZW5nYWdpbmctZmlzaC00NC5jbGVyay5hY2NvdW50cy5kZXYk'),
     'import.meta.env.VITE_RAZORPAY_KEY': JSON.stringify(process.env.VITE_RAZORPAY_KEY || 'rzp_test_T7sZuIYyX4QpJO'),
