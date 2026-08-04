@@ -26,15 +26,11 @@ const AMENITY_SYNONYMS: Record<string, string[]> = {
   'Jacuzzi': ['jacuzzi', 'hot tub', 'whirlpool']
 };
 
-const COMMON_CITIES = [
-  'New York', 'London', 'Paris', 'Tokyo', 'Dubai', 'Singapore', 'Mumbai', 'Delhi', 'Hyderabad', 
-  'Bangalore', 'Chennai', 'Pune', 'Goa', 'Kochi', 'Jaipur', 'Agra', 'Bali', 'Maldives', 'Sydney', 
-  'Melbourne', 'Los Angeles', 'San Francisco', 'Chicago', 'Miami', 'Las Vegas', 'Toronto', 'Vancouver'
-];
-
-export function parseNaturalLanguageSearch(query: string): ParsedSearch {
+export function parseNaturalLanguageSearch(query: string, dynamicCities: string[] = []): ParsedSearch {
   const lowerQuery = query.toLowerCase();
   const result: ParsedSearch = { amenities: [] };
+  
+  const knownCities = dynamicCities.length > 0 ? dynamicCities : [];
 
   // 1. Extract Price
   // Matches "under 3000", "below 500", "< 200", "max 1000", "cheaper than 400"
@@ -54,19 +50,16 @@ export function parseNaturalLanguageSearch(query: string): ParsedSearch {
   const cityMatch = lowerQuery.match(/(?:in|near|around|at)\s+([a-z\s]+)(?:\b|$)/);
   if (cityMatch && cityMatch[1]) {
     const potentialCity = cityMatch[1].trim();
-    // Verify if it's a known city (rudimentary check to avoid false positives like "near airport")
-    const foundCity = COMMON_CITIES.find(c => potentialCity.includes(c.toLowerCase()));
+    // Verify if it's a known city
+    const foundCity = knownCities.find(c => potentialCity.includes(c.toLowerCase()));
     if (foundCity) {
       result.city = foundCity;
     } else {
-      // If no match in list but pattern matched, we can still use it (e.g. "near airport" -> we might just search "airport")
-      result.city = potentialCity.split(/\s+/)[0]; // take just the first word to be safe, or just the whole thing
-      // Better: just take the whole thing and let the backend search
       result.city = potentialCity.split(/(?:with|under|above|below)/)[0]!.trim();
     }
   } else {
-    // If no preposition, just check if any common city is mentioned
-    const foundCity = COMMON_CITIES.find(c => lowerQuery.includes(c.toLowerCase()));
+    // If no preposition, check known cities
+    const foundCity = knownCities.find(c => lowerQuery.includes(c.toLowerCase()));
     if (foundCity) {
       result.city = foundCity;
     }

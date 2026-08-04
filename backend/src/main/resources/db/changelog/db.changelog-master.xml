@@ -24,4 +24,8 @@
         <sqlFile path="changes/005-add-cms-tables.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="6" author="luxurystay-dev">
+        <sqlFile path="changes/006-add-review-detail-columns.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

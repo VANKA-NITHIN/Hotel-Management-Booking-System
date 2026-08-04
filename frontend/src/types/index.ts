@@ -66,6 +66,14 @@ export interface HotelImage {
   sortOrder: number;
 }
 
+export interface RoomImage {
+  id: number;
+  imageUrl: string;
+  caption?: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
 export interface Room {
   id: number;
   hotelId: number;
@@ -80,6 +88,7 @@ export interface Room {
   floor: number;
   size: number;
   view?: string;
+  images?: RoomImage[];
   status: string;
   cleaningStatus: string;
   active: boolean;
@@ -87,7 +96,7 @@ export interface Room {
   weekendPrice?: number;
   holidayPrice?: number;
   amenities?: string[];
-  images?: string[];
+  images?: RoomImage[];
 }
 
 export interface Booking {

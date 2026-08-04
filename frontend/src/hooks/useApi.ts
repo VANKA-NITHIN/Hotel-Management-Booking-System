@@ -6,35 +6,42 @@ import type { Hotel, Room } from '../types';
 export function useBanners() {
   return useQuery({
     queryKey: ['banners'],
-    queryFn: () => publicApi.getBanners().then(res => res.data),
+    queryFn: () => publicApi.getBanners().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
 export function useFaqs() {
   return useQuery({
     queryKey: ['faqs'],
-    queryFn: () => publicApi.getFaqs().then(res => res.data),
+    queryFn: () => publicApi.getFaqs().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
 export function useFeaturedDestinations() {
   return useQuery({
     queryKey: ['featuredDestinations'],
-    queryFn: () => publicApi.getFeaturedDestinations().then(res => res.data),
+    queryFn: () => publicApi.getFeaturedDestinations().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
 export function useCompanyInfo() {
   return useQuery({
     queryKey: ['companyInfo'],
-    queryFn: () => publicApi.getCompanyInfo().then(res => res.data),
+    queryFn: () => publicApi.getCompanyInfo().then(res => res.data.data !== undefined ? res.data.data : res.data),
+  });
+}
+
+export function useStatistics() {
+  return useQuery({
+    queryKey: ['statistics'],
+    queryFn: () => publicApi.getStatistics().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
 export function usePublicStats() {
   return useQuery({
     queryKey: ['publicStats'],
-    queryFn: () => publicApi.getStatistics().then(res => res.data),
+    queryFn: () => publicApi.getStatistics().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
@@ -42,6 +49,13 @@ export function useAmenities() {
   return useQuery({
     queryKey: ['amenities'],
     queryFn: () => amenityApi.getAll().then(res => res.data),
+  });
+}
+
+export function useTestimonials() {
+  return useQuery({
+    queryKey: ['testimonials'],
+    queryFn: () => publicApi.getTestimonials().then(res => res.data.data !== undefined ? res.data.data : res.data),
   });
 }
 
@@ -123,6 +137,7 @@ export function useRooms(hotelId: number, params?: {
     enabled: !!hotelId,
   });
 }
+
 
 export function useAllRooms(hotelId: number) {
   return useQuery({

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Star, Wifi, Car, UtensilsCrossed, Waves, Shield, Heart, Share2, Users, Bed, ChevronLeft, ChevronRight, X, Check, Compass } from 'lucide-react';
-import { useHotel, useRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
+import { useHotel, useRooms, useAvailableRooms, useHotelReviews, useToggleWishlist, useWishlist, useCreateReview, useLikeReview } from '../hooks/useApi';
 import { LocationMap } from '../components/ui/LocationMap';
 import { fetchNearbyPOIs, type POICategory, type POI } from '../api/overpass';
 import { HotelDetailSkeleton } from '../components/ui/Skeleton';
@@ -49,7 +49,8 @@ export default function HotelDetailPage() {
   const hotelId = Number(id) || 1;
 
   const { data: hotelData, isLoading: hotelLoading } = useHotel(hotelId);
-  const { data: roomsData } = useRooms(hotelId);
+  const { data: allRoomsData } = useRooms(hotelId);
+  const { data: availableRoomsData } = useAvailableRooms(hotelId, checkIn, checkOut);
   const { data: reviewsData } = useHotelReviews(hotelId);
   const toggleWishlist = useToggleWishlist();
   const { isSignedIn } = useAuth();
@@ -65,7 +66,13 @@ export default function HotelDetailPage() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const hotel = hotelData?.data as Hotel | undefined;
-  const rooms = useMemo(() => (roomsData?.data?.content || []) as Room[], [roomsData?.data?.content]);
+  
+  const rooms = useMemo(() => {
+    if (checkIn && checkOut) {
+      return (availableRoomsData?.data || []) as Room[];
+    }
+    return (allRoomsData?.data?.content || []) as Room[];
+  }, [allRoomsData?.data?.content, availableRoomsData?.data, checkIn, checkOut]);
   const reviews = (reviewsData?.data || []) as Review[];
   const isWishlisted = wishlistHotels.some((h: Hotel) => h.id === hotelId);
 
@@ -154,12 +161,9 @@ export default function HotelDetailPage() {
     : 0;
 
   const displayImages = [
-    hotel?.logoUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1200&h=800&fit=crop',
-    'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&h=400&fit=crop',
-    'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=600&h=400&fit=crop',
-  ];
+    hotel?.logoUrl,
+    ...(hotel?.images?.map(i => i.imageUrl) || [])
+  ].filter(Boolean) as string[];
 
   const tabs = ['overview', 'rooms', 'reviews', 'policies', 'location'];
 
@@ -193,9 +197,9 @@ export default function HotelDetailPage() {
                 className="hidden md:block relative overflow-hidden group cursor-pointer"
               >
                 <OptimizedImage src={img} alt={`${hotel.name} ${i + 2}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out" />
-                {i === 3 && (
+                {i === 3 && displayImages.length > 5 && (
                   <div className="absolute inset-0 bg-neutral-900/40 flex items-center justify-center group-hover:bg-neutral-900/50 transition-colors">
-                    <span className="text-white font-medium text-lg">+{Math.max(0, displayImages.length - 5)} more</span>
+                    <span className="text-white font-medium text-lg">+{displayImages.length - 5} more</span>
                   </div>
                 )}
               </button>
@@ -388,11 +392,15 @@ export default function HotelDetailPage() {
                   
                   return (
                   <div key={`${room.name}-${room.pricePerNight}`} className="bg-bg-surface rounded-2xl border border-border-base p-5 flex flex-col sm:flex-row gap-6 shadow-sm hover:border-border-strong transition-colors">
-                    <div className="sm:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-bg-surface-hover relative group">
-                      <OptimizedImage
-                        src={room.images?.[0] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=400&h=300&fit=crop'}
-                        alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                    <div className="sm:w-64 h-48 rounded-xl overflow-hidden shrink-0 bg-bg-surface-hover relative group flex items-center justify-center">
+                      {room.images?.[0]?.imageUrl ? (
+                        <OptimizedImage
+                          src={room.images[0].imageUrl}
+                          alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <Bed className="w-12 h-12 text-neutral-400" />
+                      )}
                     </div>
                     <div className="flex-1 flex flex-col">
                       <div className="flex items-start justify-between gap-3 mb-2">

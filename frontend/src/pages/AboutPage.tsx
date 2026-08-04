@@ -2,13 +2,7 @@ import { motion } from 'framer-motion';
 import { Globe, Shield, Heart } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { OptimizedImage } from '../components/ui/Image';
-
-const stats = [
-  { label: 'Global Destinations', value: '50+' },
-  { label: 'Luxury Properties', value: '500+' },
-  { label: 'Happy Guests', value: '2M+' },
-  { label: 'Industry Awards', value: '150+' },
-];
+import { useCompanyInfo, useStatistics } from '../hooks/useApi';
 
 const values = [
   {
@@ -30,6 +24,19 @@ const values = [
 
 export default function AboutPage() {
   usePageTitle('About Us');
+
+  const { data: companyData } = useCompanyInfo();
+  const { data: statsData } = useStatistics();
+  
+  const companyInfo = companyData || { name: 'LuxuryStay', description: "Curating the world's most extraordinary stays for the discerning traveler." };
+  const apiStats = statsData || {};
+
+  const dynamicStats = [
+    { label: 'Global Destinations', value: apiStats.globalDestinations ? `${apiStats.globalDestinations}+` : '50+' },
+    { label: 'Luxury Properties', value: apiStats.luxuryProperties ? `${apiStats.luxuryProperties}+` : '500+' },
+    { label: 'Happy Guests', value: apiStats.happyGuests ? `${(apiStats.happyGuests / 1000000).toFixed(1)}M+` : '2M+' },
+    { label: 'Industry Awards', value: apiStats.industryAwards ? `${apiStats.industryAwards}+` : '150+' },
+  ];
 
   return (
     <div className="min-h-screen bg-bg-surface pt-[72px]">
@@ -55,7 +62,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-lg text-white/80 font-medium max-w-2xl mx-auto"
           >
-            Curating the world's most extraordinary stays for the discerning traveler.
+            {companyInfo.description}
           </motion.p>
         </div>
       </section>
@@ -96,7 +103,7 @@ export default function AboutPage() {
         <div className="absolute top-0 end-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="container-section relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-white/10">
-            {stats.map((stat, i) => (
+            {dynamicStats.map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center px-4">
                 <div className="text-4xl md:text-5xl font-serif font-bold text-secondary mb-3">{stat.value}</div>
                 <div className="text-sm text-white/70 uppercase tracking-widest font-bold">{stat.label}</div>

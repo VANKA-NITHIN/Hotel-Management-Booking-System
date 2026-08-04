@@ -2,17 +2,18 @@ import api from './client';
 import type {
   AuthResponse, User, Hotel, Room, Booking, PagedResponse,
   ChartDataPoint, DashboardStats, Notification, Coupon, Employee, Review, Housekeeping, CheckIn, Wallet, WalletTransaction, ReviewAnalytics, Referral, ReferralMetrics, Company, CompanyInvitation, CorporateAnalytics,
-  Banner, Faq, Destination, CompanyInfo
+  Banner, Faq, Destination, CompanyInfo, ApiResponse
 } from '../types';
 
 // Public CMS API
 export const publicApi = {
-  getBanners: () => api.get<Banner[]>('/public/banners'),
-  getFaqs: () => api.get<Faq[]>('/public/faqs'),
-  getFeaturedDestinations: () => api.get<Destination[]>('/public/destinations/featured'),
-  getCompanyInfo: () => api.get<CompanyInfo>('/public/company-info'),
-  getStatistics: () => api.get<Record<string, number>>('/public/statistics'),
-  searchVoice: (query: string, language?: string) => api.get<any>('/public/search/voice', { params: { query, language } }),
+  getBanners: () => api.get<ApiResponse<Banner[]>>('/public/banners'),
+  getFaqs: () => api.get<ApiResponse<Faq[]>>('/public/faqs'),
+  getFeaturedDestinations: () => api.get<ApiResponse<Destination[]>>('/public/destinations/featured'),
+  getCompanyInfo: () => api.get<ApiResponse<CompanyInfo>>('/public/company-info'),
+  getStatistics: () => api.get<ApiResponse<Record<string, number>>>('/public/statistics'),
+  getTestimonials: () => api.get<ApiResponse<Review[]>>('/public/testimonials'),
+  searchVoice: (query: string, language?: string) => api.get<ApiResponse<any>>('/public/search/voice', { params: { query, language } }),
 };
 
 // Auth API
@@ -58,6 +59,8 @@ export const roomApi = {
     roomType?: string; minPrice?: number; maxPrice?: number;
     maxGuests?: number; page?: number; size?: number
   }) => api.get<PagedResponse<Room>>(`/hotels/${hotelId}/rooms`, { params }),
+  getAvailableRooms: (hotelId: number, checkIn: string, checkOut: string) =>
+    api.get<Room[]>(`/hotels/${hotelId}/rooms/available`, { params: { checkIn, checkOut } }),
   getById: (hotelId: number, roomId: number) =>
     api.get<Room>(`/hotels/${hotelId}/rooms/${roomId}`),
   getAllByHotel: (hotelId: number) =>

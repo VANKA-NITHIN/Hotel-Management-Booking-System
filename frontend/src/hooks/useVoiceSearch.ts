@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -21,19 +21,21 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
 
   const { i18n } = useTranslation();
   const recognitionRef = useRef<any>(null);
+  const callbackRef = useRef(onFinalTranscript);
+  callbackRef.current = onFinalTranscript;
 
-  useEffect(() => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+  const getRecognition = useCallback(() => {
+    if (recognitionRef.current) return recognitionRef.current;
+
+    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognitionAPI) {
       setState(prev => ({ ...prev, error: 'Speech recognition not supported in this browser' }));
-      return;
+      return null;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const recognition = new SpeechRecognitionAPI();
     
-    // Set language from app i18n
     const lang = i18n.language || 'en-US';
-    // Mapping common generic codes to proper locales for speech API if needed
     const langMap: Record<string, string> = {
       'en': 'en-US',
       'hi': 'hi-IN',
@@ -45,8 +47,8 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
     };
     recognition.lang = langMap[lang] || lang;
     
-    recognition.continuous = false; // one-shot search
-    recognition.interimResults = true; // allow UI preview
+    recognition.continuous = false;
+    recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
@@ -67,26 +69,31 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
         }
       }
 
-      setState(prev => ({
-        ...prev,
-        interimTranscript,
-        transcript: finalTranscript,
-        confidence
-      }));
-
       if (finalTranscript) {
-        onFinalTranscript(finalTranscript, confidence);
+        setState(prev => ({
+          ...prev,
+          interimTranscript: '',
+          transcript: finalTranscript,
+          confidence
+        }));
+        callbackRef.current(finalTranscript, confidence);
+      } else {
+        setState(prev => ({
+          ...prev,
+          interimTranscript,
+        }));
       }
     };
 
     recognition.onerror = (event: any) => {
       let errorMessage = 'An error occurred during speech recognition';
       if (event.error === 'no-speech') errorMessage = 'No speech detected. Please try again.';
-      if (event.error === 'audio-capture') errorMessage = 'No microphone found.';
-      if (event.error === 'not-allowed') errorMessage = 'Microphone permission denied.';
+      if (event.error === 'audio-capture') errorMessage = 'No microphone found. Please check your microphone.';
+      if (event.error === 'not-allowed') errorMessage = 'Microphone permission denied. Please allow microphone access.';
+      if (event.error === 'network') errorMessage = 'Network error. Please check your connection.';
 
       setState(prev => ({ ...prev, isListening: false, error: errorMessage }));
-      if (event.error !== 'aborted') {
+      if (event.error !== 'aborted' && event.error !== 'no-speech') {
         toast.error(errorMessage);
       }
     };
@@ -96,40 +103,62 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
     };
 
     recognitionRef.current = recognition;
+    return recognition;
+  }, [i18n.language]);
 
-    return () => {
-      if (recognitionRef.current) {
+  const startListening = useCallback(() => {
+    // Clear any previous recognition instance to avoid stale state
+    if (recognitionRef.current) {
+      try {
         recognitionRef.current.abort();
-      }
-    };
-  }, [i18n.language, onFinalTranscript]);
+      } catch (_) { /* ignore */ }
+      recognitionRef.current = null;
+    }
 
-  const startListening = () => {
-    if (state.error === 'Speech recognition not supported in this browser') {
-      toast.error(state.error);
+    const recognition = getRecognition();
+    if (!recognition) {
+      toast.error('Speech recognition is not supported in this browser');
       return;
     }
-    
-    try {
-      if (state.isListening && recognitionRef.current) {
-        recognitionRef.current.stop();
-      } else {
-        recognitionRef.current.start();
-      }
-    } catch (e) {
-      console.error('Failed to start/stop speech recognition', e);
-    }
-  };
 
-  const stopListening = () => {
-    if (state.isListening && recognitionRef.current) {
-      recognitionRef.current.stop();
+    try {
+      recognition.start();
+    } catch (e: any) {
+      // Already started error — stop and restart
+      if (e.message?.includes('already started')) {
+        recognition.stop();
+        setTimeout(() => {
+          try { recognition.start(); } catch (_) { /* ignore */ }
+        }, 100);
+      } else {
+        console.error('Failed to start speech recognition', e);
+        setState(prev => ({ ...prev, error: 'Failed to start speech recognition. Please try again.' }));
+      }
     }
-  };
+  }, [getRecognition]);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (_) { /* ignore */ }
+    }
+  }, []);
+
+  const resetState = useCallback(() => {
+    setState({
+      isListening: false,
+      transcript: '',
+      interimTranscript: '',
+      confidence: 0,
+      error: null,
+    });
+  }, []);
 
   return {
     ...state,
     startListening,
-    stopListening
+    stopListening,
+    resetState,
   };
 };

@@ -1,30 +1,46 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, MessageCircle, FileText, Shield, ChevronRight, Calendar, CreditCard, User } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, MessageCircle, FileText, Shield, ChevronRight, ChevronDown, Calendar, CreditCard, User, HelpCircle } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
-
-const categories = [
-  { id: 'booking', name: 'Booking & Reservations', icon: Calendar, articles: 12 },
-  { id: 'payment', name: 'Payments & Receipts', icon: CreditCard, articles: 8 },
-  { id: 'account', name: 'Account Management', icon: User, articles: 15 },
-  { id: 'policies', name: 'Hotel Policies', icon: Shield, articles: 6 },
-];
-
-
-const popularArticles = [
-  "How do I cancel or modify my booking?",
-  "What payment methods do you accept?",
-  "How do I earn and redeem loyalty points?",
-  "What is the standard check-in/check-out time?",
-  "Are pets allowed in the hotels?",
-];
+import { useFaqs } from '../hooks/useApi';
 
 export default function HelpCenterPage() {
   usePageTitle('Help Center');
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const navigate = useNavigate();
+  const { data: faqs = [] } = useFaqs();
+
+  const filteredFaqs = useMemo(() => {
+    return faqs.filter(faq => 
+      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [faqs, searchQuery]);
+
+  const dynamicCategories = useMemo(() => {
+    const catMap = new Map<string, number>();
+    faqs.forEach(faq => {
+      const cat = faq.category || 'General';
+      catMap.set(cat, (catMap.get(cat) || 0) + 1);
+    });
+
+    const iconMap: Record<string, any> = {
+      'booking': Calendar,
+      'payment': CreditCard,
+      'account': User,
+      'policies': Shield,
+    };
+
+    return Array.from(catMap.entries()).map(([name, count]) => ({
+      id: name.toLowerCase(),
+      name,
+      icon: iconMap[name.toLowerCase()] || HelpCircle,
+      articles: count
+    }));
+  }, [faqs]);
 
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
@@ -51,7 +67,7 @@ export default function HelpCenterPage() {
       <div className="container-section -mt-16 pb-20 relative z-20">
         {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {categories.map((cat, i) => (
+          {dynamicCategories.map((cat, i) => (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 20 }}
@@ -69,19 +85,46 @@ export default function HelpCenterPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Popular Articles */}
+          {/* FAQs List */}
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-2xl font-serif font-bold text-text-base mb-6">Popular Topics</h2>
+            <h2 className="text-2xl font-serif font-bold text-text-base mb-6">
+              {searchQuery ? 'Search Results' : 'Popular Topics'}
+            </h2>
             <div className="bg-bg-surface rounded-3xl border border-border-base overflow-hidden shadow-sm">
-              {popularArticles.map((article, i) => (
-                <div key={i} className="group border-b border-border-base last:border-0 p-5 lg:p-6 hover:bg-bg-surface-hover cursor-pointer flex items-center justify-between transition-colors">
-                  <div className="flex items-center gap-4">
-                    <FileText className="w-6 h-6 text-text-muted group-hover:text-secondary transition-colors" />
-                    <span className="font-bold text-text-base group-hover:text-primary transition-colors">{article}</span>
+              {filteredFaqs.length > 0 ? (
+                filteredFaqs.map((faq) => (
+                  <div key={faq.id} className="group border-b border-border-base last:border-0">
+                    <div 
+                      className="p-5 lg:p-6 hover:bg-bg-surface-hover cursor-pointer flex items-center justify-between transition-colors"
+                      onClick={() => setExpandedFaq(expandedFaq === faq.id ? null : faq.id)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <FileText className="w-6 h-6 text-text-muted group-hover:text-secondary transition-colors" />
+                        <span className="font-bold text-text-base group-hover:text-primary transition-colors">{faq.question}</span>
+                      </div>
+                      <ChevronDown className={`w-5 h-5 text-text-muted transition-transform ${expandedFaq === faq.id ? 'rotate-180' : ''}`} />
+                    </div>
+                    <AnimatePresence>
+                      {expandedFaq === faq.id && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden bg-bg-surface-hover"
+                        >
+                          <div className="p-5 lg:p-6 pt-0 text-text-muted leading-relaxed border-t border-border-base/50">
+                            {faq.answer}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-primary transition-colors" />
+                ))
+              ) : (
+                <div className="p-10 text-center text-text-muted font-medium">
+                  No articles found matching your search.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 

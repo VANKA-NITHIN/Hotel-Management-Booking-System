@@ -11,6 +11,8 @@ import com.luxurystay.entity.Destination;
 import com.luxurystay.entity.cms.*;
 import com.luxurystay.repository.DestinationRepository;
 import com.luxurystay.repository.cms.*;
+import com.luxurystay.repository.ReviewRepository;
+import com.luxurystay.dto.ReviewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,7 @@ public class PublicController {
     private final CompanyInfoRepository companyInfoRepository;
     private final SocialLinkRepository socialLinkRepository;
     private final ContactInformationRepository contactInfoRepository;
+    private final ReviewRepository reviewRepository;
 
     @GetMapping("/banners")
     public ResponseEntity<ApiResponse<List<BannerDTO>>> getBanners() {
@@ -129,5 +132,29 @@ public class PublicController {
         stats.put("premiumRooms", 10000);
         
         return ResponseEntity.ok(new ApiResponse<>(true, "Statistics retrieved", stats));
+    }
+
+    @GetMapping("/testimonials")
+    public ResponseEntity<ApiResponse<List<ReviewDTO>>> getTestimonials() {
+        List<ReviewDTO> testimonials = reviewRepository.findAll().stream()
+                .filter(r -> r.getRating() != null && r.getRating().doubleValue() >= 4.0)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
+                .limit(10)
+                .map(r -> {
+                    ReviewDTO dto = new ReviewDTO();
+                    dto.setId(r.getId());
+                    dto.setHotelId(r.getHotel() != null ? r.getHotel().getId() : null);
+                    dto.setRating(r.getRating());
+                    dto.setComment(r.getComment());
+                    dto.setUserName(r.getUser() != null ? r.getUser().getFirstName() + " " + r.getUser().getLastName() : "Anonymous Guest");
+                    dto.setCreatedAt(r.getCreatedAt());
+                    dto.setVerified(r.isVerified());
+                    if (r.getRoom() != null) {
+                        dto.setRoomName(r.getRoom().getName());
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
+                
+        return ResponseEntity.ok(new ApiResponse<>(true, "Testimonials retrieved", testimonials));
     }
 }

@@ -4,7 +4,7 @@ import { Search, SlidersHorizontal, Grid3X3, List, Star, X, ChevronDown, Map as 
 import toast from 'react-hot-toast';
 import { parseNaturalLanguageSearch } from '../utils/searchParser';
 import { VoiceSearchModal } from '../components/voice/VoiceSearchModal';
-import { useSearchHotels, useAmenities } from '../hooks/useApi';
+import { useSearchHotels, useAmenities, useDestinations } from '../hooks/useApi';
 import HotelCard from '../components/ui/HotelCard';
 import { HotelMap } from '../components/ui/HotelMap';
 import { CardSkeleton } from '../components/ui/Skeleton';
@@ -47,6 +47,8 @@ export default function HotelsPage() {
   });
 
   const { data: amenitiesData } = useAmenities();
+  const { data: destinationsData } = useDestinations();
+  const dynamicCities = destinationsData?.data || [];
   
   // Group amenities by their category if possible, or provide a default group
   const groupedAmenities = amenitiesData?.reduce((acc: any, amenity: any) => {
@@ -91,7 +93,7 @@ export default function HotelsPage() {
   };
 
   const processSearchQuery = (query: string) => {
-    const parsed = parseNaturalLanguageSearch(query);
+    const parsed = parseNaturalLanguageSearch(query, dynamicCities);
     if (parsed.city) setCity(parsed.city);
     if (parsed.minPrice) setMinPrice(parsed.minPrice);
     if (parsed.maxPrice) setMaxPrice(parsed.maxPrice);

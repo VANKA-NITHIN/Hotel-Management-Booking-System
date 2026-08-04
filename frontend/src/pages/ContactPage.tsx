@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { useSubmitContact } from '../hooks/useApi';
+import { useSubmitContact, useCompanyInfo } from '../hooks/useApi';
 import toast from 'react-hot-toast';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -11,6 +11,20 @@ export default function ContactPage() {
   usePageTitle('Contact Us');
   const [loading, setLoading] = useState(false);
   const submitContact = useSubmitContact();
+  const { data: companyData } = useCompanyInfo();
+  
+  const companyInfo = companyData || { 
+    name: 'LuxuryStay', 
+    contacts: [
+      { type: 'phone', value: '+1 (800) 123-4567', label: 'Call Us (24/7)' },
+      { type: 'email', value: 'support@luxurystay.com', label: 'Email Us' },
+      { type: 'address', value: '123 Luxury Avenue\nNew York, NY 10001\nUnited States', label: 'Headquarters' }
+    ]
+  };
+  
+  const phoneContact = companyInfo.contacts?.find(c => c.type === 'phone' || c.type === 'PHONE');
+  const emailContact = companyInfo.contacts?.find(c => c.type === 'email' || c.type === 'EMAIL');
+  const addressContact = companyInfo.contacts?.find(c => c.type === 'address' || c.type === 'ADDRESS');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,33 +72,39 @@ export default function ContactPage() {
               <div className="relative z-10">
                 <h3 className="text-2xl font-serif font-bold mb-8 text-white">Contact Information</h3>
                 <div className="space-y-8">
+                  {phoneContact && (
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
                       <Phone className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">Call Us (24/7)</p>
-                      <a href="tel:+18001234567" className="text-lg font-medium hover:text-secondary transition-colors">+1 (800) 123-4567</a>
+                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">{phoneContact.label || 'Phone'}</p>
+                      <a href={`tel:${phoneContact.value}`} className="text-lg font-medium hover:text-secondary transition-colors">{phoneContact.value}</a>
                     </div>
                   </div>
+                  )}
+                  {emailContact && (
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
                       <Mail className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">Email Us</p>
-                      <a href="mailto:support@luxurystay.com" className="text-lg font-medium hover:text-secondary transition-colors break-all">support@luxurystay.com</a>
+                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">{emailContact.label || 'Email Us'}</p>
+                      <a href={`mailto:${emailContact.value}`} className="text-lg font-medium hover:text-secondary transition-colors break-all">{emailContact.value}</a>
                     </div>
                   </div>
+                  )}
+                  {addressContact && (
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 border border-white/10">
                       <MapPin className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">Headquarters</p>
-                      <p className="text-lg font-medium leading-relaxed">123 Luxury Avenue<br />New York, NY 10001<br />United States</p>
+                      <p className="text-sm text-white/60 font-bold uppercase tracking-wider mb-1">{addressContact.label || 'Headquarters'}</p>
+                      <p className="text-lg font-medium leading-relaxed whitespace-pre-line">{addressContact.value}</p>
                     </div>
                   </div>
+                  )}
                 </div>
               </div>
               

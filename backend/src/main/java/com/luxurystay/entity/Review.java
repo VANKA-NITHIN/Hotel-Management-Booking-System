@@ -42,16 +42,16 @@ public class Review {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column(precision = 3, scale = 1)
     private BigDecimal cleanlinessRating;
 
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column(precision = 3, scale = 1)
     private BigDecimal serviceRating;
 
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column(precision = 3, scale = 1)
     private BigDecimal locationRating;
 
-    @Column(nullable = false, precision = 3, scale = 1)
+    @Column(precision = 3, scale = 1)
     private BigDecimal valueRating;
 
     @ElementCollection

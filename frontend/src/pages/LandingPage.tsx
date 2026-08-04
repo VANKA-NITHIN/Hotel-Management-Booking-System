@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import HotelCard from '../components/ui/HotelCard';
 import { CardSkeleton } from '../components/ui/Skeleton';
 import { EmptyState } from '../components/ui/EmptyState';
-import { useFeaturedHotels, useBanners, usePublicStats, useFeaturedDestinations, useFaqs } from '../hooks/useApi';
+import { useFeaturedHotels, useBanners, usePublicStats, useFeaturedDestinations, useFaqs, useTestimonials } from '../hooks/useApi';
 import type { Hotel } from '../types';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Button } from '../components/ui/Button';
@@ -18,25 +18,13 @@ import { OptimizedImage } from '../components/ui/Image';
 import { useTranslation } from 'react-i18next';
 import { VoiceSearchModal } from '../components/voice/VoiceSearchModal';
 
-const statsData = [
-  { value: '500+', key: 'luxuryHotels', icon: Building2 },
-  { value: '2M+', key: 'happyGuests', icon: Users },
-  { value: '150+', key: 'awardsWon', icon: Award },
-  { value: '10K+', key: 'premiumRooms', icon: Bed },
-];
-
-const testimonialKeys = ['sarah', 'michael', 'emily', 'james'];
-
-const destinations = [
-  { name: 'Paris', country: 'France', hotels: 120, image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop' },
-  { name: 'Maldives', country: 'Indian Ocean', hotels: 85, image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&h=400&fit=crop' },
-  { name: 'Tokyo', country: 'Japan', hotels: 95, image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop' },
-  { name: 'New York', country: 'USA', hotels: 150, image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&h=400&fit=crop' },
-  { name: 'Dubai', country: 'UAE', hotels: 110, image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&h=400&fit=crop' },
-  { name: 'Bali', country: 'Indonesia', hotels: 90, image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&h=400&fit=crop' },
-];
-
-const faqKeys = ['1', '2', '3', '4'];
+// Icons mapping for dynamic stats
+const statsIconMap: Record<string, React.ElementType> = {
+  luxuryHotels: Building2,
+  happyGuests: Users,
+  awardsWon: Award,
+  premiumRooms: Bed,
+};
 
 export default function LandingPage() {
   const { t } = useTranslation(['landing', 'common']);
@@ -58,6 +46,9 @@ export default function LandingPage() {
 
   const { data: faqsResponse, isLoading: faqsLoading } = useFaqs();
   const liveFaqs = faqsResponse || [];
+
+  const { data: testimonialsResponse, isLoading: testimonialsLoading } = useTestimonials();
+  const liveTestimonials = testimonialsResponse || [];
 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { scrollY } = useScroll();
@@ -101,13 +92,17 @@ export default function LandingPage() {
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           {bannersLoading ? (
             <div className="w-full h-full bg-neutral-800 animate-pulse" />
-          ) : (
+          ) : primaryBanner ? (
             <OptimizedImage
-              src={primaryBanner?.imageUrl || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920&h=1080&fit=crop&q=80"}
-              alt="Luxury hotel"
+              src={primaryBanner.imageUrl}
+              alt={primaryBanner.title || "Luxury hotel"}
               className="w-full h-[120%] object-cover"
               priority={true}
             />
+          ) : (
+             <div className="w-full h-full bg-neutral-900 flex items-center justify-center">
+               <span className="text-white/20 text-2xl font-serif">LuxuryStay</span>
+             </div>
           )}
           {/* Refined gradient overlay for deeper contrast and luxury feel */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/80" />
@@ -205,28 +200,36 @@ export default function LandingPage() {
       <section className="bg-bg-surface border-b border-border-base">
         <div className="container-safe py-16">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
-            {statsData.map((stat, i) => (
-              <motion.div
-                key={stat.key}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, ease: "easeOut", duration: 0.6 }}
-                className="text-center group flex flex-col items-center"
-              >
-                <div className="w-14 h-14 mb-5 bg-neutral-50 dark:bg-neutral-900 border border-border-base rounded-2xl shadow-sm flex items-center justify-center group-hover:border-secondary group-hover:scale-110 transition-all duration-300">
-                  <stat.icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
-                </div>
-                {statsLoading ? (
-                  <div className="h-10 w-24 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded mx-auto mb-2" />
-                ) : (
-                  <div className="text-4xl font-bold text-text-base mb-2 font-serif tracking-tight">
-                    {liveStats[stat.key] ? `${liveStats[stat.key]}+` : stat.value}
-                  </div>
-                )}
-                <div className="text-sm font-semibold text-text-muted uppercase tracking-[0.15em]">{t(`landing:${stat.key}`)}</div>
-              </motion.div>
-            ))}
+            {statsLoading ? (
+               Array.from({ length: 4 }).map((_, i) => (
+                 <div key={`stat-skeleton-${i}`} className="flex flex-col items-center">
+                    <div className="w-14 h-14 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-2xl mb-5" />
+                    <div className="h-10 w-24 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded mb-2" />
+                 </div>
+               ))
+            ) : Object.keys(liveStats).length > 0 ? (
+              Object.entries(liveStats).map(([key, value], i) => {
+                const Icon = statsIconMap[key] || Building2;
+                return (
+                  <motion.div
+                    key={key}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, ease: "easeOut", duration: 0.6 }}
+                    className="text-center group flex flex-col items-center"
+                  >
+                    <div className="w-14 h-14 mb-5 bg-neutral-50 dark:bg-neutral-900 border border-border-base rounded-2xl shadow-sm flex items-center justify-center group-hover:border-secondary group-hover:scale-110 transition-all duration-300">
+                      <Icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" />
+                    </div>
+                    <div className="text-4xl font-bold text-text-base mb-2 font-serif tracking-tight">
+                      {value}+
+                    </div>
+                    <div className="text-sm font-semibold text-text-muted uppercase tracking-[0.15em]">{t(`landing:${key}`)}</div>
+                  </motion.div>
+                );
+              })
+            ) : null}
           </div>
         </div>
       </section>
@@ -279,8 +282,8 @@ export default function LandingPage() {
               Array.from({ length: 6 }).map((_, i) => (
                 <div key={`skeleton-${i}`} className={`bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-2xl ${i === 0 ? 'md:row-span-2 h-72 md:h-full' : 'h-52 md:h-[260px]'}`} />
               ))
-            ) : (
-              (liveDestinations.length > 0 ? liveDestinations : destinations).map((dest, i) => (
+            ) : liveDestinations.length > 0 ? (
+              liveDestinations.map((dest, i) => (
                 <motion.div
                   key={dest.name}
                   initial={{ opacity: 0, y: 20 }}
@@ -294,20 +297,23 @@ export default function LandingPage() {
                     className="relative block w-full h-full overflow-hidden rounded-2xl group shadow-card hover:shadow-elevated transition-shadow"
                   >
                     <OptimizedImage
-                      src={(dest as any).imageUrl || (dest as any).image}
+                      src={dest.imageUrl}
                       alt={dest.name}
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.2s] ease-[0.16,1,0.3,1]"
                     />
-                    {/* Multi-layered gradient for text legibility without muddying the image */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 pointer-events-none opacity-80 group-hover:opacity-90 transition-opacity" />
                     
                     <div className="absolute bottom-0 start-0 end-0 p-6 z-20 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                       <h3 className="text-white font-serif font-bold text-2xl lg:text-3xl mb-1">{dest.name}</h3>
-                      <p className="text-white/90 text-sm font-medium tracking-wide">{(dest as any).hotelCount || (dest as any).hotels} {t('landing:premiumProperties')}</p>
+                      <p className="text-white/90 text-sm font-medium tracking-wide">{dest.hotelCount} {t('landing:premiumProperties')}</p>
                     </div>
                   </Link>
                 </motion.div>
               ))
+            ) : (
+              <div className="col-span-full">
+                <EmptyState title={t('landing:noDestinations')} description={t('landing:noDestinationsDesc')} action={{ label: t('landing:browseAllHotels'), to: '/hotels' }} />
+              </div>
             )}
           </div>
         </div>
@@ -322,24 +328,34 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {testimonialKeys.map((key, i) => (
-              <motion.div
-                key={key}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, ease: "easeOut" }}
-              >
-                <ReviewCard
-                  id={`review-${i}`}
-                  author={{ name: t(`landing:testimonials.${key}.name`), isVerified: true, avatarUrl: undefined }}
-                  rating={5}
-                  date={t('landing:recentStay')}
-                  content={t(`landing:testimonials.${key}.text`)}
-                  roomType={t(`landing:testimonials.${key}.role`)}
-                />
-              </motion.div>
-            ))}
+            {testimonialsLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={`test-skeleton-${i}`} className="h-48 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-2xl w-full" />
+              ))
+            ) : liveTestimonials.length > 0 ? (
+              liveTestimonials.map((review, i) => (
+                <motion.div
+                  key={review.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, ease: "easeOut" }}
+                >
+                  <ReviewCard
+                    id={`review-${review.id}`}
+                    author={{ name: review.userName || 'Guest', isVerified: review.verified, avatarUrl: undefined }}
+                    rating={review.rating}
+                    date={new Date(review.createdAt || Date.now()).toLocaleDateString()}
+                    content={review.comment}
+                    roomType={review.roomName || t('landing:recentStay')}
+                  />
+                </motion.div>
+              ))
+            ) : (
+               <div className="col-span-full">
+                 <EmptyState title={t('landing:noTestimonials')} description={t('landing:noTestimonialsDesc')} />
+               </div>
+            )}
           </div>
         </div>
       </section>
@@ -358,15 +374,10 @@ export default function LandingPage() {
                   <div key={`faq-skeleton-${i}`} className="h-16 bg-neutral-200 dark:bg-neutral-800 animate-pulse rounded-lg w-full" />
                 ))}
               </div>
+            ) : liveFaqs.length > 0 ? (
+              <Accordion items={liveFaqs.map(faq => ({ id: faq.id.toString(), title: faq.question, content: faq.answer }))} />
             ) : (
-              <Accordion items={liveFaqs.length > 0 
-                ? liveFaqs.map(faq => ({ id: faq.id.toString(), title: faq.question, content: faq.answer }))
-                : faqKeys.map(key => ({
-                    id: key,
-                    title: t(`landing:faq${key}Title`),
-                    content: t(`landing:faq${key}Content`)
-                }))
-              } />
+               <EmptyState title={t('landing:noFaqs')} description={t('landing:noFaqsDesc')} />
             )}
           </div>
         </div>
