@@ -52,10 +52,13 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-      setState(prev => ({ ...prev, isListening: true, transcript: '', interimTranscript: '', error: null }));
+      if (recognitionRef.current === recognition) {
+        setState(prev => ({ ...prev, isListening: true, transcript: '', interimTranscript: '', error: null }));
+      }
     };
 
     recognition.onresult = (event: any) => {
+      if (recognitionRef.current !== recognition) return;
       let finalTranscript = '';
       let interimTranscript = '';
       let confidence = 0;
@@ -86,6 +89,7 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
     };
 
     recognition.onerror = (event: any) => {
+      if (recognitionRef.current !== recognition) return;
       let errorMessage = 'An error occurred during speech recognition';
       if (event.error === 'no-speech') errorMessage = 'No speech detected. Please try again.';
       if (event.error === 'audio-capture') errorMessage = 'No microphone found. Please check your microphone.';
@@ -99,7 +103,9 @@ export const useVoiceSearch = (onFinalTranscript: (transcript: string, confidenc
     };
 
     recognition.onend = () => {
-      setState(prev => ({ ...prev, isListening: false }));
+      if (recognitionRef.current === recognition) {
+        setState(prev => ({ ...prev, isListening: false }));
+      }
     };
 
     recognitionRef.current = recognition;
