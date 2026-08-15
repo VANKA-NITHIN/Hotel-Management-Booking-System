@@ -2,9 +2,51 @@ import React from 'react';
 import { Mic, X, Search, MapPin, Building, Star, Loader2 } from 'lucide-react';
 import { useVoiceSearch } from '../../hooks/useVoiceSearch';
 import { publicApi } from '../../api';
+import { FALLBACK_HOTELS } from '../../data/mockHotels';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+
+/**
+ * Local voice-search fallback used when the backend is unreachable (down, 5xx,
+ * 429, network). Searches the bundled hotel catalog so the feature still returns
+ * results instead of failing with an error toast.
+ */
+function localVoiceSearch(query: string): any {
+  const words = query.toLowerCase().trim().split(/\s+/).filter(w => w.length > 1);
+
+  const exactMatches = FALLBACK_HOTELS.filter(h => {
+    const haystack = [
+      h.name,
+      h.city,
+      h.country,
+      h.description,
+      ...(h.amenities ?? []).map(a => a.name),
+    ].join(' ').toLowerCase();
+    return words.some(word => haystack.includes(word));
+  }).slice(0, 5).map(h => ({
+    id: h.id,
+    name: h.name,
+    city: h.city,
+    country: h.country,
+    rating: h.rating,
+    imageUrl: h.images?.[0]?.imageUrl,
+    matchReasons: ['Cached match'],
+  }));
+
+  return {
+    exactMatches,
+    suggestions: [],
+    recognizedCities: exactMatches.map(m => m.city),
+    recognizedAmenities: [],
+    extractedIntent: {
+      location: null,
+      category: null,
+      rawQuery: query,
+      cleanedQuery: query.toLowerCase().trim(),
+    },
+  };
+}
 
 interface VoiceSearchModalProps {
   isOpen: boolean;
@@ -40,7 +82,14 @@ export const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ isOpen, onCl
       const res = await publicApi.searchVoice(transcript, i18n.language);
       setResults(res.data.data);
     } catch (err) {
-      toast.error('Failed to perform voice search');
+      // Backend unreachable (down / 5xx / 429 / network): fall back to a local
+      // search over the bundled catalog instead of failing outright.
+      const local = localVoiceSearch(transcript);
+      if (local && local.exactMatches.length > 0) {
+        setResults(local);
+      } else {
+        toast.error('Failed to perform voice search');
+      }
     } finally {
       setIsSearching(false);
     }
