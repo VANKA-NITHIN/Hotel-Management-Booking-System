@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import AIChat from '../components/ui/AIChat';
 
 // Mock scrollIntoView for JSDOM
@@ -14,6 +15,10 @@ vi.mock('../api/client', () => ({
 
 import api from '../api/client';
 
+function renderWithRouter(ui: React.ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+}
+
 describe('AIChat', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -24,21 +29,21 @@ describe('AIChat', () => {
   });
 
   it('renders the chat toggle button', () => {
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
   it('opens chat window when toggle button is clicked', async () => {
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     const toggleButton = screen.getByRole('button');
     fireEvent.click(toggleButton);
     await waitFor(() => {
-      expect(screen.getByText('LuxuryStay Assistant')).toBeInTheDocument();
+      expect(screen.getByText('LuxuryStay Agent')).toBeInTheDocument();
     });
   });
 
   it('displays welcome message on open', async () => {
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {
       expect(screen.getByText(/Hello! Welcome to LuxuryStay/)).toBeInTheDocument();
@@ -46,28 +51,28 @@ describe('AIChat', () => {
   });
 
   it('shows quick question buttons initially', async () => {
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     fireEvent.click(screen.getByRole('button'));
     await waitFor(() => {
-      expect(screen.getByText('Recommend a hotel')).toBeInTheDocument();
-      expect(screen.getByText('What rooms are available?')).toBeInTheDocument();
+      expect(screen.getByText('Book a hotel in Dubai')).toBeInTheDocument();
+      expect(screen.getByText('What rooms are available in Paris?')).toBeInTheDocument();
     });
   });
 
   it('sends message and displays bot response', async () => {
     const mockResponse = {
-      data: { response: 'We have luxury suites available!' },
+      data: { content: 'We have luxury suites available!' },
     };
     (api.post as ReturnType<typeof vi.fn>).mockResolvedValue(mockResponse);
 
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     fireEvent.click(screen.getByRole('button'));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Ask me anything...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Ask me to book a hotel...')).toBeInTheDocument();
     });
 
-    const input = screen.getByPlaceholderText('Ask me anything...');
+    const input = screen.getByPlaceholderText('Ask me to book a hotel...');
     fireEvent.change(input, { target: { value: 'Do you have rooms?' } });
     fireEvent.submit(input.closest('form')!);
 
@@ -75,20 +80,26 @@ describe('AIChat', () => {
       expect(screen.getByText('We have luxury suites available!')).toBeInTheDocument();
     });
 
-    expect(api.post).toHaveBeenCalledWith('/ai/chat', { message: 'Do you have rooms?' });
+    expect(api.post).toHaveBeenCalledWith(
+      '/v1/ai/chat',
+      expect.objectContaining({
+        sessionId: expect.any(String),
+        userMessage: 'Do you have rooms?',
+      })
+    );
   });
 
   it('displays error message when API call fails', async () => {
     (api.post as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Network error'));
 
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     fireEvent.click(screen.getByRole('button'));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText('Ask me anything...')).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Ask me to book a hotel...')).toBeInTheDocument();
     });
 
-    const input = screen.getByPlaceholderText('Ask me anything...');
+    const input = screen.getByPlaceholderText('Ask me to book a hotel...');
     fireEvent.change(input, { target: { value: 'Hello' } });
     fireEvent.submit(input.closest('form')!);
 
@@ -98,19 +109,19 @@ describe('AIChat', () => {
   });
 
   it('closes chat window when close button is clicked', async () => {
-    render(<AIChat />);
+    renderWithRouter(<AIChat />);
     const openButton = screen.getByRole('button');
     fireEvent.click(openButton);
 
     await waitFor(() => {
-      expect(screen.getByText('LuxuryStay Assistant')).toBeInTheDocument();
+      expect(screen.getByText('LuxuryStay Agent')).toBeInTheDocument();
     });
 
     const closeButton = screen.getAllByRole('button')[0]!;
     fireEvent.click(closeButton);
 
     await waitFor(() => {
-      expect(screen.queryByText('LuxuryStay Assistant')).not.toBeInTheDocument();
+      expect(screen.queryByText('LuxuryStay Agent')).not.toBeInTheDocument();
     });
   });
 });

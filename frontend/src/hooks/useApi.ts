@@ -67,8 +67,8 @@ export function useHotels(page = 0, size = 12) {
     queryFn: async () => {
       try {
         const res = await hotelApi.getAll(page, size);
-        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
-        if (content && content.length > 0) return res.data;
+        const content = res.data?.content || (Array.isArray(res.data) ? res.data : undefined);
+        if (content && content.length > 0) return { data: res.data };
       } catch (err) {
         console.warn('Backend API unavailable, using fallback hotel data', err);
       }
@@ -83,7 +83,7 @@ export function useHotel(id: number) {
     queryFn: async () => {
       try {
         const res = await hotelApi.getById(id);
-        if (res.data?.data) return res.data;
+        if (res.data) return { data: res.data };
       } catch (err) {
         console.warn(`Hotel API unavailable for id ${id}, using fallback`, err);
       }
@@ -100,8 +100,7 @@ export function useFeaturedHotels() {
     queryFn: async () => {
       try {
         const res = await hotelApi.getFeatured();
-        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
-        if (list && list.length > 0) return res.data;
+        if (res.data && res.data.length > 0) return { data: res.data };
       } catch (err) {
         console.warn('Featured hotels API unavailable, using fallback', err);
       }
@@ -116,12 +115,12 @@ export function useDestinations() {
     queryFn: async () => {
       try {
         const res = await hotelApi.getDestinations();
-        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
-        if (list && list.length > 0) return res.data;
+        if (res.data && res.data.length > 0) return { data: res.data };
       } catch (err) {
         console.warn('Destinations API unavailable, using fallback', err);
       }
-      return { data: FALLBACK_DESTINATIONS };
+      // The API returns city-name strings; keep the fallback the same shape.
+      return { data: FALLBACK_DESTINATIONS.map(d => d.name) };
     },
   });
 }
@@ -135,8 +134,8 @@ export function useSearchHotels(params: {
     queryFn: async () => {
       try {
         const res = await hotelApi.search(params);
-        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
-        if (content && content.length > 0) return res.data;
+        const content = res.data?.content || (Array.isArray(res.data) ? res.data : undefined);
+        if (content && content.length > 0) return { data: res.data };
       } catch (err) {
         console.warn('Search hotels API unavailable, using local filter fallback', err);
       }
@@ -200,12 +199,12 @@ export function useRooms(hotelId: number, params?: {
     queryFn: async () => {
       try {
         const res = await roomApi.getByHotel(hotelId, params);
-        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
-        if (content && content.length > 0) return res.data;
+        const content = res.data?.content || (Array.isArray(res.data) ? res.data : undefined);
+        if (content && content.length > 0) return { data: res.data };
       } catch (err) {
         console.warn(`Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
       }
-      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      const rooms = FALLBACK_ROOMS[hotelId] ?? FALLBACK_ROOMS[1] ?? [];
       return { data: { content: rooms, totalElements: rooms.length, totalPages: 1 } };
     },
     enabled: !!hotelId,
@@ -218,12 +217,11 @@ export function useAllRooms(hotelId: number) {
     queryFn: async () => {
       try {
         const res = await roomApi.getAllByHotel(hotelId);
-        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
-        if (list && list.length > 0) return res.data;
+        if (res.data && res.data.length > 0) return { data: res.data };
       } catch (err) {
         console.warn(`All Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
       }
-      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      const rooms = FALLBACK_ROOMS[hotelId] ?? FALLBACK_ROOMS[1] ?? [];
       return { data: rooms };
     },
     enabled: !!hotelId,
@@ -236,12 +234,11 @@ export function useAvailableRooms(hotelId: number, checkIn: string, checkOut: st
     queryFn: async () => {
       try {
         const res = await roomApi.getAvailable(hotelId, checkIn, checkOut);
-        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
-        if (list && list.length > 0) return res.data;
+        if (res.data && res.data.length > 0) return { data: res.data };
       } catch (err) {
         console.warn(`Available Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
       }
-      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      const rooms = FALLBACK_ROOMS[hotelId] ?? FALLBACK_ROOMS[1] ?? [];
       return { data: rooms };
     },
     enabled: !!hotelId && !!checkIn && !!checkOut,
@@ -303,12 +300,11 @@ export function useHotelReviews(hotelId: number) {
     queryFn: async () => {
       try {
         const res = await reviewApi.getHotelReviews(hotelId);
-        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
-        if (list && list.length > 0) return res.data;
+        if (res.data && res.data.length > 0) return { data: res.data };
       } catch (err) {
         console.warn(`Reviews API unavailable for hotel ${hotelId}, using fallback`, err);
       }
-      const reviews = FALLBACK_REVIEWS[hotelId] || FALLBACK_REVIEWS[1];
+      const reviews = FALLBACK_REVIEWS[hotelId] ?? FALLBACK_REVIEWS[1] ?? [];
       return { data: reviews };
     },
     enabled: !!hotelId,
