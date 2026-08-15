@@ -36,13 +36,14 @@ USER spring:spring
 
 USER root
 COPY backend/wait_for_db.py /app/wait_for_db.py
+COPY backend/fallback_server.py /app/fallback_server.py
 RUN echo '#!/bin/bash\n\
 python3 /app/wait_for_db.py >> app.log 2>&1\n\
 java -Xmx300m -jar app.jar >> app.log 2>&1\n\
 EXIT_CODE=$?\n\
 if [ $EXIT_CODE -ne 0 ]; then\n\
-  echo "Spring Boot failed with exit code $EXIT_CODE. Starting Python HTTP Server..." >> app.log\n\
-  python3 -m http.server ${PORT:-8080}\n\
+  echo "Spring Boot failed with exit code $EXIT_CODE. Starting fallback server..." >> app.log\n\
+  python3 /app/fallback_server.py\n\
 fi\n\
 ' > /app/start.sh
 RUN chmod +x /app/start.sh

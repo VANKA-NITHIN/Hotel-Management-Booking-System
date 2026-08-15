@@ -22,24 +22,32 @@ def get_db_host_port():
             return server_part, 3306
         except Exception:
             pass
-            
-    # Priority 3: default to render internal service name
+
+    # Priority 3: default to render internal service name.
+    # NOTE: if DB_URL is not set on the web service, this default is used and it
+    # will only resolve if the private MySQL service actually exists in the same
+    # Render region. Set DB_URL/WAIT_FOR_DB_HOST on the service in production.
     return 'luxurystay-db', 3306
 
 def main():
     host, port = get_db_host_port()
-    print(f"Waiting for database to wake up at {host}:{port}...", flush=True)
-    
-    # Try for up to 60 seconds (Render free databases take 30-40s to wake up)
-    for _ in range(60):
+    wait_seconds = int(os.environ.get('DB_WAIT_SECONDS', '90'))
+    print(f"Waiting for database to wake up at {host}:{port} (up to {wait_seconds}s)...", flush=True)
+
+    last_error = None
+    deadline = time.time() + wait_seconds
+    while time.time() < deadline:
         try:
-            with socket.create_connection((host, port), timeout=2):
+            with socket.create_connection((host, port), timeout=3):
                 print("Database is awake and accepting connections!", flush=True)
                 sys.exit(0)
-        except Exception:
+        except Exception as e:
+            last_error = e
             time.sleep(2)
-            
+
     print("Timeout waiting for database to wake up.", flush=True)
+    if last_error is not None:
+        print(f"Last connection error: {type(last_error).__name__}: {last_error}", flush=True)
     sys.exit(1)
 
 if __name__ == '__main__':
