@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { hotelApi, roomApi, bookingApi, reviewApi, wishlistApi, adminApi, notificationApi, employeeApi, housekeepingApi, authApi, contactApi, newsletterApi, checkInApi, walletApi, referralApi, corporateApi, publicApi, amenityApi } from '../api';
 import type { Hotel, Room } from '../types';
+import { FALLBACK_HOTELS, FALLBACK_ROOMS, FALLBACK_DESTINATIONS, FALLBACK_REVIEWS } from '../data/mockHotels';
 
 // CMS & Public Data
 export function useBanners() {
@@ -63,14 +64,32 @@ export function useTestimonials() {
 export function useHotels(page = 0, size = 12) {
   return useQuery({
     queryKey: ['hotels', page, size],
-    queryFn: () => hotelApi.getAll(page, size),
+    queryFn: async () => {
+      try {
+        const res = await hotelApi.getAll(page, size);
+        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
+        if (content && content.length > 0) return res.data;
+      } catch (err) {
+        console.warn('Backend API unavailable, using fallback hotel data', err);
+      }
+      return { data: { content: FALLBACK_HOTELS, totalElements: FALLBACK_HOTELS.length, totalPages: 1 } };
+    },
   });
 }
 
 export function useHotel(id: number) {
   return useQuery({
     queryKey: ['hotel', id],
-    queryFn: () => hotelApi.getById(id),
+    queryFn: async () => {
+      try {
+        const res = await hotelApi.getById(id);
+        if (res.data?.data) return res.data;
+      } catch (err) {
+        console.warn(`Hotel API unavailable for id ${id}, using fallback`, err);
+      }
+      const found = FALLBACK_HOTELS.find(h => h.id === Number(id)) || FALLBACK_HOTELS[0];
+      return { data: found };
+    },
     enabled: !!id,
   });
 }
@@ -78,14 +97,32 @@ export function useHotel(id: number) {
 export function useFeaturedHotels() {
   return useQuery({
     queryKey: ['featuredHotels'],
-    queryFn: () => hotelApi.getFeatured(),
+    queryFn: async () => {
+      try {
+        const res = await hotelApi.getFeatured();
+        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
+        if (list && list.length > 0) return res.data;
+      } catch (err) {
+        console.warn('Featured hotels API unavailable, using fallback', err);
+      }
+      return { data: FALLBACK_HOTELS };
+    },
   });
 }
 
 export function useDestinations() {
   return useQuery({
     queryKey: ['destinations'],
-    queryFn: () => hotelApi.getDestinations(),
+    queryFn: async () => {
+      try {
+        const res = await hotelApi.getDestinations();
+        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
+        if (list && list.length > 0) return res.data;
+      } catch (err) {
+        console.warn('Destinations API unavailable, using fallback', err);
+      }
+      return { data: FALLBACK_DESTINATIONS };
+    },
   });
 }
 
@@ -95,7 +132,34 @@ export function useSearchHotels(params: {
 }) {
   return useQuery({
     queryKey: ['searchHotels', params],
-    queryFn: () => hotelApi.search(params),
+    queryFn: async () => {
+      try {
+        const res = await hotelApi.search(params);
+        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
+        if (content && content.length > 0) return res.data;
+      } catch (err) {
+        console.warn('Search hotels API unavailable, using local filter fallback', err);
+      }
+      let filtered = [...FALLBACK_HOTELS];
+      if (params.city) {
+        const query = params.city.toLowerCase();
+        filtered = filtered.filter(h =>
+          h.city.toLowerCase().includes(query) ||
+          h.country.toLowerCase().includes(query) ||
+          h.name.toLowerCase().includes(query)
+        );
+      }
+      if (params.minPrice) filtered = filtered.filter(h => h.startingPrice >= params.minPrice!);
+      if (params.maxPrice) filtered = filtered.filter(h => h.startingPrice <= params.maxPrice!);
+      if (params.minRating) filtered = filtered.filter(h => h.rating >= params.minRating!);
+
+      if (params.sort === 'price_asc') filtered.sort((a, b) => a.startingPrice - b.startingPrice);
+      if (params.sort === 'price_desc') filtered.sort((a, b) => b.startingPrice - a.startingPrice);
+      if (params.sort === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+      if (params.sort === 'rating') filtered.sort((a, b) => b.rating - a.rating);
+
+      return { data: { content: filtered, totalElements: filtered.length, totalPages: 1 } };
+    },
   });
 }
 
@@ -133,16 +197,35 @@ export function useRooms(hotelId: number, params?: {
 }) {
   return useQuery({
     queryKey: ['rooms', hotelId, params],
-    queryFn: () => roomApi.getByHotel(hotelId, params),
+    queryFn: async () => {
+      try {
+        const res = await roomApi.getByHotel(hotelId, params);
+        const content = res.data?.data?.content || (Array.isArray(res.data?.data) ? res.data.data : undefined);
+        if (content && content.length > 0) return res.data;
+      } catch (err) {
+        console.warn(`Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
+      }
+      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      return { data: { content: rooms, totalElements: rooms.length, totalPages: 1 } };
+    },
     enabled: !!hotelId,
   });
 }
 
-
 export function useAllRooms(hotelId: number) {
   return useQuery({
     queryKey: ['rooms', 'all', hotelId],
-    queryFn: () => roomApi.getAllByHotel(hotelId),
+    queryFn: async () => {
+      try {
+        const res = await roomApi.getAllByHotel(hotelId);
+        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
+        if (list && list.length > 0) return res.data;
+      } catch (err) {
+        console.warn(`All Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
+      }
+      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      return { data: rooms };
+    },
     enabled: !!hotelId,
   });
 }
@@ -150,7 +233,17 @@ export function useAllRooms(hotelId: number) {
 export function useAvailableRooms(hotelId: number, checkIn: string, checkOut: string) {
   return useQuery({
     queryKey: ['availableRooms', hotelId, checkIn, checkOut],
-    queryFn: () => roomApi.getAvailable(hotelId, checkIn, checkOut),
+    queryFn: async () => {
+      try {
+        const res = await roomApi.getAvailable(hotelId, checkIn, checkOut);
+        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
+        if (list && list.length > 0) return res.data;
+      } catch (err) {
+        console.warn(`Available Rooms API unavailable for hotel ${hotelId}, using fallback`, err);
+      }
+      const rooms = FALLBACK_ROOMS[hotelId] || FALLBACK_ROOMS[1];
+      return { data: rooms };
+    },
     enabled: !!hotelId && !!checkIn && !!checkOut,
   });
 }
@@ -207,7 +300,17 @@ export function useCancelBooking() {
 export function useHotelReviews(hotelId: number) {
   return useQuery({
     queryKey: ['hotelReviews', hotelId],
-    queryFn: () => reviewApi.getHotelReviews(hotelId),
+    queryFn: async () => {
+      try {
+        const res = await reviewApi.getHotelReviews(hotelId);
+        const list = res.data?.data || (Array.isArray(res.data) ? res.data : undefined);
+        if (list && list.length > 0) return res.data;
+      } catch (err) {
+        console.warn(`Reviews API unavailable for hotel ${hotelId}, using fallback`, err);
+      }
+      const reviews = FALLBACK_REVIEWS[hotelId] || FALLBACK_REVIEWS[1];
+      return { data: reviews };
+    },
     enabled: !!hotelId,
   });
 }

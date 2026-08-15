@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 
 public interface AuthService {
 
-    UserDTO syncUser(UserDTO userDTO);
+    UserDTO syncUser(UserDTO userDTO, org.springframework.security.core.Authentication authentication);
 
     User getCurrentUser(Authentication authentication);
 

@@ -49,10 +49,12 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
+        // Group npm dependencies into a small number of cacheable vendor chunks
+        // instead of one chunk per package (was ~70 tiny chunks, bad on mobile).
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/')[1].split('/')[0].toString();
-          }
+          if (!id.includes('node_modules')) return undefined;
+          const pkg = id.toString().split('node_modules/')[1].split('/')[0];
+          return pkg;
         }
       }
     }

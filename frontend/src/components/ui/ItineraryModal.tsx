@@ -69,7 +69,7 @@ export function ItineraryModal({ isOpen, onClose, cityName = 'Maldives', hotelNa
                 onClick={() => setVibe(v)}
                 className={`py-2.5 px-4 rounded-xl text-xs font-bold transition-all border ${
                   vibe === v
-                    ? 'bg-primary text-white border-primary shadow-sm'
+                    ? 'bg-primary-950 text-white border-primary shadow-sm'
                     : 'bg-bg-surface-hover border-border-base text-text-muted hover:text-text-base'
                 }`}
               >
@@ -91,7 +91,7 @@ export function ItineraryModal({ isOpen, onClose, cityName = 'Maldives', hotelNa
                 className="p-4 rounded-2xl bg-bg-surface border border-border-base flex items-start gap-4 hover:border-border-strong transition-colors"
               >
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                  {index === 0 ? <Sun className="w-5 h-5 text-amber-500" /> : index === 1 ? <Compass className="w-5 h-5 text-primary" /> : <Moon className="w-5 h-5 text-indigo-500" />}
+                  {index === 0 ? <Sun className="w-5 h-5 text-secondary-600 dark:text-secondary-400" /> : index === 1 ? <Compass className="w-5 h-5 text-primary" /> : <Moon className="w-5 h-5 text-primary" />}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between gap-2 mb-1">

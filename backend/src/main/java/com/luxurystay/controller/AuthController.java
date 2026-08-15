@@ -21,8 +21,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/sync")
-    public ResponseEntity<UserDTO> syncUser(@RequestBody UserDTO userDTO) {
-        UserDTO syncedUser = authService.syncUser(userDTO);
+    public ResponseEntity<UserDTO> syncUser(@RequestBody UserDTO userDTO, Authentication authentication) {
+        UserDTO syncedUser = authService.syncUser(userDTO, authentication);
         return ResponseEntity.ok(syncedUser);
     }
 

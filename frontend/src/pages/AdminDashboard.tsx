@@ -7,7 +7,7 @@ import { usePersistentState } from '../hooks/usePersistentState';
 import {
   LayoutDashboard, Users, Building2, Bed, Calendar, BarChart3,
   TrendingUp, Settings, Edit, Trash2, Plus,
-  DollarSign, Package, ArrowUp, ArrowDown, MapPin, Star, Download
+  DollarSign, Package, ArrowUp, ArrowDown, MapPin, Star, Download, ChevronDown
 } from 'lucide-react';
 import { AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -31,11 +31,11 @@ import { useExport } from '../hooks/useExport';
 import { useTranslation } from 'react-i18next';
 
 const roomTypeData = [
-  { name: 'Luxury Suite', value: 35, color: '#c9a84c' },
-  { name: 'Deluxe', value: 28, color: '#1a1a2e' },
-  { name: 'Executive', value: 20, color: '#0f3460' },
-  { name: 'Standard', value: 12, color: '#6b7280' },
-  { name: 'Villa', value: 5, color: '#10b981' },
+  { name: 'Luxury Suite', value: 35, color: '#c98c3d' },
+  { name: 'Deluxe', value: 28, color: '#0d1f17' },
+  { name: 'Executive', value: 20, color: '#2b4e3e' },
+  { name: 'Standard', value: 12, color: '#786e58' },
+  { name: 'Villa', value: 5, color: '#46795f' },
 ];
 
 const adminTabs = [
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
+        <aside className="w-64 3xl:w-80 bg-primary-950 min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
           <div className="absolute top-0 end-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
           <div className="mb-10 px-4 py-4">
             <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">{t('admin:dashboard', 'Admin Portal')}</span>
@@ -187,7 +187,7 @@ export default function AdminDashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-secondary text-primary shadow-lg shadow-secondary/20 translate-x-1'
+                    ? 'bg-secondary text-primary dark:bg-secondary-400 dark:text-primary-950 shadow-lg shadow-secondary/20 dark:shadow-secondary-400/20 translate-x-1'
                     : 'text-white/60 hover:bg-white/10 hover:text-white'
                 }`}
               >
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-primary text-white shadow-md'
+                    ? 'bg-primary-950 text-white shadow-md'
                     : 'text-text-muted hover:bg-bg-surface-hover hover:text-text-base'
                 }`}
               >
@@ -229,8 +229,8 @@ export default function AdminDashboard() {
                   [
                     { label: t('admin:totalRevenue', 'Total Revenue'), value: `$${(stats?.totalRevenue || 0).toLocaleString()}`, change: '+12.5%', up: true, icon: DollarSign, color: 'text-success bg-success/10' },
                     { label: t('admin:totalBookings', 'Total Bookings'), value: (stats?.totalBookings || 0).toLocaleString(), change: '+8.2%', up: true, icon: Package, color: 'text-secondary bg-secondary/10' },
-                    { label: t('admin:totalUsers', 'Total Customers'), value: (stats?.totalCustomers || 0).toLocaleString(), change: '+15.3%', up: true, icon: Users, color: 'text-blue-500 bg-blue-500/10' },
-                    { label: t('admin:occupancyRate', 'Occupancy Rate'), value: `${stats?.occupancyRate || 0}%`, change: '+5.1%', up: true, icon: TrendingUp, color: 'text-purple-500 bg-purple-500/10' },
+                    { label: t('admin:totalUsers', 'Total Customers'), value: (stats?.totalCustomers || 0).toLocaleString(), change: '+15.3%', up: true, icon: Users, color: 'text-primary bg-primary/10' },
+                    { label: t('admin:occupancyRate', 'Occupancy Rate'), value: `${stats?.occupancyRate || 0}%`, change: '+5.1%', up: true, icon: TrendingUp, color: 'text-warning bg-warning/10' },
                   ].map((stat, i) => (
                     <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-bg-surface rounded-2xl p-6 shadow-sm border border-border-base">
                       <div className="flex items-center justify-between mb-4">
@@ -255,7 +255,7 @@ export default function AdminDashboard() {
                       <XAxis dataKey="month" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
                       <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
                       <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-                      <Area type="monotone" dataKey="revenue" stroke="#c9a84c" fill="#c9a84c" fillOpacity={0.1} strokeWidth={3} />
+                      <Area type="monotone" dataKey="revenue" stroke="#c98c3d" fill="#c98c3d" fillOpacity={0.1} strokeWidth={3} />
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
@@ -316,6 +316,9 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
+                    {hotels.length === 0 && (
+                      <tr><td colSpan={4} className="py-12 text-center text-text-muted font-medium">No hotels yet. Add your first property.</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -335,8 +338,7 @@ export default function AdminDashboard() {
                      >
                        <option value="">Select a hotel...</option>
                        {hotels.map((h: any) => <option key={h.id} value={h.id}>{h.name}</option>)}
-                     </select>
-                     <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none">▼</div>
+                     </select>                       <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                   </div>
                 </div>
                 {selectedHotelId && (
@@ -372,6 +374,9 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))}
+                        {rooms.length === 0 && (
+                          <tr><td colSpan={5} className="py-12 text-center text-text-muted font-medium">No rooms for this property yet.</td></tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -416,6 +421,9 @@ export default function AdminDashboard() {
                         <td className="py-4 px-2 text-sm font-bold text-end text-text-base">${booking.totalAmount.toLocaleString()}</td>
                       </tr>
                     ))}
+                    {bookings.length === 0 && (
+                      <tr><td colSpan={6} className="py-12 text-center text-text-muted font-medium">No bookings yet.</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -462,6 +470,9 @@ export default function AdminDashboard() {
                         </td>
                       </tr>
                     ))}
+                    {employees.length === 0 && (
+                      <tr><td colSpan={5} className="py-12 text-center text-text-muted font-medium">No employees yet.</td></tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -481,8 +492,8 @@ export default function AdminDashboard() {
                       <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
                       <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
                       <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                      <Line type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#c9a84c" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" dataKey="bookings" name="Bookings" stroke="#1a1a2e" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                      <Line type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#c98c3d" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                      <Line type="monotone" dataKey="bookings" name="Bookings" stroke="#0d1f17" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -502,7 +513,7 @@ export default function AdminDashboard() {
                        pageScrollBox: 'p-0',
                        headerTitle: 'text-2xl font-serif font-bold text-text-base',
                        headerSubtitle: 'text-text-muted font-medium',
-                       formButtonPrimary: 'bg-primary hover:bg-primary-600 text-white font-bold',
+                       formButtonPrimary: 'bg-primary-950 hover:bg-primary-900 text-white font-bold',
                        formFieldInput: 'bg-bg-surface-hover border-border-base hover:border-border-strong focus:border-primary focus:ring-1 focus:ring-primary',
                        formFieldLabel: 'text-sm font-bold text-text-base',
                      }

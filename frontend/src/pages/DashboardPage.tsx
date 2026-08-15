@@ -99,7 +99,7 @@ export default function DashboardPage() {
                   <p className="text-xs font-bold text-secondary uppercase tracking-[0.1em]">{t('dashboard:loyaltyPoints', 'Loyalty Points')}</p>
                   <span className="text-[10px] font-bold text-secondary underline opacity-0 group-hover:opacity-100 transition-opacity">View Tiers</span>
                 </div>
-                <p className="text-3xl font-bold text-secondary-dark font-serif">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
+                <p className="text-3xl font-bold text-secondary-700 dark:text-secondary-400 font-serif">{user?.loyaltyPoints?.toLocaleString() || 1250}</p>
               </div>
               
               <div className="bg-bg-surface-sunken px-6 py-4 rounded-2xl border border-border-base min-w-[140px]">
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
                       activeTab === tab.id
-                        ? 'bg-primary text-white shadow-md'
+                        ? 'bg-primary-950 text-white shadow-md'
                         : 'text-text-muted hover:bg-bg-surface-hover hover:text-text-base'
                     }`}
                   >
@@ -163,13 +163,14 @@ export default function DashboardPage() {
                           <div className="w-full md:w-56 h-36 rounded-xl bg-bg-surface-hover overflow-hidden shrink-0 relative">
                              <OptimizedImage src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
-                          <div className="flex-1 flex flex-col justify-center">
-                            <div className="flex items-start justify-between mb-3">
-                              <div>
-                                <Badge {...statusBadge(booking.status)} className="mb-2">{booking.status}</Badge>
-                                <h3 className="text-xl font-bold text-text-base line-clamp-1">Luxury Resort & Spa</h3>
-                                <p className="text-sm font-medium text-text-muted flex items-center gap-1.5 mt-1"><MapPin className="w-3.5 h-3.5" /> Paris, France</p>
-                              </div>
+                          <div className="flex-1 flex flex-col justify-center">                              <div className="flex items-start justify-between mb-3">
+                                <div>
+                                  <Badge {...statusBadge(booking.status)} className="mb-2">{booking.status}</Badge>
+                                  <h3 className="text-xl font-bold text-text-base line-clamp-1">{booking.hotelName || 'LuxuryStay Property'}</h3>
+                                  {(booking.hotel?.city || booking.hotel?.country) && (
+                                    <p className="text-sm font-medium text-text-muted flex items-center gap-1.5 mt-1"><MapPin className="w-3.5 h-3.5" /> {booking.hotel.city}, {booking.hotel.country}</p>
+                                  )}
+                                </div>
                               <div className="text-end">
                                 <span className="text-xl font-bold text-text-base">${booking.totalAmount.toLocaleString()}</span>
                                 <span className="text-xs font-bold text-text-muted block uppercase tracking-wider">Total</span>
@@ -262,7 +263,7 @@ export default function DashboardPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              icon={<Sparkles className="w-4 h-4 text-amber-500" />}
+                              icon={<Sparkles className="w-4 h-4 text-secondary-700 dark:text-secondary-400" />}
                               onClick={() => setConciergeHotel(booking.hotelName || 'LuxuryStay Property')}
                             >
                               Concierge
@@ -334,9 +335,9 @@ export default function DashboardPage() {
                     <Button variant="outline" size="sm" onClick={() => navigate('/wishlist')}>View all</Button>
                    </div>
                    <div className="bg-white dark:bg-neutral-900 rounded-3xl border border-border-base p-14 text-center shadow-card relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
-                      <div className="w-24 h-24 rounded-full bg-rose-500/10 flex items-center justify-center mx-auto mb-6">
-                        <Heart className="w-10 h-10 text-rose-500" />
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 pointer-events-none" />
+                      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                        <Heart className="w-10 h-10 text-primary" />
                       </div>
                       <h3 className="text-2xl font-serif font-bold text-text-base mb-3">Your wishlist is ready</h3>
                       <p className="text-text-muted font-medium max-w-sm mx-auto mb-10 text-lg">Save properties you love by clicking the heart icon while browsing.</p>
@@ -358,7 +359,7 @@ export default function DashboardPage() {
                             pageScrollBox: 'p-0',
                             headerTitle: 'text-2xl font-serif font-bold text-text-base',
                             headerSubtitle: 'text-text-muted font-medium',
-                            formButtonPrimary: 'bg-primary hover:bg-primary-600 text-white font-bold',
+                            formButtonPrimary: 'bg-primary-950 hover:bg-primary-900 text-white font-bold',
                             formFieldInput: 'bg-bg-surface-hover border-border-base hover:border-border-strong focus:border-primary focus:ring-1 focus:ring-primary',
                             formFieldLabel: 'text-sm font-bold text-text-base',
                             profileSectionTitleText: 'text-lg font-bold text-text-base border-b border-border-base pb-2 mb-4',

@@ -70,6 +70,11 @@ public class AuthServiceImplTest {
 
     @Test
     void testSyncUser_ExistingUser() {
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getName()).thenReturn("john@example.com");
+        org.mockito.Mockito.doReturn(java.util.List.of(
+                new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CUSTOMER")))
+                .when(authentication).getAuthorities();
         when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
         
         RoleEntity customerRoleEntity = RoleEntity.builder().name(Role.ROLE_CUSTOMER).build();
@@ -77,32 +82,49 @@ public class AuthServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(userDTO);
 
-        UserDTO synced = authService.syncUser(userDTO);
+        // Attacker-supplied role in the body must be IGNORED - role comes from the token.
+        userDTO.setRole("ROLE_ADMIN");
+        UserDTO synced = authService.syncUser(userDTO, authentication);
 
         assertNotNull(synced);
         assertEquals("John", synced.getFirstName());
+        assertEquals(Role.ROLE_CUSTOMER, user.getRole());
         verify(userRepository).save(any(User.class));
         verify(roleRepository).findByName(Role.ROLE_CUSTOMER);
     }
 
     @Test
     void testSyncUser_NewUser() {
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getName()).thenReturn("john@example.com");
+        org.mockito.Mockito.doReturn(java.util.List.of(
+                new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_CUSTOMER")))
+                .when(authentication).getAuthorities();
         when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
         
-        RoleEntity adminRoleEntity = RoleEntity.builder().name(Role.ROLE_ADMIN).build();
-        when(roleRepository.findByName(Role.ROLE_ADMIN)).thenReturn(Optional.of(adminRoleEntity));
+        RoleEntity customerRoleEntity = RoleEntity.builder().name(Role.ROLE_CUSTOMER).build();
+        when(roleRepository.findByName(Role.ROLE_CUSTOMER)).thenReturn(Optional.of(customerRoleEntity));
         
-        User savedUser = User.builder().id(1L).email("john@example.com").role(Role.ROLE_ADMIN).build();
+        User savedUser = User.builder().id(1L).email("john@example.com").role(Role.ROLE_CUSTOMER).build();
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
         
         userDTO.setRole("ROLE_ADMIN");
         when(userMapper.toDTO(savedUser)).thenReturn(userDTO);
 
-        UserDTO synced = authService.syncUser(userDTO);
+        // Role from the body must NOT be honored on creation either.
+        UserDTO synced = authService.syncUser(userDTO, authentication);
 
         assertNotNull(synced);
-        assertEquals("ROLE_ADMIN", synced.getRole());
+        assertEquals(Role.ROLE_CUSTOMER, savedUser.getRole());
         verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void testSyncUser_Unauthenticated_ShouldReject() {
+        when(authentication.isAuthenticated()).thenReturn(false);
+
+        assertThrows(org.springframework.security.access.AccessDeniedException.class,
+                () -> authService.syncUser(userDTO, authentication));
     }
 
     @Test

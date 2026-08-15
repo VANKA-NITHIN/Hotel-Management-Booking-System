@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -31,6 +32,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @org.springframework.beans.factory.annotation.Value("${app.cors.allowed-origins:*}")
+    private String allowedOrigins;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -40,7 +44,12 @@ public class SecurityConfig {
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.deny())
                 .xssProtection(xss -> xss.disable())
-                .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'none'; sandbox"))
+                // SECURITY: a bare `sandbox` directive (without allow-scripts/allow-forms)
+                // disables ALL scripts and forms on any page this server renders, breaking
+                // the bundled Swagger UI. Keep a sane policy: nothing framed, nothing loaded
+                // from other origins except images/fonts, no inline scripts.
+                .contentSecurityPolicy(csp -> csp.policyDirectives(
+                    "default-src 'self'; frame-ancestors 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self'"))
             )
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint((request, response, authException) -> {
@@ -52,6 +61,9 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints - Auth (Clerk handles auth, backend accepts tokens)
+                // SECURITY: /auth/sync must be authenticated - it mutates the caller's profile
+                // and role must only ever come from the verified Clerk JWT.
+                .requestMatchers(HttpMethod.POST, "/auth/sync").authenticated()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/webhooks/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -64,6 +76,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/coupons/validate/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/search/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
+                // Public contact form (visitors can reach out without an account)
+                .requestMatchers(HttpMethod.POST, "/contact").permitAll()
                 .requestMatchers("/public/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 // AI Assistant (authenticated users only)
@@ -90,7 +104,19 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
+
+        // Allow-listed origins come from app.cors.allowed-origins (comma-separated).
+        // Falls back to all origins when the property is unset or set to "*".
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        if (origins.isEmpty() || origins.contains("*")) {
+            configuration.setAllowedOriginPatterns(List.of("*"));
+        } else {
+            configuration.setAllowedOriginPatterns(origins);
+        }
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

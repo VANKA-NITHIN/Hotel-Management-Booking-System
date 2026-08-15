@@ -124,6 +124,7 @@ export default function AIChat() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? t('aiCloseChat', 'Close AI assistant') : t('aiOpenChat', 'Open AI assistant')}
         className="fixed bottom-24 lg:bottom-6 end-6 z-100 w-14 h-14 rounded-full gold-gradient shadow-xl flex items-center justify-center hover:scale-110 transition-transform"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -182,7 +183,7 @@ export default function AIChat() {
                   </div>
                   <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-line ${
                     message.role === 'user'
-                      ? 'bg-primary text-white rounded-se-sm'
+                      ? 'bg-primary-950 text-white rounded-se-sm'
                       : 'bg-bg-surface-hover text-text-base rounded-ss-sm'
                   }`}>
                     {message.content}

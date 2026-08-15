@@ -43,7 +43,7 @@ export default function CorporateDashboard() {
           <Clock size={32} />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Registration Under Review</h2>
-        <p className="text-gray-500 dark:text-gray-400">
+        <p className="text-text-muted">
           Your company <strong>{company?.name}</strong> is currently being reviewed by our team. 
           You will receive an email once your corporate account is approved and activated.
         </p>
@@ -57,7 +57,7 @@ export default function CorporateDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{company?.name} Portal</h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm flex items-center gap-2 mt-1">
+          <p className="text-text-muted text-sm flex items-center gap-2 mt-1">
             Verified Enterprise Account • {((clerkUser?.publicMetadata?.companyRole as string) || 'EMPLOYEE').replace('_', ' ')}
           </p>
         </div>
@@ -80,7 +80,7 @@ export default function CorporateDashboard() {
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab.id 
                   ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' 
-                  : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800'
+                  : 'text-text-muted hover:bg-bg-surface-hover'
               }`}
             >
               <Icon size={18} />
@@ -112,22 +112,22 @@ function CorporateOverview() {
     <div className="space-y-6 animate-in fade-in">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Employees</p>
+          <p className="text-sm font-medium text-text-muted mb-1">Total Employees</p>
           <div className="flex items-end gap-3">
             <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{analytics?.totalEmployees || 0}</h3>
             <span className="text-sm text-green-600 mb-1">{analytics?.activeEmployees || 0} active</span>
           </div>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Corporate Bookings</p>
+          <p className="text-sm font-medium text-text-muted mb-1">Corporate Bookings</p>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{analytics?.totalBookings || 0}</h3>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Monthly Spend</p>
+          <p className="text-sm font-medium text-text-muted mb-1">Monthly Spend</p>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatPrice(analytics?.monthlySpend || 0)}</h3>
         </div>
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Avg. Trip Cost</p>
+          <p className="text-sm font-medium text-text-muted mb-1">Avg. Trip Cost</p>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{formatPrice(analytics?.averageBookingValue || 0)}</h3>
         </div>
       </div>
@@ -177,7 +177,7 @@ function EmployeeDirectory({ role }: { role?: string }) {
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</p>
-                      <p className="text-sm text-gray-500">{emp.email}</p>
+                      <p className="text-sm text-text-muted">{emp.email}</p>
                     </div>
                   </div>
                 </td>
@@ -222,7 +222,7 @@ function InviteModal({ onClose }: { onClose: () => void }) {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">Invite Employee</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+          <button onClick={onClose} className="text-text-muted hover:text-text-base">
             <X size={20} />
           </button>
         </div>
@@ -263,7 +263,7 @@ function CorporateBookings({ role }: { role?: string }) {
       <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
         <div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">Corporate Bookings</h3>
-          <p className="text-sm text-gray-500">Viewing {role === 'EMPLOYEE' ? 'your corporate bookings' : 'all team bookings'}</p>
+          <p className="text-sm text-text-muted">Viewing {role === 'EMPLOYEE' ? 'your corporate bookings' : 'all team bookings'}</p>
         </div>
         {(role === 'COMPANY_ADMIN' || role === 'TRAVEL_MANAGER' || role === 'SUPER_ADMIN') && (
           <div className="flex items-center gap-3">
@@ -286,7 +286,7 @@ function CorporateBookings({ role }: { role?: string }) {
       </div>
       
       {bookings?.length === 0 ? (
-        <div className="p-12 text-center text-gray-500">No corporate bookings found.</div>
+        <div className="p-12 text-center text-text-muted">No corporate bookings found.</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-start border-collapse">
@@ -306,7 +306,7 @@ function CorporateBookings({ role }: { role?: string }) {
                   <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{b.bookingReference}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{b.guestName}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{b.hotelName}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{new Date(b.checkInDate).toLocaleDateString()} - {new Date(b.checkOutDate).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-sm text-text-muted">{new Date(b.checkInDate).toLocaleDateString()} - {new Date(b.checkOutDate).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">{formatPrice(b.totalAmount)}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
@@ -345,7 +345,7 @@ function CorporateAnalyticsView({ formatPrice }: { formatPrice: (val: number) =>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No departmental spend data available yet.</p>
+            <p className="text-text-muted">No departmental spend data available yet.</p>
           )}
         </div>
 
@@ -364,7 +364,7 @@ function CorporateAnalyticsView({ formatPrice }: { formatPrice: (val: number) =>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No destination data available yet.</p>
+            <p className="text-text-muted">No destination data available yet.</p>
           )}
         </div>
       </div>
@@ -382,19 +382,19 @@ function CorporateAdministration({ company }: { company: any }) {
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Company Profile</h3>
           <div className="grid grid-cols-2 gap-y-4">
             <div>
-              <p className="text-sm text-gray-500">Company Name</p>
+              <p className="text-sm text-text-muted">Company Name</p>
               <p className="font-medium text-gray-900 dark:text-white">{company?.name}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Code</p>
+              <p className="text-sm text-text-muted">Code</p>
               <p className="font-medium text-gray-900 dark:text-white">{company?.companyCode}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Contact Email</p>
+              <p className="text-sm text-text-muted">Contact Email</p>
               <p className="font-medium text-gray-900 dark:text-white">{company?.contactEmail}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Status</p>
+              <p className="text-sm text-text-muted">Status</p>
               <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 mt-1">
                 {company?.status}
               </span>
@@ -410,14 +410,14 @@ function CorporateAdministration({ company }: { company: any }) {
                 <div key={inv.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">{inv.email}</p>
-                    <p className="text-xs text-gray-500">Role: {inv.role?.replace('_', ' ')} • Sent by {inv.createdByUserName}</p>
+                    <p className="text-xs text-text-muted">Role: {inv.role?.replace('_', ' ')} • Sent by {inv.createdByUserName}</p>
                   </div>
                   <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Pending</span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500">No pending invitations.</p>
+            <p className="text-text-muted">No pending invitations.</p>
           )}
         </div>
       </div>
@@ -427,12 +427,12 @@ function CorporateAdministration({ company }: { company: any }) {
         <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-6 text-center">
           <ShieldCheck className="mx-auto text-gray-400 mb-2" size={24} />
           <h4 className="font-medium text-gray-900 dark:text-white">Travel Policies</h4>
-          <p className="text-xs text-gray-500 mt-1">Configure spending limits and approval workflows. (Coming Soon)</p>
+          <p className="text-xs text-text-muted mt-1">Configure spending limits and approval workflows. (Coming Soon)</p>
         </div>
         <div className="bg-gray-50 dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-6 text-center">
           <Calendar className="mx-auto text-gray-400 mb-2" size={24} />
           <h4 className="font-medium text-gray-900 dark:text-white">Cost Centers</h4>
-          <p className="text-xs text-gray-500 mt-1">Manage departmental budgets and project codes. (Coming Soon)</p>
+          <p className="text-xs text-text-muted mt-1">Manage departmental budgets and project codes. (Coming Soon)</p>
         </div>
       </div>
     </div>

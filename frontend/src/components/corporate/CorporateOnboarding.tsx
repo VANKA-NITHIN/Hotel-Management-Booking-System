@@ -40,7 +40,7 @@ export default function CorporateOnboarding({ onSuccess }: { onSuccess: () => vo
           <Building2 size={32} />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Register Your Company</h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Set up a corporate account to manage employee travel and expenses.</p>
+        <p className="text-text-muted mt-2">Set up a corporate account to manage employee travel and expenses.</p>
       </div>
 
       {step === 4 ? (
@@ -49,7 +49,7 @@ export default function CorporateOnboarding({ onSuccess }: { onSuccess: () => vo
             <CheckCircle2 size={32} />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Registration Submitted</h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-text-muted mb-6">
             Your corporate account is now pending review. You will be notified once it is approved.
           </p>
           <button
@@ -67,7 +67,7 @@ export default function CorporateOnboarding({ onSuccess }: { onSuccess: () => vo
             <div className="absolute top-1/2 start-0 h-1 bg-blue-600 -z-10 -translate-y-1/2 rounded-full transition-all duration-300" style={{ width: `${((step - 1) / 2) * 100}%` }}></div>
             
             {[1, 2, 3].map((s) => (
-              <div key={s} className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 font-semibold transition-colors duration-300 ${step >= s ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'}`}>
+              <div key={s} className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-gray-800 font-semibold transition-colors duration-300 ${step >= s ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-text-muted'}`}>
                 {s === 1 && <Briefcase size={18} />}
                 {s === 2 && <Users size={18} />}
                 {s === 3 && <Mail size={18} />}

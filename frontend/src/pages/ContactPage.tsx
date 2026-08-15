@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageSquare, ChevronDown } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useSubmitContact, useCompanyInfo } from '../hooks/useApi';
 import toast from 'react-hot-toast';
@@ -13,14 +13,14 @@ export default function ContactPage() {
   const submitContact = useSubmitContact();
   const { data: companyData } = useCompanyInfo();
   
-  const companyInfo = companyData || { 
+  const companyInfo = (companyData || { 
     name: 'LuxuryStay', 
     contacts: [
       { type: 'phone', value: '+1 (800) 123-4567', label: 'Call Us (24/7)' },
       { type: 'email', value: 'support@luxurystay.com', label: 'Email Us' },
       { type: 'address', value: '123 Luxury Avenue\nNew York, NY 10001\nUnited States', label: 'Headquarters' }
     ]
-  };
+  }) as { name: string; contacts: { type: string; value: string; label: string }[] };
   
   const phoneContact = companyInfo.contacts?.find(c => c.type === 'phone' || c.type === 'PHONE');
   const emailContact = companyInfo.contacts?.find(c => c.type === 'email' || c.type === 'EMAIL');
@@ -67,7 +67,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Contact Info */}
           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-1 space-y-6">
-            <div className="bg-primary rounded-3xl p-8 lg:p-10 text-white h-full flex flex-col justify-between shadow-xl relative overflow-hidden">
+            <div className="bg-primary-950 rounded-3xl p-8 lg:p-10 text-white h-full flex flex-col justify-between shadow-xl relative overflow-hidden">
               <div className="absolute top-0 end-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
               <div className="relative z-10">
                 <h3 className="text-2xl font-serif font-bold mb-8 text-white">Contact Information</h3>
@@ -144,7 +144,7 @@ export default function ContactPage() {
                          <option value="partnership">Partnership Opportunity</option>
                          <option value="other">Other</option>
                        </select>
-                       <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+                       <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
                     </div>
                   </div>
                 </div>

@@ -87,7 +87,7 @@ jwt:
 # Cloudinary Configuration
 cloudinary:
   cloud-name: ${CLOUDINARY_CLOUD_NAME:dfzumcljt}
-  api-key: ${CLOUDINARY_API_KEY:776629485451896}
+  api-key: ${CLOUDINARY_API_KEY:}
   api-secret: ${CLOUDINARY_API_SECRET:}
 
 # Stripe Configuration
@@ -120,9 +120,15 @@ gemini:
 app:
   jwt-issuer: LuxuryStay
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:5175,http://localhost:3000
+    allowed-origins: http://localhost:5173,http://localhost:5175,http://localhost:3000,http://localhost:4173,https://hotel-management-booking-system-virid.vercel.app
   upload:
     max-files: 10
+  rate-limit:
+    # Reads are generous: a single page load fires many parallel GETs.
+    anonymous-read: 300
+    anonymous-write: 20
+    authenticated-read: 600
+    authenticated-write: 60
 
 ---
 # Dev profile

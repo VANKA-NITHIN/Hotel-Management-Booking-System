@@ -14,7 +14,7 @@ export default function LoginPage() {
           className="w-full h-full object-cover"
           priority={true}
         />
-        <div className="absolute inset-0 bg-linear-to-r from-primary/90 to-primary/40" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-950/90 to-primary-950/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -62,7 +62,7 @@ export default function LoginPage() {
                     card: 'shadow-none border border-border-base bg-bg-surface-hover rounded-3xl w-full p-2',
                     headerTitle: 'hidden',
                     headerSubtitle: 'hidden',
-                    formButtonPrimary: 'bg-primary hover:bg-primary-600 text-white font-bold py-3 rounded-xl transition-all shadow-md',
+                    formButtonPrimary: 'bg-primary-950 hover:bg-primary-900 text-white font-bold py-3 rounded-xl transition-all shadow-md',
                     socialButtonsBlockButton: 'border border-border-base bg-bg-surface hover:bg-bg-surface-hover text-text-base font-bold rounded-xl py-3 transition-colors',
                     socialButtonsBlockButtonText: 'font-bold',
                     formFieldInput: 'bg-bg-surface border-border-base hover:border-border-strong focus:border-primary focus:ring-1 focus:ring-primary rounded-xl text-text-base font-medium py-3 transition-all',

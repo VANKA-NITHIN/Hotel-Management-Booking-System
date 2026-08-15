@@ -96,7 +96,6 @@ export interface Room {
   weekendPrice?: number;
   holidayPrice?: number;
   amenities?: string[];
-  images?: RoomImage[];
 }
 
 export interface Booking {

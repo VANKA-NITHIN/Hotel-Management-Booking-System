@@ -68,7 +68,7 @@ export function InvoiceModal({ isOpen, onClose, booking }: InvoiceModalProps) {
         <div className="flex items-start justify-between border-b border-border-base pb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-serif font-bold text-lg">
+              <div className="w-8 h-8 rounded-lg bg-primary-950 text-white flex items-center justify-center font-serif font-bold text-lg">
                 L
               </div>
               <span className="font-serif font-bold text-xl text-text-base tracking-wide">LUXURYSTAY</span>

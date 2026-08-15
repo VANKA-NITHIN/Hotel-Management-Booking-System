@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { toast } from '../ui/Toast';
 import { Button } from '../ui/Button';
 import { useSubscribeNewsletter, useCompanyInfo } from '../../hooks/useApi';
+import type { CompanyInfo } from '../../types';
 
 const footerLinks = {
   company: [
@@ -73,7 +74,7 @@ export default function Footer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: companyInfoResponse } = useCompanyInfo();
-  const companyInfo = companyInfoResponse;
+  const companyInfo = companyInfoResponse as CompanyInfo | undefined;
   const subscribeNewsletter = useSubscribeNewsletter();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -95,7 +96,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-primary text-neutral-400 mt-auto overflow-hidden">
+    <footer className="bg-primary-950 text-neutral-400 mt-auto overflow-hidden">
       {/* Top Banner */}
       <div className="border-b border-white/5 bg-white/5">
         <div className="container-section py-8 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -115,7 +116,7 @@ export default function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
-              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-secondary transition-colors"
+              className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-neutral-400 focus:outline-none focus:border-secondary transition-colors"
               required
             />
             <Button
@@ -257,7 +258,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-white/10 bg-black/20">
         <div className="container-section py-6 flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4 text-xs text-neutral-500 font-medium">
+          <div className="flex items-center gap-4 text-xs text-neutral-400 font-medium">
             <span>{companyInfo?.copyrightText || `© ${new Date().getFullYear()} LuxuryStay Inc. All rights reserved.`}</span>
           </div>
           
@@ -279,7 +280,7 @@ export default function Footer() {
                 </div>
               </div>
               <div className="w-10 h-6 bg-white rounded border border-neutral-200 flex items-center justify-center overflow-hidden">
-                <span className="text-[10px] font-bold text-blue-500">AMEX</span>
+                <span className="text-[10px] font-bold text-blue-800">AMEX</span>
               </div>
               <div className="h-6 px-2 bg-[#02042b] rounded border border-neutral-800 flex items-center justify-center overflow-hidden">
                 <span className="text-[10px] font-bold text-white tracking-widest">RAZORPAY</span>

@@ -29,7 +29,7 @@ export function AccordionItem({ title, children, isOpen = false, onToggle, class
       <button
         type="button"
         onClick={handleToggle}
-        className="w-full py-4 flex items-center justify-between text-start focus:outline-none focus-visible:ring-2 focus-visible:ring-border-focus rounded-md"
+        className="w-full py-4 flex items-center justify-between text-start focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary/50 rounded-md"
         aria-expanded={isExpanded}
       >
         <span className="font-semibold text-text-base">{title}</span>

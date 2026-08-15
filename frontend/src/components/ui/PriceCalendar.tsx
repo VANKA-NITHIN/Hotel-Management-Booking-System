@@ -165,7 +165,7 @@ export function PriceCalendar({
 
           let bgClass = 'bg-bg-surface-hover border-border-base hover:border-primary/50';
           if (isSelected) {
-            bgClass = 'bg-primary text-white border-primary shadow-sm';
+            bgClass = 'bg-primary-950 text-white border-primary shadow-sm';
           } else if (isInRange) {
             bgClass = 'bg-primary/10 border-primary/30 text-text-base';
           } else if (isCheapest) {

@@ -22,14 +22,16 @@ public class CheckInService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional(readOnly = true)
-    public CheckInDTO getCheckInByBookingId(Long bookingId) {
+    public CheckInDTO getCheckInByBookingId(Long bookingId, org.springframework.security.core.Authentication authentication) {
+        assertCanAccessBooking(bookingId, authentication);
         CheckIn checkIn = checkInRepository.findByBookingId(bookingId)
                 .orElseThrow(() -> new RuntimeException("Check-In not found for booking: " + bookingId));
         return mapToDTO(checkIn);
     }
 
     @Transactional
-    public CheckInDTO submitCheckIn(Long bookingId, CheckInDTO dto) {
+    public CheckInDTO submitCheckIn(Long bookingId, CheckInDTO dto, org.springframework.security.core.Authentication authentication) {
+        assertCanAccessBooking(bookingId, authentication);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
 
@@ -75,7 +77,8 @@ public class CheckInService {
     }
 
     @Transactional(readOnly = true)
-    public String getDigitalPass(Long bookingId) {
+    public String getDigitalPass(Long bookingId, org.springframework.security.core.Authentication authentication) {
+        assertCanAccessBooking(bookingId, authentication);
         CheckIn checkIn = checkInRepository.findByBookingId(bookingId)
                 .orElseThrow(() -> new RuntimeException("Check-In not found"));
 
@@ -84,6 +87,31 @@ public class CheckInService {
         }
 
         return checkIn.getQrToken();
+    }
+
+    /**
+     * SECURITY: check-in data may only be accessed by the booking owner, or by staff.
+     * Prevents IDOR - previously any GUEST could submit / read / retrieve the digital pass
+     * for any booking by guessing the booking id.
+     */
+    private void assertCanAccessBooking(Long bookingId, org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new org.springframework.security.access.AccessDeniedException("Authentication required");
+        }
+        boolean isStaff = authentication.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .anyMatch(authority -> java.util.Set.of("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_STAFF", "ROLE_RECEPTION").contains(authority));
+        if (isStaff) {
+            return;
+        }
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
+        boolean isOwner = booking.getUser() != null
+                && booking.getUser().getEmail() != null
+                && booking.getUser().getEmail().equals(authentication.getName());
+        if (!isOwner) {
+            throw new org.springframework.security.access.AccessDeniedException("You do not have access to this booking");
+        }
     }
 
     private CheckInDTO mapToDTO(CheckIn checkIn) {

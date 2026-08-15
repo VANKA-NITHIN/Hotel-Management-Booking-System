@@ -41,9 +41,17 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public Map<String, String> createPaymentIntent(Long bookingId, Double amount, String currency) {
+    public Map<String, String> createPaymentIntent(Long bookingId, String currency) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Booking not found: " + bookingId));
+
+        // SECURITY: the amount is ALWAYS derived server-side from the booking's computed
+        // total (rooms * nights + tax + service charge - discount). The client-supplied
+        // amount is never trusted - previously a caller could pay $0.01 for a $1000 stay.
+        if (booking.getTotalAmount() == null || booking.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Booking has no payable amount: " + bookingId);
+        }
+        double amount = booking.getTotalAmount().doubleValue();
 
         Map<String, Object> params = Map.of(
                 "amount", Math.round(amount * 100),

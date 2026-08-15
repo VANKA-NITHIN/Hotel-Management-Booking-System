@@ -10,45 +10,45 @@
   --breakpoint-3xl: 120rem; /* 1920px */
   --breakpoint-4xl: 160rem; /* 2560px */
 
-  /* Neutral Scale (Slate - Professional & Crisp) */
-  --color-neutral-25: #fcfcfd;
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cbd5e1;
-  --color-neutral-400: #94a3b8;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
-  --color-neutral-800: #1e293b;
-  --color-neutral-900: #0f172a;
-  --color-neutral-950: #020617;
+  /* Neutral Scale (Warm Bone - calm ivory family) */
+  --color-neutral-25: #fdfdfb;
+  --color-neutral-50: #faf9f5;
+  --color-neutral-100: #f4f1ea;
+  --color-neutral-200: #e7e2d6;
+  --color-neutral-300: #d2cab9;
+  --color-neutral-400: #a39a81;
+  --color-neutral-500: #786e58;
+  --color-neutral-600: #5f5745;
+  --color-neutral-700: #4a4436;
+  --color-neutral-800: #383329;
+  --color-neutral-900: #28251e;
+  --color-neutral-950: #191713;
 
-  /* Primary (Rich Navy - Trust, Luxury) */
-  --color-primary-50: #f4f6f8;
-  --color-primary-100: #e3e8ee;
-  --color-primary-200: #c2cdd8;
-  --color-primary-300: #9badbe;
-  --color-primary-400: #7188a1;
-  --color-primary-500: #516983;
-  --color-primary-600: #3d5067;
-  --color-primary-700: #324255;
-  --color-primary-800: #2b3748;
-  --color-primary-900: #27313e;
-  --color-primary-950: #1a202a;
+  /* Primary (Deep Evergreen - serene forest luxury) */
+  --color-primary-50: #f2f7f4;
+  --color-primary-100: #e0ebe4;
+  --color-primary-200: #c0d6c9;
+  --color-primary-300: #94b8a5;
+  --color-primary-400: #65967d;
+  --color-primary-500: #46795f;
+  --color-primary-600: #35604c;
+  --color-primary-700: #2b4e3e;
+  --color-primary-800: #253f34;
+  --color-primary-900: #1f342b;
+  --color-primary-950: #0d1f17;
 
-  /* Secondary (Champagne Gold - Premium, Accent) */
-  --color-secondary-50: #fcfaf4;
-  --color-secondary-100: #f8f3e5;
-  --color-secondary-200: #efe2c4;
-  --color-secondary-300: #e4cda0;
-  --color-secondary-400: #d6b274;
-  --color-secondary-500: #c99b50;
-  --color-secondary-600: #b58241;
-  --color-secondary-700: #966637;
-  --color-secondary-800: #7c5432;
-  --color-secondary-900: #65452b;
-  --color-secondary-950: #392415;
+  /* Secondary (Amber Gold - warm luxe accent) */
+  --color-secondary-50: #fbf7ef;
+  --color-secondary-100: #f7edd9;
+  --color-secondary-200: #eed9ae;
+  --color-secondary-300: #e3bf7d;
+  --color-secondary-400: #d8a455;
+  --color-secondary-500: #c98c3d;
+  --color-secondary-600: #b0712f;
+  --color-secondary-700: #91572a;
+  --color-secondary-800: #784628;
+  --color-secondary-900: #653b25;
+  --color-secondary-950: #381f12;
 
   /* Semantic */
   --color-success: #059669; /* Emerald 600 */
@@ -123,7 +123,7 @@
     --theme-primary: var(--color-primary-950);
     --theme-secondary: var(--color-secondary-600);
     
-    --theme-focus-ring: rgba(201, 155, 80, 0.3); /* Secondary-500 at 30% */
+    --theme-focus-ring: rgba(201, 140, 61, 0.3); /* Secondary-500 at 30% */
   }
 
   [data-theme="dark"], .dark {
@@ -144,7 +144,7 @@
     --theme-primary: var(--color-primary-100);
     --theme-secondary: var(--color-secondary-400);
     
-    --theme-focus-ring: rgba(214, 178, 116, 0.3); /* Secondary-400 at 30% */
+    --theme-focus-ring: rgba(216, 164, 85, 0.3); /* Secondary-400 at 30% */
     
     color-scheme: dark;
   }
@@ -192,10 +192,21 @@
     @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
            transition-all duration-200 cursor-pointer select-none
            disabled:opacity-50 disabled:cursor-not-allowed
-           bg-secondary text-white px-5 min-h-[40px] text-sm
-           hover:bg-secondary-600 hover:-translate-y-px
-           active:bg-secondary-700 active:translate-y-0 active:scale-[0.98]
+           bg-secondary-700 text-white px-5 min-h-[40px] text-sm
+           hover:bg-secondary-800 hover:-translate-y-px
+           active:bg-secondary-900 active:translate-y-0 active:scale-[0.98]
            shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-secondary/50 focus-visible:outline-none;
+  }
+  /* Dark mode: light champagne gold with navy text for WCAG AA contrast */
+  [data-theme="dark"] .btn-primary, .dark .btn-primary {
+    background: var(--color-secondary-400);
+    color: var(--color-primary-950);
+  }
+  [data-theme="dark"] .btn-primary:hover, .dark .btn-primary:hover {
+    background: var(--color-secondary-300);
+  }
+  [data-theme="dark"] .btn-primary:active, .dark .btn-primary:active {
+    background: var(--color-secondary-500);
   }
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 font-medium rounded-lg
@@ -280,6 +291,45 @@
     font-size: clamp(1rem, 1.5vw, 1.125rem); 
     line-height: 1.6; 
   }
+
+  /* Landing Page - Floating Search Bar (glassmorphic, taste-skill Section 5.C) */
+  .search-float {
+    @apply relative z-20 -mt-10 sm:-mt-14;
+  }
+  .search-float-inner {
+    @apply bg-bg-surface/95 dark:bg-neutral-950/90 backdrop-blur-2xl
+           rounded-2xl shadow-elevated border border-border-base
+           p-4 sm:p-5 transition-shadow duration-300;
+  }
+  .search-float-inner:hover {
+    box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.03);
+  }
+  [data-theme="dark"] .search-float-inner:hover,
+  .dark .search-float-inner:hover {
+    box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+
+  /* Landing Page - Stat Cards (taste-skill: no border-per-row, use cards) */
+  .stat-card {
+    @apply bg-bg-surface rounded-2xl p-6 lg:p-8 border border-border-base
+           transition-all duration-300;
+  }
+  .stat-card:hover {
+    @apply border-border-strong;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.06);
+  }
+  [data-theme="dark"] .stat-card:hover,
+  .dark .stat-card:hover {
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.3);
+  }
+
+  /* Landing Page - Feature Highlight Badge */
+  .feature-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
+           bg-secondary-50 text-secondary-700 border border-secondary-200/50
+           dark:bg-secondary-950/40 dark:text-secondary-400 dark:border-secondary-800;
+  }
   .page-header { 
     @apply font-semibold text-text-base tracking-tight; 
     font-size: clamp(1.5rem, 3vw, 2.25rem); 
@@ -315,6 +365,11 @@
   .section-padding {
     padding-top: clamp(4rem, 8vw, 8rem);
     padding-bottom: clamp(4rem, 8vw, 8rem);
+  }
+  /* Art-gallery luxury spacing (VISUAL_DENSITY: 3) */
+  .section-padding-lg {
+    padding-top: clamp(5rem, 10vw, 10rem);
+    padding-bottom: clamp(5rem, 10vw, 10rem);
   }
   .container-safe {
     @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
@@ -375,6 +430,8 @@
 @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 @keyframes skeleton { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes countUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes subtleGlow { 0%, 100% { box-shadow: 0 0 0 0 rgba(201, 140, 61, 0); } 50% { box-shadow: 0 0 20px 2px rgba(201, 140, 61, 0.08); } }
 
 /* ══════════════════════════════════════
    SCROLLBAR
@@ -412,7 +469,7 @@
   transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
 }
 [data-theme="dark"] .navbar-solid, .dark .navbar-solid {
-  background: rgba(15,23,42,0.97);
+  background: rgba(25,23,19,0.97);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 

@@ -6,8 +6,17 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   containerClassName?: string;
 }
 
+// Detect if the caller already constrains the wrapper size (aspect-ratio
+// utilities or explicit w-/h- sizing). If so, respect it — otherwise we
+// reserve space using the image's intrinsic dimensions to prevent CLS.
+const hasOwnSizing = (className?: string) =>
+  /(?:^|\s)(?:aspect-|h-|w-)/.test(className || '');
+
 export const OptimizedImage = React.forwardRef<HTMLImageElement, ImageProps>(
-  ({ src, alt, className, priority = false, containerClassName, ...props }, ref) => {
+  (
+    { src, alt, className, priority = false, containerClassName, width, height, ...props },
+    ref
+  ) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [hasError, setHasError] = useState(false);
 
@@ -33,18 +42,44 @@ export const OptimizedImage = React.forwardRef<HTMLImageElement, ImageProps>(
       return url;
     };
 
+    // Intrinsic dimensions: explicit props win, then Unsplash w=/h= params.
+    const deriveIntrinsicSize = () => {
+      if (width != null && height != null) return { width, height };
+      try {
+        if (src && src.includes('unsplash.com')) {
+          const u = new URL(src);
+          const w = Number(u.searchParams.get('w'));
+          const h = Number(u.searchParams.get('h'));
+          if (w > 0 && h > 0) return { width: w, height: h };
+        }
+      } catch {
+        // Ignore invalid URLs
+      }
+      return { width: undefined, height: undefined };
+    };
+
+    const { width: intrinsicWidth, height: intrinsicHeight } = deriveIntrinsicSize();
     const optimizedSrc = getOptimizedSrc(src);
+
+    // Only reserve the wrapper's aspect ratio when the caller hasn't sized it,
+    // so fixed/aspect-ratio containers keep their intended shape.
+    const reservedAspectRatio =
+      intrinsicWidth && intrinsicHeight && !hasOwnSizing(className)
+        ? { aspectRatio: `${intrinsicWidth} / ${intrinsicHeight}` }
+        : undefined;
 
     if (hasError) {
       return (
-        <div 
+        <div
           className={[
-            "flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-400", 
-            className, 
-            containerClassName
-          ].filter(Boolean).join(" ")}
+            'flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-400',
+            className,
+            containerClassName,
+          ]
+            .filter(Boolean)
+            .join(' ')}
           role="img"
-          aria-label={alt || "Image failed to load"}
+          aria-label={alt || 'Image failed to load'}
         >
           <ImageOff className="w-8 h-8 opacity-50" />
         </div>
@@ -52,26 +87,33 @@ export const OptimizedImage = React.forwardRef<HTMLImageElement, ImageProps>(
     }
 
     return (
-      <div className={["relative overflow-hidden", containerClassName, className].filter(Boolean).join(" ")}>
+      <div
+        className={['relative overflow-hidden', containerClassName, className].filter(Boolean).join(' ')}
+        style={reservedAspectRatio}
+      >
         {/* Skeleton Placeholder */}
         {!isLoaded && (
           <div className="absolute inset-0 bg-neutral-200 dark:bg-neutral-800 animate-pulse" />
         )}
-        
+
         <img
           ref={ref}
           src={optimizedSrc}
-          alt={alt || ""}
+          alt={alt || ''}
+          width={intrinsicWidth}
+          height={intrinsicHeight}
           loading={priority ? 'eager' : 'lazy'}
           decoding={priority ? 'sync' : 'async'}
           // Using React 19 / standard fetchpriority
           {...((priority ? { fetchpriority: 'high' } : {}) as any)}
           className={[
-            "w-full h-full transition-opacity duration-500",
-            className?.includes('object-') ? "" : "object-cover",
-            isLoaded ? "opacity-100" : "opacity-0",
-            className
-          ].filter(Boolean).join(" ")}
+            'w-full h-full transition-opacity duration-500',
+            className?.includes('object-') ? '' : 'object-cover',
+            isLoaded ? 'opacity-100' : 'opacity-0',
+            className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
           onLoad={(e) => {
             setIsLoaded(true);
             if (props.onLoad) props.onLoad(e);

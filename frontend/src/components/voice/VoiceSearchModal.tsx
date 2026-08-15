@@ -19,16 +19,21 @@ export const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ isOpen, onCl
   const [isSearching, setIsSearching] = React.useState(false);
   
   const handleFinalTranscript = async (transcript: string, confidence: number) => {
-    if (confidence < 0.3 && transcript.length > 0) {
+    if (!transcript) return;
+
+    // Chrome's Web Speech API always reports confidence 0 (a known browser
+    // quirk), so a 0 value means "unknown", not "unintelligible". Only gate on
+    // confidence when the browser actually provides a real value (Firefox,
+    // Safari, Edge).
+    const hasConfidence = confidence > 0;
+    if (hasConfidence && confidence < 0.3) {
       toast.error('Could not understand clearly. Please try again.');
       return;
     }
     
-    if (confidence < 0.6 && transcript.length > 0) {
+    if (hasConfidence && confidence < 0.6) {
       toast('Low confidence. Did you mean: ' + transcript + '?', { icon: '🤔' });
     }
-    
-    if (!transcript) return;
 
     setIsSearching(true);
     try {
@@ -170,7 +175,7 @@ export const VoiceSearchModal: React.FC<VoiceSearchModalProps> = ({ isOpen, onCl
                 <div className="text-center py-8 text-text-muted">
                   <Search className="w-12 h-12 mx-auto mb-3 opacity-20" />
                   <p>No results found for your search.</p>
-                  <button onClick={startListening} className="mt-4 px-4 py-2 bg-primary text-white rounded-lg font-medium">Try again</button>
+                  <button onClick={startListening} className="mt-4 px-4 py-2 bg-primary-950 text-white rounded-lg font-medium">Try again</button>
                 </div>
               )}
             </div>

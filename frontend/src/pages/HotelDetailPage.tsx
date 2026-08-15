@@ -48,6 +48,13 @@ export default function HotelDetailPage() {
   const navigate = useNavigate();
   const hotelId = Number(id) || 1;
 
+  const [activeTab, setActiveTab] = useState('overview');
+  const [checkIn, setCheckIn] = usePersistentState('hotel_detail_checkIn', '');
+  const [checkOut, setCheckOut] = usePersistentState('hotel_detail_checkOut', '');
+  const [guests, setGuests] = usePersistentState('hotel_detail_guests', 2);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
   const { data: hotelData, isLoading: hotelLoading } = useHotel(hotelId);
   const { data: allRoomsData } = useRooms(hotelId);
   const { data: availableRoomsData } = useAvailableRooms(hotelId, checkIn, checkOut);
@@ -57,13 +64,6 @@ export default function HotelDetailPage() {
   const { openSignIn } = useClerk();
   const { data: wishlistData } = useWishlist(isSignedIn ?? false);
   const wishlistHotels = wishlistData?.data || [];
-
-  const [activeTab, setActiveTab] = useState('overview');
-  const [checkIn, setCheckIn] = usePersistentState('hotel_detail_checkIn', '');
-  const [checkOut, setCheckOut] = usePersistentState('hotel_detail_checkOut', '');
-  const [guests, setGuests] = usePersistentState('hotel_detail_guests', 2);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const hotel = hotelData?.data as Hotel | undefined;
   
@@ -288,18 +288,18 @@ export default function HotelDetailPage() {
                   </button>
                   <button 
                     onClick={() => setIsActivityOpen(true)}
-                    className="px-4 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center gap-2 hover:bg-amber-500/20 transition-all shadow-sm text-xs font-bold text-amber-600"
+                    className="px-4 h-12 rounded-full bg-secondary/10 border border-secondary/30 flex items-center gap-2 hover:bg-secondary/20 transition-all shadow-sm text-xs font-bold text-secondary-700 dark:text-secondary"
                     title="Book Resort Experiences"
                   >
-                    <UtensilsCrossed className="w-4 h-4 text-amber-600" />
+                    <UtensilsCrossed className="w-4 h-4 text-secondary-700 dark:text-secondary" />
                     <span>Experiences</span>
                   </button>
                   <button 
                     onClick={() => setIsItineraryOpen(true)}
-                    className="px-4 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center gap-2 hover:bg-indigo-500/20 transition-all shadow-sm text-xs font-bold text-indigo-600"
+                    className="px-4 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center gap-2 hover:bg-primary/20 transition-all shadow-sm text-xs font-bold text-primary"
                     title="View AI Travel Itinerary"
                   >
-                    <MapPin className="w-4 h-4 text-indigo-600" />
+                    <MapPin className="w-4 h-4 text-primary" />
                     <span>AI Guide</span>
                   </button>
                 </div>
@@ -307,7 +307,7 @@ export default function HotelDetailPage() {
 
               {/* Rating summary */}
               <div className="flex items-center gap-4 mt-6 p-4 bg-bg-surface rounded-2xl border border-border-base shadow-sm">
-                <div className="w-16 h-16 rounded-xl bg-primary text-white flex flex-col items-center justify-center shrink-0">
+                <div className="w-16 h-16 rounded-xl bg-primary-950 text-white flex flex-col items-center justify-center shrink-0">
                   <span className="text-xl font-bold leading-none">{avgRating}</span>
                   <span className="text-[10px] font-medium opacity-70 tracking-wider mt-1">OUT OF 5</span>
                 </div>
@@ -627,7 +627,7 @@ export default function HotelDetailPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-4 py-1 rounded-full text-sm capitalize ${selectedCategory === cat ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted'} transition-colors`}
+                    className={`px-4 py-1 rounded-full text-sm capitalize ${selectedCategory === cat ? 'bg-primary-950 text-white' : 'bg-bg-surface text-text-muted'} transition-colors`}
                   >
                     {cat}
                   </button>
@@ -669,7 +669,7 @@ export default function HotelDetailPage() {
                   <select 
                     value={guests} 
                     onChange={(e) => setGuests(Number(e.target.value))} 
-                    className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg px-4 py-2.5 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors"
+                    className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-xl px-4 py-2.5 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-colors"
                   >
                     {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} {n === 1 ? 'Guest' : 'Guests'}</option>)}
                   </select>

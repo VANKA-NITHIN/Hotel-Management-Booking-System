@@ -20,7 +20,7 @@ export default function ProfilePage() {
             <div className="bg-bg-surface rounded-2xl border border-border-base p-6 shadow-sm">
               <h3 className="font-bold text-text-base mb-4 uppercase tracking-wider text-xs">Quick Links</h3>
               <nav className="space-y-2">
-                <a href="#profile" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-bold shadow-md shadow-primary/20 transition-all">
+                <a href="#profile" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary-950 text-white font-bold shadow-md shadow-primary/20 transition-all">
                   <User className="w-4 h-4" /> Personal Info
                 </a>
                 <a href="#security" className="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg-surface-hover hover:text-text-base font-bold transition-all">
@@ -33,12 +33,12 @@ export default function ProfilePage() {
             </div>
             
             <div className="bg-secondary/10 rounded-2xl border border-secondary/20 p-6 shadow-sm">
-              <h3 className="font-bold text-secondary-dark mb-2">LuxuryStay Premium</h3>
-              <p className="text-sm font-medium text-secondary-dark/80 mb-4">You are currently enjoying Gold Tier benefits.</p>
+              <h3 className="font-bold text-secondary-700 dark:text-secondary-400 mb-2">LuxuryStay Premium</h3>
+              <p className="text-sm font-medium text-secondary-700/80 dark:text-secondary-400/80 mb-4">You are currently enjoying Gold Tier benefits.</p>
               <div className="w-full bg-secondary/20 h-2 rounded-full overflow-hidden">
-                <div className="bg-secondary h-full w-[70%] rounded-full"></div>
+                <div className="bg-secondary-700 dark:bg-secondary-400 h-full w-[70%] rounded-full"></div>
               </div>
-              <p className="text-xs font-bold text-secondary-dark mt-2 text-end">7,500 / 10,000 pts</p>
+              <p className="text-xs font-bold text-secondary-700 dark:text-secondary-400 mt-2 text-end">7,500 / 10,000 pts</p>
             </div>
           </motion.div>
 
@@ -52,7 +52,7 @@ export default function ProfilePage() {
                   pageScrollBox: 'p-0 w-full',
                   headerTitle: 'text-2xl font-serif font-bold text-text-base',
                   headerSubtitle: 'text-text-muted font-medium',
-                  formButtonPrimary: 'bg-primary hover:bg-primary-600 text-white font-bold px-6 py-2 rounded-xl transition-all',
+                  formButtonPrimary: 'bg-primary-950 hover:bg-primary-900 text-white font-bold px-6 py-2 rounded-xl transition-all',
                   formFieldInput: 'bg-bg-surface-hover border-border-base hover:border-border-strong focus:border-primary focus:ring-1 focus:ring-primary rounded-xl text-text-base font-medium transition-all',
                   formFieldLabel: 'text-sm font-bold text-text-base mb-1.5',
                   profileSectionTitleText: 'text-lg font-bold text-text-base border-b border-border-base pb-3 mb-5 mt-2',

@@ -27,7 +27,7 @@ export function Alert({ variant = 'info', title, children, dismissible, classNam
       <Icon className={`w-5 h-5 mt-0.5 shrink-0 ${text}`} />
       <div className="flex-1 min-w-0">
         {title && <h4 className={`font-semibold text-sm mb-0.5 ${text}`}>{title}</h4>}
-        <div className={`text-sm ${variant === 'info' ? 'text-gray-600 dark:text-gray-400' : text}`}>{children}</div>
+        <div className={`text-sm ${variant === 'info' ? 'text-text-muted' : text}`}>{children}</div>
       </div>
       {dismissible && (
         <button onClick={() => setDismissed(true)} className={`shrink-0 p-1 rounded hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${text}`}>

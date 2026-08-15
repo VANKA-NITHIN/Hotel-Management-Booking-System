@@ -47,7 +47,17 @@ public class PaymentServiceImplTest {
         when(bookingRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> 
-            paymentService.createPaymentIntent(1L, 100.0, "USD")
+            paymentService.createPaymentIntent(1L, "USD")
+        );
+    }
+
+    @Test
+    void testCreatePaymentIntent_RejectsZeroAmountBooking() {
+        Booking booking = Booking.builder().id(1L).totalAmount(java.math.BigDecimal.ZERO).build();
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking));
+
+        assertThrows(IllegalArgumentException.class, () -> 
+            paymentService.createPaymentIntent(1L, "USD")
         );
     }
 

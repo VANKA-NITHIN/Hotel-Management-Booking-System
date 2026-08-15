@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ClipboardList, Key, Users, CheckCircle, Clock, Building2 } from 'lucide-react';
+import { ClipboardList, Key, Users, CheckCircle, Clock, Building2, ChevronDown } from 'lucide-react';
 import { usePersistentState } from '../hooks/usePersistentState';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Badge, statusBadge } from '../components/ui/Badge';
@@ -61,7 +61,7 @@ export default function StaffDashboard() {
   return (
     <div className="min-h-screen bg-bg-surface-hover flex pt-[72px]">
       {/* Sidebar */}
-      <aside className="w-64 3xl:w-80 bg-primary min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
+      <aside className="w-64 3xl:w-80 bg-primary-950 min-h-[calc(100vh-72px)] p-4 hidden lg:flex flex-col sticky top-[72px] shrink-0 shadow-2xl z-10 rounded-e-3xl overflow-hidden border-e border-white/10">
         <div className="absolute top-0 end-0 w-40 h-40 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="mb-10 px-4 py-4">
           <span className="text-transparent bg-clip-text gold-gradient font-serif text-2xl font-bold tracking-wider">{t('staff:dashboard', 'Staff Portal')}</span>
@@ -78,7 +78,7 @@ export default function StaffDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-secondary text-primary shadow-lg shadow-secondary/20 translate-x-1'
+                  ? 'bg-secondary text-primary dark:bg-secondary-400 dark:text-primary-950 shadow-lg shadow-secondary/20 dark:shadow-secondary-400/20 translate-x-1'
                   : 'text-white/60 hover:bg-white/10 hover:text-white'
               }`}
             >
@@ -101,7 +101,7 @@ export default function StaffDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-primary text-white shadow-md'
+                  ? 'bg-primary-950 text-white shadow-md'
                   : 'text-text-muted hover:bg-bg-surface-hover hover:text-text-base'
               }`}
             >
@@ -126,7 +126,7 @@ export default function StaffDashboard() {
               <option value="">Select a property...</option>
               {hotels.map((h: any) => <option key={h.id} value={h.id}>{h.name}</option>)}
             </select>
-            <div className="absolute end-4 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+            <ChevronDown className="absolute end-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted pointer-events-none" />
           </div>
         </div>
 
@@ -243,7 +243,7 @@ export default function StaffDashboard() {
                              <option value="DIRTY">Mark as Dirty</option>
                              <option value="MAINTENANCE">Maintenance Req.</option>
                            </select>
-                           <div className="absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">▼</div>
+                           <ChevronDown className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
                         </div>
                       </div>
                     );

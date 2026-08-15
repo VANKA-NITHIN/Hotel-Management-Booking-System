@@ -15,10 +15,10 @@ public class CheckInController {
     private final CheckInService checkInService;
 
     @GetMapping("/{bookingId}")
-    @PreAuthorize("hasRole('GUEST') or hasRole('ADMIN')")
-    public ResponseEntity<CheckInDTO> getCheckInStatus(@PathVariable Long bookingId) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CheckInDTO> getCheckInStatus(@PathVariable Long bookingId, org.springframework.security.core.Authentication authentication) {
         try {
-            return ResponseEntity.ok(checkInService.getCheckInByBookingId(bookingId));
+            return ResponseEntity.ok(checkInService.getCheckInByBookingId(bookingId, authentication));
         } catch (Exception e) {
             // Return empty 204 or new DTO if not found, simplifying for now
             return ResponseEntity.noContent().build();
@@ -26,9 +26,9 @@ public class CheckInController {
     }
 
     @PostMapping("/{bookingId}/submit")
-    @PreAuthorize("hasRole('GUEST')")
-    public ResponseEntity<CheckInDTO> submitCheckIn(@PathVariable Long bookingId, @RequestBody CheckInDTO dto) {
-        return ResponseEntity.ok(checkInService.submitCheckIn(bookingId, dto));
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<CheckInDTO> submitCheckIn(@PathVariable Long bookingId, @RequestBody CheckInDTO dto, org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(checkInService.submitCheckIn(bookingId, dto, authentication));
     }
 
     @PostMapping("/{bookingId}/verify")
@@ -38,8 +38,8 @@ public class CheckInController {
     }
 
     @GetMapping("/{bookingId}/pass")
-    @PreAuthorize("hasRole('GUEST')")
-    public ResponseEntity<String> getDigitalPass(@PathVariable Long bookingId) {
-        return ResponseEntity.ok(checkInService.getDigitalPass(bookingId));
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<String> getDigitalPass(@PathVariable Long bookingId, org.springframework.security.core.Authentication authentication) {
+        return ResponseEntity.ok(checkInService.getDigitalPass(bookingId, authentication));
     }
 }

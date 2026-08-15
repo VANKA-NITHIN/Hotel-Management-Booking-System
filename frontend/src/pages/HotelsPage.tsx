@@ -386,7 +386,7 @@ export default function HotelsPage() {
                         onClick={() => setPage(pageNum)}
                         className={`w-10 h-10 rounded-lg text-sm font-bold transition-all ${
                           page === pageNum
-                            ? 'bg-primary text-white shadow-md'
+                            ? 'bg-primary-950 text-white shadow-md'
                             : 'text-text-muted hover:bg-bg-surface hover:text-text-base'
                         }`}
                       >

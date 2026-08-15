@@ -60,7 +60,7 @@ export function LoyaltyTierModal({ isOpen, onClose, currentPoints = 1250 }: Loya
         {/* User Current Tier Banner */}
         <div className="bg-linear-to-r from-primary/10 via-primary/5 to-transparent p-5 rounded-2xl border border-primary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-12 h-12 rounded-xl bg-primary-950 text-white flex items-center justify-center shrink-0 shadow-md">
               <Crown className="w-6 h-6" />
             </div>
             <div>
@@ -79,7 +79,7 @@ export function LoyaltyTierModal({ isOpen, onClose, currentPoints = 1250 }: Loya
                 {t('wallet:pointsToNextLevel', { points: pointsToNext, level: nextTier.name })}
               </p>
               <div className="w-full sm:w-36 h-2 bg-bg-surface-hover rounded-full overflow-hidden mt-1.5 border border-border-base">
-                <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
+                <div className="h-full bg-primary-950 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
               </div>
             </div>
           )}

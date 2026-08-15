@@ -129,7 +129,7 @@ function ClerkLoginPage() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative">
         <OptimizedImage src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&h=1600&fit=crop" alt="Luxury Hotel" className="w-full h-full object-cover" priority={true} />
-        <div className="absolute inset-0 bg-linear-to-r from-primary/80 to-primary/40" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-950/80 to-primary-950/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">
             <h1 className="text-4xl font-serif font-bold mb-4">Welcome Back to Luxury</h1>
@@ -155,7 +155,7 @@ function ClerkRegisterPage() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative">
         <OptimizedImage src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&h=1600&fit=crop" alt="Luxury Resort" className="w-full h-full object-cover" priority={true} />
-        <div className="absolute inset-0 bg-linear-to-r from-primary/80 to-primary/40" />
+        <div className="absolute inset-0 bg-linear-to-r from-primary-950/80 to-primary-950/40" />
         <div className="absolute inset-0 flex items-center justify-center p-12">
           <div className="text-white max-w-md">
             <h1 className="text-4xl font-serif font-bold mb-4">Join LuxuryStay</h1>

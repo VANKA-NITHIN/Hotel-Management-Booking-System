@@ -69,7 +69,7 @@ const HotelCard = React.memo(function HotelCard({ hotel, index = 0, variant = 'g
                 </h3>
               </Link>
             </div>
-            <div className="flex items-center gap-1 bg-primary text-white px-2 py-1 rounded-md shrink-0">
+            <div className="flex items-center gap-1 bg-primary-950 text-white px-2 py-1 rounded-md shrink-0">
               <Star className="w-3 h-3 fill-current" />
               <span className="text-xs font-bold">{hotel.rating?.toFixed(1) || '4.5'}</span>
             </div>

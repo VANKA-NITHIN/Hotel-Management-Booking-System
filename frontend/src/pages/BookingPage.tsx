@@ -194,7 +194,7 @@ export default function BookingPage() {
           contact: data.phone,
         },
         theme: {
-          color: '#111827', // Matching dark theme
+          color: '#0d1f17', // Matching brand evergreen
         },
       };
 
@@ -244,7 +244,7 @@ export default function BookingPage() {
             {[1, 2, 3].map((num) => (
               <div key={num} className="flex flex-col items-center gap-3">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-base transition-all duration-500 ${
-                  step > num ? 'bg-primary text-white shadow-md' : step === num ? 'bg-primary text-white ring-4 ring-primary/20 shadow-md scale-110' : 'bg-bg-surface text-text-muted border-2 border-border-strong'
+                  step > num ? 'bg-primary-950 text-white shadow-md' : step === num ? 'bg-primary-950 text-white ring-4 ring-primary/20 shadow-md scale-110' : 'bg-bg-surface text-text-muted border-2 border-border-strong'
                 }`}>
                   {step > num ? <Check className="w-6 h-6" /> : num}
                 </div>
@@ -290,7 +290,7 @@ export default function BookingPage() {
                       <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Adults</label>
                       <div className="relative">
                         <Users className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                        <select {...register('guests', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
+                        <select {...register('guests', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-xl ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-colors">
                           {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
@@ -299,7 +299,7 @@ export default function BookingPage() {
                       <label className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block">Children</label>
                       <div className="relative">
                         <Users className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                        <select {...register('children', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors">
+                        <select {...register('children', { valueAsNumber: true })} className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-xl ps-10 pe-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-colors">
                           {[0,1,2,3,4].map(n => <option key={n} value={n}>{n}</option>)}
                         </select>
                       </div>
@@ -361,7 +361,7 @@ export default function BookingPage() {
                       <textarea 
                         {...register('specialRequests')} 
                         rows={4} 
-                        className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-lg p-4 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus transition-colors resize-none" 
+                        className="w-full bg-bg-surface border border-border-base hover:border-border-strong rounded-xl p-4 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-colors resize-none" 
                         placeholder="Allergies, late arrival, extra pillows..."
                       />
                     </div>
@@ -407,7 +407,7 @@ export default function BookingPage() {
                     <Button 
                       size="lg" 
                       onClick={handlePayment} 
-                      className="bg-[#22c55e] hover:bg-[#16a34a] text-white border-none shadow-lg shadow-green-500/20"
+                      className="shadow-lg"
                       icon={<Lock className="w-4 h-4" />}
                     >
                       {t('booking:payNow', 'Pay')} ${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}

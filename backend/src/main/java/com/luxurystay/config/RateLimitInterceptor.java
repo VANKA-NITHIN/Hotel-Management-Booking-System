@@ -10,6 +10,7 @@ import io.github.bucket4j.Refill;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,16 +27,30 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             .expireAfterAccess(Duration.ofMinutes(5))
             .build();
 
-    private static final int ANONYMOUS_LIMIT = 30;
-    private static final int AUTHENTICATED_LIMIT = 120;
+    // Per-method limits: reads (GET) get generous budgets because a single page load fires
+    // many parallel API calls, while writes (POST/PUT/DELETE/PATCH) stay tight because that's
+    // where brute-force attacks (login, coupon guessing, contact spam) actually happen.
+    // All values are overridable via application.yml (app.rate-limit.*).
+    @Value("${app.rate-limit.anonymous-read:300}")
+    private int anonymousReadLimit;
+
+    @Value("${app.rate-limit.anonymous-write:20}")
+    private int anonymousWriteLimit;
+
+    @Value("${app.rate-limit.authenticated-read:600}")
+    private int authenticatedReadLimit;
+
+    @Value("${app.rate-limit.authenticated-write:60}")
+    private int authenticatedWriteLimit;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         String clientKey = getClientKey(request);
         boolean hasAuth = request.getHeader("Authorization") != null;
-        int limit = hasAuth ? AUTHENTICATED_LIMIT : ANONYMOUS_LIMIT;
+        boolean isWrite = isWriteMethod(request.getMethod());
 
-        String bucketKey = clientKey + (hasAuth ? ":auth" : ":anon");
+        int limit = resolveLimit(hasAuth, isWrite);
+        String bucketKey = clientKey + (hasAuth ? ":auth" : ":anon") + (isWrite ? ":w" : ":r");
         Bucket bucket = buckets.get(bucketKey, k -> createBucket(limit));
 
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
@@ -61,6 +76,23 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return false;
     }
 
+    private int resolveLimit(boolean hasAuth, boolean isWrite) {
+        if (hasAuth) {
+            return isWrite ? authenticatedWriteLimit : authenticatedReadLimit;
+        }
+        return isWrite ? anonymousWriteLimit : anonymousReadLimit;
+    }
+
+    private boolean isWriteMethod(String method) {
+        if (method == null) {
+            return false;
+        }
+        return method.equalsIgnoreCase("POST")
+                || method.equalsIgnoreCase("PUT")
+                || method.equalsIgnoreCase("DELETE")
+                || method.equalsIgnoreCase("PATCH");
+    }
+
     /**
      * Get rate limit metrics for monitoring
      */
@@ -68,8 +100,10 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return Map.of(
                 "activeBuckets", buckets.estimatedSize(),
                 "status", "healthy",
-                "anonymousLimit", ANONYMOUS_LIMIT,
-                "authenticatedLimit", AUTHENTICATED_LIMIT,
+                "anonymousReadLimit", anonymousReadLimit,
+                "anonymousWriteLimit", anonymousWriteLimit,
+                "authenticatedReadLimit", authenticatedReadLimit,
+                "authenticatedWriteLimit", authenticatedWriteLimit,
                 "bucketTTLMinutes", 5,
                 "maxBuckets", 10_000,
                 "implementation", "bucket4j + Caffeine"
@@ -82,10 +116,30 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     }
 
     private String getClientKey(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
+        String remoteAddr = request.getRemoteAddr();
+
+        // SECURITY: only trust X-Forwarded-For when the immediate peer is a trusted proxy
+        // (private/loopback network, e.g. Render/Railway's internal router or localhost).
+        // Otherwise a remote attacker can send a spoofed X-Forwarded-For header and rotate
+        // identities to bypass the rate limit entirely.
+        if (isTrustedProxy(remoteAddr)) {
+            String xForwardedFor = request.getHeader("X-Forwarded-For");
+            if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+                return xForwardedFor.split(",")[0].trim();
+            }
         }
-        return request.getRemoteAddr();
+        return remoteAddr;
+    }
+
+    private boolean isTrustedProxy(String ip) {
+        if (ip == null || ip.isBlank()) {
+            return false;
+        }
+        try {
+            java.net.InetAddress address = java.net.InetAddress.getByName(ip);
+            return address.isLoopbackAddress() || address.isSiteLocalAddress();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

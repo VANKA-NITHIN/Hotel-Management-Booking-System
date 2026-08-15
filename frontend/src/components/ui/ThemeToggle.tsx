@@ -19,7 +19,7 @@ export default function ThemeToggle() {
           className={`relative w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
             theme === value
               ? 'text-secondary'
-              : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+              : 'text-text-muted hover:text-text-base'
           }`}
         >
           {theme === value && (

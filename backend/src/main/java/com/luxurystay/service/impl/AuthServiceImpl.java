@@ -33,32 +33,40 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
 
     @Override
-    public UserDTO syncUser(UserDTO userDTO) {
-        Optional<User> existingUser = userRepository.findByEmail(userDTO.getEmail());
+    public UserDTO syncUser(UserDTO userDTO, Authentication authentication) {
+        // SECURITY: /auth/sync must only run for an authenticated caller syncing their OWN
+        // profile. The identity (email) and role are taken from the verified Clerk JWT in the
+        // SecurityContext - NEVER from the request body, which previously allowed any caller
+        // to escalate any known email to ROLE_ADMIN (privilege escalation).
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new org.springframework.security.access.AccessDeniedException("Authentication required to sync profile");
+        }
+
+        // Identity comes from the verified token, never from the body.
+        String email = authentication.getName();
+        if (email == null || email.isBlank()) {
+            throw new org.springframework.security.access.AccessDeniedException("Could not determine authenticated identity");
+        }
+
+        // Role comes from the token-derived authorities (set by JwtAuthenticationFilter).
+        Role roleEnum = extractRoleFromAuthentication(authentication);
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
         
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             user.setFirstName(getValidName(userDTO.getFirstName(), "Guest"));
             user.setLastName(getValidName(userDTO.getLastName(), "User"));
-            user.setEmail(userDTO.getEmail());
             user.setPhone(userDTO.getPhone());
             user.setProfileImage(userDTO.getProfileImage());
-            
-            // Sync Role from Clerk
-            if (userDTO.getRole() != null) {
-                try {
-                    Role roleEnum = Role.valueOf(userDTO.getRole());
-                    user.setRole(roleEnum);
-                    RoleEntity roleEntity = roleRepository.findByName(roleEnum)
-                            .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                                    .name(roleEnum)
-                                    .description(roleEnum.name() + " role")
-                                    .build()));
-                    user.setRoles(new HashSet<>(Set.of(roleEntity)));
-                } catch (IllegalArgumentException e) {
-                    log.warn("Invalid role passed from Clerk: {}", userDTO.getRole());
-                }
-            }
+
+            user.setRole(roleEnum);
+            RoleEntity roleEntity = roleRepository.findByName(roleEnum)
+                    .orElseGet(() -> roleRepository.save(RoleEntity.builder()
+                            .name(roleEnum)
+                            .description(roleEnum.name() + " role")
+                            .build()));
+            user.setRoles(new HashSet<>(Set.of(roleEntity)));
             
             return userMapper.toDTO(userRepository.save(user));
         } else {
@@ -67,37 +75,44 @@ public class AuthServiceImpl implements AuthService {
             User user = User.builder()
                     .firstName(getValidName(userDTO.getFirstName(), "Guest"))
                     .lastName(getValidName(userDTO.getLastName(), "User"))
-                    .email(userDTO.getEmail())
+                    .email(email)
                     .phone(userDTO.getPhone())
                     .profileImage(userDTO.getProfileImage())
-                    .role(Role.ROLE_CUSTOMER) // default role
+                    .role(roleEnum)
                     .enabled(true)
                     .emailVerified(true) // assume verified if coming from Clerk
                     .accountLocked(false)
                     .loyaltyPoints(0)
                     .build();
 
-            // Set role from DTO or default to CUSTOMER
-            Role roleEnum = Role.ROLE_CUSTOMER;
-            if (userDTO.getRole() != null) {
-                try {
-                    roleEnum = Role.valueOf(userDTO.getRole());
-                } catch (IllegalArgumentException e) {
-                    log.warn("Invalid role passed from Clerk: {}", userDTO.getRole());
-                }
-            }
-            user.setRole(roleEnum);
-
-            final Role finalRoleEnum = roleEnum;
-            RoleEntity roleEntity = roleRepository.findByName(finalRoleEnum)
+            RoleEntity roleEntity = roleRepository.findByName(roleEnum)
                     .orElseGet(() -> roleRepository.save(RoleEntity.builder()
-                            .name(finalRoleEnum)
-                            .description(finalRoleEnum.name() + " role")
+                            .name(roleEnum)
+                            .description(roleEnum.name() + " role")
                             .build()));
             user.setRoles(new HashSet<>(Set.of(roleEntity)));
             
             return userMapper.toDTO(userRepository.save(user));
         }
+    }
+
+    /**
+     * Derive the user's role from the verified authentication authorities (sourced from the
+     * Clerk JWT public_metadata by JwtAuthenticationFilter). Never trusts client-supplied roles.
+     */
+    private Role extractRoleFromAuthentication(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                .filter(authority -> authority.startsWith("ROLE_"))
+                .findFirst()
+                .map(authority -> {
+                    try {
+                        return Role.valueOf(authority);
+                    } catch (IllegalArgumentException e) {
+                        return Role.ROLE_CUSTOMER;
+                    }
+                })
+                .orElse(Role.ROLE_CUSTOMER);
     }
 
     @Override

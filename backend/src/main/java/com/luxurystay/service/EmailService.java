@@ -104,12 +104,12 @@ public class EmailService {
             <html>
             <head><meta charset="UTF-8"></head>
             <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fa; padding: 20px;">
-                <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; text-align: center;">
-                    <h1 style="color: #c9a84c; margin: 0;">LUXURYSTAY</h1>
+                <div style="background: #0d1f17; padding: 30px; border-radius: 12px; text-align: center;">
+                    <h1 style="color: #c98c3d; margin: 0;">LUXURYSTAY</h1>
                     <p style="color: #9ca3af; margin-top: 5px;">Booking Confirmation</p>
                 </div>
                 <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb;">
-                    <h2 style="color: #1a1a2e;">Your Booking is Confirmed! ✅</h2>
+                    <h2 style="color: #0d1f17;">Your Booking is Confirmed! ✅</h2>
                     <p>Dear %s,</p>
                     <p>Thank you for booking with LuxuryStay. Your reservation has been confirmed.</p>
                     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -142,12 +142,12 @@ public class EmailService {
             <html>
             <head><meta charset="UTF-8"></head>
             <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fa; padding: 20px;">
-                <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; text-align: center;">
-                    <h1 style="color: #c9a84c; margin: 0;">LUXURYSTAY</h1>
+                <div style="background: #0d1f17; padding: 30px; border-radius: 12px; text-align: center;">
+                    <h1 style="color: #c98c3d; margin: 0;">LUXURYSTAY</h1>
                     <p style="color: #9ca3af; margin-top: 5px;">Booking Cancelled</p>
                 </div>
                 <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb;">
-                    <h2 style="color: #1a1a2e;">Booking Cancelled</h2>
+                    <h2 style="color: #0d1f17;">Booking Cancelled</h2>
                     <p>Your booking <strong>%s</strong> has been cancelled.</p>
                     <p>If this was a mistake, please contact us.</p>
                 </div>
@@ -162,13 +162,13 @@ public class EmailService {
             <html>
             <head><meta charset="UTF-8"></head>
             <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8f9fa; padding: 20px;">
-                <div style="background: #1a1a2e; padding: 30px; border-radius: 12px; text-align: center;">
-                    <h1 style="color: #c9a84c; margin: 0;">LUXURYSTAY</h1>
+                <div style="background: #0d1f17; padding: 30px; border-radius: 12px; text-align: center;">
+                    <h1 style="color: #c98c3d; margin: 0;">LUXURYSTAY</h1>
                 </div>
                 <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb;">
-                    <h2 style="color: #1a1a2e;">Password Reset</h2>
+                    <h2 style="color: #0d1f17;">Password Reset</h2>
                     <p>You requested a password reset. Click the link below to reset your password:</p>
-                    <a href="http://localhost:5173/reset-password?token=%s" style="display:inline-block; background:#c9a84c; color:#1a1a2e; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; margin: 20px 0;">Reset Password</a>
+                    <a href="http://localhost:5173/reset-password?token=%s" style="display:inline-block; background:#c98c3d; color:#0d1f17; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; margin: 20px 0;">Reset Password</a>
                     <p style="color: #6b7280; font-size: 12px;">This link expires in 24 hours. If you didn't request this, ignore this email.</p>
                 </div>
             </body>

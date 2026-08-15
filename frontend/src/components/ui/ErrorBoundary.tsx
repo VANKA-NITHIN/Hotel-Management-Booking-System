@@ -40,7 +40,7 @@ class ErrorBoundaryComponent extends Component<Props, State> {
               <AlertTriangle className="w-8 h-8 text-red-500" />
             </div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">{this.props.t('errors:somethingWentWrong', 'Something went wrong')}</h2>
-            <p className="text-gray-500 mb-6 text-sm">
+            <p className="text-text-muted mb-6 text-sm">
               {this.state.error?.message || this.props.t('errors:unexpectedError', 'An unexpected error occurred. Please try again.')}
             </p>
             <button

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface PaymentService {
 
-    Map<String, String> createPaymentIntent(Long bookingId, Double amount, String currency);
+    Map<String, String> createPaymentIntent(Long bookingId, String currency);
 
     ApiResponse confirmPayment(String paymentIntentId);
 

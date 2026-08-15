@@ -39,7 +39,11 @@ public class AiOrchestratorService {
             }
         }
 
-        if (!rateLimiter.isAllowed(sessionId)) {
+        // SECURITY: rate-limit by the AUTHENTICATED USER, never by the client-supplied
+        // sessionId alone - an attacker could otherwise rotate sessionIds to bypass the cap
+        // and burn unlimited paid LLM tokens.
+        String rateLimitKey = (userId != null) ? "user:" + userId : "session:" + sessionId;
+        if (!rateLimiter.isAllowed(rateLimitKey)) {
             auditService.logRateLimit(sessionId, userId);
             return AiChatResponseDTO.builder()
                     .sessionId(sessionId)

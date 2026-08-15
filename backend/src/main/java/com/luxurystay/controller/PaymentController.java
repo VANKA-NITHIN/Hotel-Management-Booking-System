@@ -20,9 +20,9 @@ public class PaymentController {
     @PostMapping("/create-intent")
     public ResponseEntity<Map<String, String>> createPaymentIntent(@RequestBody Map<String, Object> request) {
         Long bookingId = Long.parseLong(request.get("bookingId").toString());
-        Double amount = Double.parseDouble(request.get("amount").toString());
         String currency = (String) request.getOrDefault("currency", "usd");
-        return ResponseEntity.ok(paymentService.createPaymentIntent(bookingId, amount, currency));
+        // SECURITY: amount is computed server-side from the booking - the client's amount is ignored.
+        return ResponseEntity.ok(paymentService.createPaymentIntent(bookingId, currency));
     }
 
     @PostMapping("/confirm")

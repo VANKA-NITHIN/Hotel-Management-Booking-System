@@ -21,8 +21,8 @@ L.Marker.prototype.options.icon = DefaultIcon;
 // Custom animated marker for the Hotel
 const hotelMarkerHtml = `
   <div class="relative flex items-center justify-center w-10 h-10">
-    <div class="absolute w-full h-full bg-primary rounded-full opacity-40 animate-ping"></div>
-    <div class="relative flex items-center justify-center w-8 h-8 bg-primary border-2 border-white rounded-full shadow-lg">
+    <div class="absolute w-full h-full bg-primary-950 rounded-full opacity-40 animate-ping"></div>
+    <div class="relative flex items-center justify-center w-8 h-8 bg-primary-950 border-2 border-white rounded-full shadow-lg">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>

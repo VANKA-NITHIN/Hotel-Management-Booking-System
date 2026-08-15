@@ -7,6 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { Button } from '../components/ui/Button';
 import { motion } from 'framer-motion';
+import type { Hotel } from '../types';
 
 export default function WishlistPage() {
   usePageTitle('My Wishlist');
@@ -28,7 +29,7 @@ export default function WishlistPage() {
               {isLoading ? 'Loading your saved properties...' : `You have ${hotels.length} saved properties`}
             </p>
           </div>
-          <Button variant="outline" onClick={() => navigate('/hotels')} className="!hidden sm:!flex">
+          <Button variant="outline" onClick={() => navigate('/hotels')} className="shrink-0">
             Browse more hotels
           </Button>
         </motion.div>
@@ -44,7 +45,7 @@ export default function WishlistPage() {
             transition={{ delay: 0.1 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
-            {hotels.map((hotel: any, i: number) => (
+            {hotels.map((hotel: Hotel, i: number) => (
               <HotelCard key={hotel.id} hotel={hotel} index={i} />
             ))}
           </motion.div>

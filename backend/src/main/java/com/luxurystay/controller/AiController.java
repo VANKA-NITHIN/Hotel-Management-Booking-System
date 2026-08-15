@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/ai")
+@RequestMapping("/v1/ai")
 @RequiredArgsConstructor
 public class AiController {
 

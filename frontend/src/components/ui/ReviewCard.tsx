@@ -46,14 +46,14 @@ export function ReviewCard({
             size="md"
           />
           <div>
-            <h4 className="text-sm font-semibold text-text-base flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-text-base flex items-center gap-1.5">
               {author.name}
               {author.isVerified && (
                 <span className="text-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-1.5 py-0.5 rounded flex items-center font-bold uppercase tracking-wider">
                   Verified Stay
                 </span>
               )}
-            </h4>
+            </p>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="flex items-center">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -73,7 +73,10 @@ export function ReviewCard({
           </div>
         </div>
         
-        <button className="text-text-muted hover:text-text-base p-1 transition-colors">
+        <button
+          aria-label="More actions"
+          className="w-10 h-10 flex items-center justify-center text-text-muted hover:text-text-base rounded-lg transition-colors"
+        >
           <MoreHorizontal className="w-5 h-5" />
         </button>
       </div>

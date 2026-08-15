@@ -261,7 +261,11 @@ public class JwtTokenProvider {
      */
     public String generateQrToken(Long bookingId, Long userId, Long hotelId, long expirationMillis) {
         if (jwtSecret == null || jwtSecret.isEmpty()) {
-            jwtSecret = "a_very_long_secure_fallback_secret_key_for_testing_only_1234567890"; // fallback for testing
+            // SECURITY: never fall back to a hardcoded secret (previously committed in source,
+            // which would let anyone forge check-in passes). Use an unguessable per-boot secret.
+            // NOTE: tokens issued before a restart become invalid - acceptable for security.
+            jwtSecret = java.util.UUID.randomUUID().toString() + java.util.UUID.randomUUID().toString();
+            log.warn("JWT_SECRET not configured; using ephemeral per-boot secret for QR passes. Set JWT_SECRET in production.");
         }
         
         SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());

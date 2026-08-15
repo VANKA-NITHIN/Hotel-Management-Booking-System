@@ -40,7 +40,7 @@ export function RoomComparisonModal({ isOpen, onClose, rooms, onSelectRoom }: Ro
                 <th key={room.id} className="p-4 bg-bg-surface border border-border-base text-center w-1/3 min-w-[200px]">
                   <div className="w-full h-28 rounded-xl overflow-hidden mb-3">
                     <OptimizedImage
-                      src={room.images?.[0] || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop'}
+                      src={room.images?.[0]?.imageUrl || 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop'}
                       alt={room.name || room.roomType}
                       className="w-full h-full object-cover"
                     />

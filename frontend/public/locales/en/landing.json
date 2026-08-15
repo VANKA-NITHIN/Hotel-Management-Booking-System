@@ -1,4 +1,4 @@
-﻿{
+{
     "heroSubtitle":  "The New Standard of Luxury",
     "heroTitle1":  "Curated stays for the",
     "heroTitleHighlight":  "extraordinary",
@@ -40,10 +40,17 @@
     "faq3Content":  "Yes! Our LuxuryStay Rewards program lets you earn points on every booking. Points can be redeemed for free nights, room upgrades, and exclusive member experiences.",
     "faq4Title":  "How do I contact customer support?",
     "faq4Content":  "Our concierge team is available 24/7 via phone at +1 (800) 123-4567, email at support@luxurystay.com, or through the in-app chat assistant.",
-    "ctaTitle":  "Ready to elevate your travel experience?",
+    "ctaTitle":  "Where will your next journey begin?",
     "ctaSubtitle":  "Join our exclusive community and unlock access to the world\u0027s most extraordinary properties.",
     "exploreCollection":  "Explore Collection",
     "scrollTop":  "Scroll to top",
+    "contactUs": "Contact Us",
+    "noDestinations": "No destinations found",
+    "noDestinationsDesc": "Check back soon for new curated destinations.",
+    "noTestimonials": "No reviews yet",
+    "noTestimonialsDesc": "Be the first to share your experience with us.",
+    "noFaqs": "No FAQs available",
+    "noFaqsDesc": "Please contact our support team for any questions.",
     "testimonials":  {
                          "sarah":  {
                                        "name":  "Sarah Johnson",

@@ -114,8 +114,8 @@ export function GroupBookingModal({ isOpen, onClose, hotelName }: GroupBookingMo
               <div className="flex items-center justify-between mb-8 relative">
                 <div className="absolute start-0 top-1/2 -translate-y-1/2 w-full h-1 bg-border-base rounded-full -z-10"></div>
                 <div className="absolute start-0 top-1/2 -translate-y-1/2 h-1 bg-primary rounded-full -z-10 transition-all duration-500" style={{ width: step === 1 ? '0%' : '100%' }}></div>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 1 ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>1</div>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 2 ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>2</div>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 1 ? 'bg-primary-950 text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>1</div>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= 2 ? 'bg-primary-950 text-white' : 'bg-bg-surface text-text-muted border-2 border-border-base'}`}>2</div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -209,7 +209,7 @@ export function GroupBookingModal({ isOpen, onClose, hotelName }: GroupBookingMo
                         <label className="block text-sm font-medium text-text-base mb-1.5">Special Requirements</label>
                         <textarea
                           placeholder="Catering, AV equipment, specific room configurations..."
-                          className="w-full bg-bg-surface border border-border-base hover:border-border-strong focus:border-border-focus rounded-lg px-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-border-focus/20 transition-all min-h-[100px] resize-y"
+                          className="w-full bg-bg-surface border border-border-base hover:border-border-strong focus:border-secondary rounded-lg px-4 py-3 text-sm text-text-base focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all min-h-[100px] resize-y"
                           value={formData.requirements}
                           onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
                         />

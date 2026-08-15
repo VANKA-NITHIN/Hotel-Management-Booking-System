@@ -113,7 +113,7 @@ export default function Navbar() {
                       className="absolute top-full start-1/2 -translate-x-1/2 mt-2 w-[600px] bg-bg-surface border border-border-base rounded-xl shadow-dropdown z-50 overflow-hidden flex"
                     >
                       <div className="flex-1 p-6 border-e border-border-base bg-bg-surface-hover/30">
-                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('topDestinations', { ns: 'nav' })}</h4>
+                        <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('topDestinations', { ns: 'nav' })}</p>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                           {destinations.map(dest => (
                             <Link key={dest.name} to={`/hotels?dest=${dest.name.toLowerCase()}`} className="group flex items-center justify-between">
@@ -127,7 +127,7 @@ export default function Navbar() {
                         </Link>
                       </div>
                       <div className="w-64 p-6 bg-bg-surface">
-                        <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('curatedCollections', { ns: 'nav' })}</h4>
+                        <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4">{t('curatedCollections', { ns: 'nav' })}</p>
                         <div className="space-y-4">
                           {hotelTypes.map(type => (
                             <Link key={type.name} to={`/hotels?type=${type.name.toLowerCase()}`} className="flex items-start gap-3 group">
@@ -291,7 +291,7 @@ export default function Navbar() {
       >
         <div className="space-y-6">
           <div>
-            <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('navigation', { ns: 'nav' })}</h4>
+            <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('navigation', { ns: 'nav' })}</p>
             <div className="space-y-1">
               {[
                 { to: '/', label: t('home', { ns: 'common' }) },
@@ -316,7 +316,7 @@ export default function Navbar() {
 
           {isSignedIn && (
             <div>
-              <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('myLuxuryStay', { ns: 'nav' })}</h4>
+              <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">{t('myLuxuryStay', { ns: 'nav' })}</p>
               <div className="space-y-1">
                 <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-base hover:bg-bg-surface-hover">
                   <LayoutDashboard className="w-4 h-4 text-text-muted" /> {t('dashboard', { ns: 'nav' })}
@@ -327,7 +327,7 @@ export default function Navbar() {
                 <Link to="/dashboard" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-base hover:bg-bg-surface-hover">
                   <Bell className="w-4 h-4 text-text-muted" /> {t('notifications', { ns: 'nav' })}
                   {(notifications.filter(n => !n.isRead).length > 0 || apiUnreadCount > 0) && (
-                    <span className="ms-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{t('new', { ns: 'nav' })}</span>
+                    <span className="ms-auto bg-primary-950 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{t('new', { ns: 'nav' })}</span>
                   )}
                 </Link>
               </div>

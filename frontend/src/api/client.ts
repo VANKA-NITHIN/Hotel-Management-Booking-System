@@ -135,10 +135,14 @@ api.interceptors.response.use(
     // (Variables already declared above)
 
     if (isNetworkError || is50xError || isTimeout) {
-      const now = Date.now();
-      if (now - lastNetworkErrorTime > NETWORK_ERROR_COOLDOWN) {
-        toast.error('We are unable to reach the server. Please check your connection.');
-        lastNetworkErrorTime = now;
+      const isGet = (originalRequest?.method || 'get').toLowerCase() === 'get';
+      const shouldToast = originalRequest?.showToast === true || (!isGet && originalRequest?.showToast !== false);
+      if (shouldToast) {
+        const now = Date.now();
+        if (now - lastNetworkErrorTime > NETWORK_ERROR_COOLDOWN) {
+          toast.error('We are unable to reach the server. Please check your connection.');
+          lastNetworkErrorTime = now;
+        }
       }
       return Promise.reject(error);
     }
@@ -154,15 +158,23 @@ api.interceptors.response.use(
           toast.error('You do not have permission to perform this action.');
         }
       } else if (status >= 400 && status !== 401 && status !== 404) {
-        const message = data?.detail || data?.message || (status === 500 ? 'The service is temporarily unavailable. Please try again.' : 'An error occurred. Please try again.');
-        toast.error(message);
+        const isGet = (originalRequest?.method || 'get').toLowerCase() === 'get';
+        const shouldToast = originalRequest?.showToast === true || (!isGet && originalRequest?.showToast !== false);
+        if (shouldToast) {
+          const message = data?.detail || data?.message || (status === 500 ? 'The service is temporarily unavailable. Please try again.' : 'An error occurred. Please try again.');
+          toast.error(message);
+        }
       }
     } else if (error.request && !originalRequest._isRetrying) {
       // General network error fallback if retry logic wasn't triggered
-      const now = Date.now();
-      if (now - lastNetworkErrorTime > NETWORK_ERROR_COOLDOWN) {
-        toast.error('We are unable to reach the server. Please try again in a moment.');
-        lastNetworkErrorTime = now;
+      const isGet = (originalRequest?.method || 'get').toLowerCase() === 'get';
+      const shouldToast = originalRequest?.showToast === true || (!isGet && originalRequest?.showToast !== false);
+      if (shouldToast) {
+        const now = Date.now();
+        if (now - lastNetworkErrorTime > NETWORK_ERROR_COOLDOWN) {
+          toast.error('We are unable to reach the server. Please try again in a moment.');
+          lastNetworkErrorTime = now;
+        }
       }
     }
 

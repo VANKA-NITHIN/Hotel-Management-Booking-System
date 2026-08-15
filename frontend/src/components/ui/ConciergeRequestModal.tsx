@@ -88,7 +88,7 @@ export function ConciergeRequestModal({ isOpen, onClose, hotelName }: ConciergeR
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-primary text-white' : 'bg-bg-surface text-text-muted'}`}>
+                    <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-primary-950 text-white' : 'bg-bg-surface text-text-muted'}`}>
                       <IconComp className="w-4 h-4" />
                     </div>
                     <div>

@@ -71,7 +71,7 @@ export function VirtualTourModal({ isOpen, onClose, hotelName }: VirtualTourModa
                 }}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                   activeSpotId === s.id
-                    ? 'bg-primary text-white shadow-sm'
+                    ? 'bg-primary-950 text-white shadow-sm'
                     : 'bg-bg-surface-hover text-text-muted hover:text-text-base'
                 }`}
               >
@@ -107,8 +107,8 @@ export function VirtualTourModal({ isOpen, onClose, hotelName }: VirtualTourModa
               onClick={() => setActiveHotspot(hs.title)}
             >
               <div className="relative flex items-center justify-center">
-                <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-6 w-6 bg-primary border-2 border-white items-center justify-center text-white shadow-lg">
+                <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-primary-950 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-6 w-6 bg-primary-950 border-2 border-white items-center justify-center text-white shadow-lg">
                   <Sparkles className="w-3 h-3" />
                 </span>
               </div>

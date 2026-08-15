@@ -19,7 +19,7 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         {icon || <Inbox className="w-8 h-8 text-gray-400" />}
       </div>
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{title}</h3>
-      {description && <p className="text-sm text-gray-500 max-w-sm mb-6">{description}</p>}
+      {description && <p className="text-sm text-text-muted max-w-sm mb-6">{description}</p>}
       {action && (
         action.to ? (
           <Link to={action.to} className="btn-primary text-sm">

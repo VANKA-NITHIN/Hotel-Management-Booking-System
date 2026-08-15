@@ -1,17 +1,19 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MessageCircle, FileText, Shield, ChevronRight, ChevronDown, Calendar, CreditCard, User, HelpCircle } from 'lucide-react';
+import { Search, MessageCircle, FileText, Shield, ChevronDown, Calendar, CreditCard, User, HelpCircle } from 'lucide-react';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { useFaqs } from '../hooks/useApi';
+import type { Faq } from '../types';
 
 export default function HelpCenterPage() {
   usePageTitle('Help Center');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const navigate = useNavigate();
-  const { data: faqs = [] } = useFaqs();
+  const { data: faqsData } = useFaqs();
+  const faqs = (faqsData || []) as Faq[];
 
   const filteredFaqs = useMemo(() => {
     return faqs.filter(faq => 
@@ -45,7 +47,7 @@ export default function HelpCenterPage() {
   return (
     <div className="min-h-screen bg-bg-surface-hover pt-[72px]">
       {/* Search Header */}
-      <div className="bg-primary pt-20 pb-28 px-4 text-center relative overflow-hidden">
+      <div className="bg-primary-950 pt-20 pb-28 px-4 text-center relative overflow-hidden">
         <div className="absolute top-0 end-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
         <div className="relative z-10 max-w-3xl mx-auto">
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-3xl md:text-5xl font-serif font-bold text-white mb-8">
@@ -141,9 +143,6 @@ export default function HelpCenterPage() {
               <div className="space-y-4">
                 <Button className="w-full justify-center" size="lg" onClick={() => navigate('/contact')}>
                   Contact Support
-                </Button>
-                <Button variant="outline" className="w-full justify-center" size="lg" icon={<MessageCircle className="w-5 h-5" />}>
-                  Live Chat
                 </Button>
               </div>
             </div>
